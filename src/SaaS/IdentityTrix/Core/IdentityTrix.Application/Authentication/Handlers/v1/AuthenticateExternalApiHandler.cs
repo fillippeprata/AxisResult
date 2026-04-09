@@ -10,5 +10,6 @@ internal class AuthenticateExternalApiHandler(
 ) : IAxisCommandHandler<AuthenticateExternalApiCommand>
 {
     public async Task<AxisResult> HandleAsync(AuthenticateExternalApiCommand cmd)
-        => await cachedSecretResolver.VerifySecretAsync(cmd.ExternalApiId, cmd.Secret);
+        => await cachedSecretResolver.GetExternalApiAsync(cmd.ExternalApiId)
+            .ThenAsync(app => app.VerifySecret(cmd.Secret));
 }

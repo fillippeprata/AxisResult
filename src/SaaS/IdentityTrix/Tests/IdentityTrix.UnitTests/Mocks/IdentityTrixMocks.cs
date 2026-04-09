@@ -1,5 +1,6 @@
 ﻿using AxisTrix.Caching;
 using AxisTrix.Results;
+using IdentityTrix.Application.ExternalApis;
 using IdentityTrix.Ports;
 using IdentityTrix.Ports.ExternalApis;
 using IdentityTrix.SharedKernel.ExternalApis;
@@ -22,9 +23,9 @@ internal record IdentityTrixMocks
 
         mocks.Cache.Setup(x => x.GetOrCreateAsync(
                 It.IsAny<string>(),
-                It.IsAny<Func<Task<AxisResult<IExternalApiEntityProperties>>>>(),
+                It.IsAny<Func<Task<AxisResult<IExternalApiAggregateApplication>>>>(),
                 It.IsAny<TimeSpan?>()))
-            .Returns((string _, Func<Task<AxisResult<IExternalApiEntityProperties>>> factory, TimeSpan? _) => factory());
+            .Returns((string _, Func<Task<AxisResult<IExternalApiAggregateApplication>>> factory, TimeSpan? _) => factory());
 
         return mocks;
     }
@@ -39,5 +40,6 @@ internal record IdentityTrixMocks
     public Mock<IUnitOfWorkProvider> UowProvider { get; init; } = new();
     public Mock<IExternalApiWritePort> ExternalApiWriter { get; init; } = new();
     public Mock<IExternalApiReaderPort> ExternalApiReader { get; init; } = new();
+
     public Mock<IAxisCache> Cache { get; init; } = new();
 }

@@ -19,6 +19,15 @@ public class ExternalApiRepositoryTests(PostgresFixture fixture) : DatabaseTestB
         var serviceProvider = DependencyInjection.ServiceProviderWithPostgres(Fixture.ConnectionString);
         ExternalApiId? apiId;
 
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var query = new GetExternalApiByIdQuery { ExternalApiId = "00000000-0000-7000-8000-000000000001"};
+            var response = await Mediator(scope).GetByIdAsync(query);
+
+            Assert.True(response.IsSuccess);
+            Assert.NotEmpty(response.Value.Name);
+        }
+
         using( var scope = serviceProvider.CreateScope())
         {
 

@@ -73,7 +73,7 @@ public class HandlerTests
         var externalApiId = ExternalApiId.New;
 
         var mocks = IdentityTrixMocks.CreateSuccessfulMocks();
-        mocks.ExternalApiReader.Setup(x => x.GetExternalApiByIdAsync(externalApiId))
+        mocks.ExternalApiReader.Setup(x => x.GetExternalApiByIdAsync(It.IsAny<ExternalApiId>()))
             .ReturnsAsync(AxisError.NotFound("EXTERNAL_API_NOT_FOUND"));
 
         var services = new ServiceCollection();

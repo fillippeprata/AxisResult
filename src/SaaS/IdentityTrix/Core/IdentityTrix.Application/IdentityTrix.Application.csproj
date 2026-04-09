@@ -1,14 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <InternalsVisibleTo Include="IdentityTrix.Sdk.Application" />
+    <InternalsVisibleTo Include="IdentityTrix.Sdk.Application"/>
+    <InternalsVisibleTo Include="IdentityTrix.UnitTests"/>
   </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\Contracts\IndentityTrix.Contracts\IndentityTrix.Contracts.csproj" />
-      <ProjectReference Include="..\..\Ports\IdentityTrix.Ports\IdentityTrix.Ports.csproj" />
-      <ProjectReference Include="..\IdentityTrix.Domain\IdentityTrix.Domain.csproj" />
-      <ProjectReference Include="..\IdentityTrix.SharedKernel\IdentityTrix.SharedKernel.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Contracts\IndentityTrix.Contracts\IndentityTrix.Contracts.csproj"/>
+    <ProjectReference Include="..\..\Ports\IdentityTrix.Ports\IdentityTrix.Ports.csproj"/>
+    <ProjectReference Include="..\IdentityTrix.Domain\IdentityTrix.Domain.csproj"/>
+    <ProjectReference Include="..\IdentityTrix.SharedKernel\IdentityTrix.SharedKernel.csproj"/>
+  </ItemGroup>
 
 </Project>
