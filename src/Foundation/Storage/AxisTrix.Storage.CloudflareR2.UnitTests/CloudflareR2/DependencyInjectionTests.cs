@@ -1,7 +1,6 @@
 using Amazon.S3;
 using AxisTrix.Accessor;
 using AxisTrix.DependencyInjection;
-using AxisTrix.Storage.CloudflareR2;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AxisTrix.Storage.CloudflareR2.UnitTests.CloudflareR2;

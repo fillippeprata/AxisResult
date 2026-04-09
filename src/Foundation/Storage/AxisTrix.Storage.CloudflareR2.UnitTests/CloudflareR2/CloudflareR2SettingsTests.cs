@@ -1,5 +1,3 @@
-using AxisTrix.Storage.CloudflareR2;
-
 namespace AxisTrix.Storage.CloudflareR2.UnitTests.CloudflareR2;
 
 public class CloudflareR2SettingsTests
