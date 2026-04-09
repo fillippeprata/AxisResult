@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moq" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Foundation\Caching\AxisTrix.Caching.Memory\AxisTrix.Caching.Memory.csproj" />
+    <ProjectReference Include="..\..\Adapters\Driven\Repositories\IdentityTrix.Driven.Repositories.Postgres\IdentityTrix.Driven.Repositories.Postgres.csproj" />
+    <ProjectReference Include="..\..\Adapters\Driving\IdentityTrix.Sdk.Application\IdentityTrix.Sdk.Application.csproj" />
+  </ItemGroup>
+
+</Project>

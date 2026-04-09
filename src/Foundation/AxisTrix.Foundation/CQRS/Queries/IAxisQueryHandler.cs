@@ -1,0 +1,10 @@
+using AxisTrix.Results;
+
+namespace AxisTrix.CQRS.Queries;
+
+public interface IAxisQueryHandler<in TQuery, TResponse>
+    where TQuery : IAxisQuery<TResponse>
+    where TResponse : IAxisQueryResponse
+{
+    Task<AxisResult<TResponse>> HandleAsync(TQuery query);
+}

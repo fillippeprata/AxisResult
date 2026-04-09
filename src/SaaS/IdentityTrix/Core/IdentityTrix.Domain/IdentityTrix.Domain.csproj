@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="IdentityTrix.Application" />
+  </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\IdentityTrix.SharedKernel\IdentityTrix.SharedKernel.csproj" />
+    </ItemGroup>
+
+</Project>

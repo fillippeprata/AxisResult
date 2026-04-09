@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\..\..\Foundation\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
+      <ProjectReference Include="..\..\..\..\..\..\Foundation\Repository\AxisTrix.Repository.Postgres\AxisTrix.Repository.Postgres.csproj" />
+      <ProjectReference Include="..\..\..\..\Ports\IdentityTrix.Ports\IdentityTrix.Ports.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Contracts\IndentityTrix.Contracts\IndentityTrix.Contracts.csproj" />
+      <ProjectReference Include="..\..\..\Core\IdentityTrix.Application\IdentityTrix.Application.csproj" />
+    </ItemGroup>
+
+</Project>
