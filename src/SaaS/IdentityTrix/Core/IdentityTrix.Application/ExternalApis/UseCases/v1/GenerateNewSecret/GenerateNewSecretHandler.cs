@@ -3,7 +3,7 @@ using AxisTrix.Results;
 using IdentityTrix.Application.Authentication.Services;
 using IdentityTrix.Ports;
 using IdentityTrix.SharedKernel.ExternalApis;
-using IndentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
+using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
 
 namespace IdentityTrix.Application.ExternalApis.UseCases.v1.GenerateNewSecret;
 

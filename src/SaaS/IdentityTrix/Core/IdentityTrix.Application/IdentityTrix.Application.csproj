@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Contracts\IndentityTrix.Contracts\IndentityTrix.Contracts.csproj"/>
+    <ProjectReference Include="..\..\Contracts\IdentityTrix.Contracts\IdentityTrix.Contracts.csproj"/>
     <ProjectReference Include="..\..\Ports\IdentityTrix.Ports\IdentityTrix.Ports.csproj"/>
     <ProjectReference Include="..\IdentityTrix.Domain\IdentityTrix.Domain.csproj"/>
     <ProjectReference Include="..\IdentityTrix.SharedKernel\IdentityTrix.SharedKernel.csproj"/>

@@ -78,7 +78,7 @@ public class AxisValidatorBase<T> : AbstractValidator<T>
             }).WithErrorCode(errorCode));
     }
 
-    protected void RequiredWithMaxLenght(Expression<Func<T, string?>> expression, string errorCode, int? length = DefaultMaxLength)
+    protected void RequiredWithMaxLength(Expression<Func<T, string?>> expression, string errorCode, int? length = DefaultMaxLength)
     {
         PrivateNotNullOrEmpty(expression, errorCode)
             .Must((_, propertyValue) => propertyValue != null && propertyValue.ToString().Length <= length).WithErrorCode(errorCode);

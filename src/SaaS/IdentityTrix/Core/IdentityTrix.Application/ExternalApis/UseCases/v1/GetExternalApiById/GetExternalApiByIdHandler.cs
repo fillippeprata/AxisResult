@@ -2,7 +2,7 @@ using AxisTrix.CQRS.Queries;
 using AxisTrix.Results;
 using IdentityTrix.Ports.ExternalApis;
 using IdentityTrix.SharedKernel.ExternalApis;
-using IndentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
+using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 
 namespace IdentityTrix.Application.ExternalApis.UseCases.v1.GetExternalApiById;
 

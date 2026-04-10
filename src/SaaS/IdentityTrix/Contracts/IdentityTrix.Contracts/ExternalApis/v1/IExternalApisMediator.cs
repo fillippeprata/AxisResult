@@ -1,9 +1,9 @@
 ﻿using AxisTrix.Results;
-using IndentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
-using IndentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
-using IndentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
+using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
+using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
+using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 
-namespace IndentityTrix.Contracts.ExternalApis.v1;
+namespace IdentityTrix.Contracts.ExternalApis.v1;
 
 public interface IExternalApisMediator
 {

@@ -1,6 +1,6 @@
 using AxisTrix.CQRS.Commands;
 
-namespace IndentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
+namespace IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 
 public record AddExternalApiResponse : IAxisCommandResponse
 {

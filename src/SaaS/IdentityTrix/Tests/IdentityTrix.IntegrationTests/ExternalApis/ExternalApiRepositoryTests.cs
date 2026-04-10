@@ -1,9 +1,9 @@
 ﻿using IdentityTrix.IntegrationTests.Postgres;
 using IdentityTrix.SharedKernel.ExternalApis;
-using IndentityTrix.Contracts.ExternalApis.v1;
-using IndentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
-using IndentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
-using IndentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
+using IdentityTrix.Contracts.ExternalApis.v1;
+using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
+using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
+using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityTrix.IntegrationTests.ExternalApis;

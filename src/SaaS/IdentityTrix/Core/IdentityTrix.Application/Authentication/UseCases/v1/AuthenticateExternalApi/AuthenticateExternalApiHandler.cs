@@ -1,7 +1,7 @@
 using AxisTrix.CQRS.Commands;
 using AxisTrix.Results;
 using IdentityTrix.Application.Authentication.Services;
-using IndentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
+using IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 
 namespace IdentityTrix.Application.Authentication.UseCases.v1.AuthenticateExternalApi;
 

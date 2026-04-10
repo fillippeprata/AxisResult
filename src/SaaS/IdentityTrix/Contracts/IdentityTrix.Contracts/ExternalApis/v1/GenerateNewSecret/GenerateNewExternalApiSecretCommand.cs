@@ -1,6 +1,6 @@
 using AxisTrix.CQRS.Commands;
 
-namespace IndentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
+namespace IdentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
 
 public record GenerateNewExternalApiSecretCommand : IAxisCommand<GenerateNewExternalApiSecretResponse>
 {

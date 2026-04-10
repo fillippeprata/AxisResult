@@ -1,13 +1,13 @@
 # AxisTrix — Guide for AI Agents
 
-> **Tudo que você for fazer tem que ter uma referência clara neste arquivo de como fazer em termos arquiteturais.** 
-> Se não estiver um scaffold ou documentação clara de como prosseguir, pergunte ao desenvolvedor como fazer e atualize este documento.
+> **Everything you do must have a clear reference in this file for how to do it architecturally.**
+> If there is no scaffold or clear documentation on how to proceed, ask the developer how to do it and update this document.
 
 ---
 
-## Regras críticas de fluxo de trabalho
+## Critical workflow rules
 
-- **Zero errors/warnings**: Sempre que finalizar algo faça o build e rode os testes. Se resolver o warning/erro está fora do escopo da tarefa, exponha o problema para resolver junto com o desenvolvedor. Se estiver no escopo, resolva antes de dar a tarefa como concluída.
+- **Zero errors/warnings**: Whenever you finish something, run the build and the tests. If fixing the warning/error is out of scope for the task, surface the problem to resolve together with the developer. If it is in scope, fix it before marking the task as done.
 - **American English**: All naming (classes, methods, variables, files, comments, etc.) must be in American English, even if the prompt is in another language.
 - **Before committing**: Flag any non-American English or non-compliant code you find—notify the developer once the processing is complete.
 - **Controllers require E2E tests**: When creating or modifying a WebApi Controller, always create/update corresponding E2E integration tests using TestContainers. Create a logical sequence of tests and use the results to ensure the "happy path" and other important paths.
@@ -42,7 +42,7 @@
     │   ├── {SubDomain}.SharedKernel/       # Entity interfaces, Value Objects, ApplicationConfig
     │   ├── {SubDomain}.Domain/             # Entities (Properties + Rules, partial classes)
     │   └── {SubDomain}.Application/        # Handlers, Validators, Factories, AggregateApplications
-    │   └── {SubDomain}.Application/{BC}    # DepenencyInjection, AggregateApplicationFactory, AggregateApplications
+    │   └── {SubDomain}.Application/{BC}    # DependencyInjection, AggregateApplicationFactory, AggregateApplications
     │   └── {SubDomain}.Application/{BC}/UseCases/v1/{SameContractStructure}  # Handlers and Validators
     ├── Ports/{SubDomain}.Ports/            # Reader/Writer port interfaces, IUnitOfWorkProvider
     ├── Adapters/
@@ -123,7 +123,7 @@ If the architecture is not microservices-based, there will be no integration wit
 - NEVER use an ORM — raw parameterized SQL with the technology implemented (Npgsql, MongoDb C# driver, etc).
 - NEVER add `SaveChangesAsync()` in the Application layer, only on Handlers
 - NEVER access Domain Entity directly — only through Application layer
-- NEVER add packages without ask the developer
+- NEVER add packages without asking the developer
 - NEVER define classes/records/interfaces as `public` except if in the Access Modifiers table.
 
 **!!!Key principle!!!**: Use cases trigger handlers, which orchestrate ports and aggregate applications. These applications are created by a factory and orchestrates domain rules using reader/writer ports. Nothing is saved until the handler calls `UnitOfWork.SaveChangesAsync()`. The Aggregate Application NEVER manages UoW.
@@ -302,7 +302,7 @@ Root entities: `{Aggregate}/Root/`. Non-root: `{Aggregate}/Entities/`.
 **Factory** (`I{Name}AggregateApplicationFactory`):
 - Methods: `GetByIdAsync()` and `CreateAsync(NewArgs)` where `NewArgs` is a nested record
 - `GetByIdAsync()` → reader port + `.MapAsync()` to wrap in Application
-- `CreateAsync()` → use `.IfElseFoundThenAsync()` for duplicate detection, then `.TapAsync(writePort.CreateAsync)`
+- `CreateAsync()` → use `.RequireNotFound()` for duplicate detection, then `.TapAsync(writePort.CreateAsync)`
 - `NewInstance()` — private helper wrapping entity in Application
 
 **AggregateApplication** (`I{Name}AggregateApplication : I{Entity}Properties`):
@@ -472,7 +472,9 @@ Simple shared records (e.g., `Device(string Name, string Key)`) go in `SharedKer
 
 - Contracts: `Contracts/{BC}/{Feature}/{Action}/v1/`
 - Handlers mirror: `Application/{BC}/UseCases/{Action}/v1/`
-- Namespace follows folder: `IdentityTrix.Persons.Contracts.Persons.Cellphones.AddCellphone.v1`
+- Namespace follows folder. The Contracts **project** name depends on whether the BC is still part of the monolith or has been promoted to its own microservice:
+  - **Default (monolith)**: a single Contracts project per subdomain — `{SubDomain}.Contracts` — holding every BC. Namespace: `{SubDomain}.Contracts.{BC}.{Feature}.{Action}.v1` (e.g., `IdentityTrix.Contracts.Persons.Cellphones.AddCellphone.v1`).
+  - **BC promoted to microservice**: that BC gets its own Contracts project — `{SubDomain}.{BC}.Contracts`. Namespace: `{SubDomain}.{BC}.Contracts.{Feature}.{Action}.v1` (e.g., `IdentityTrix.Persons.Contracts.Cellphones.AddCellphone.v1`).
 - Similar commands can share a base validator; shared internal DTOs go in `SharedData/` and end with `Data`
 
 ---
@@ -481,8 +483,8 @@ Simple shared records (e.g., `Device(string Name, string Key)`) go in `SharedKer
 
 NEVER add packages. Ask the developer first if you need something new.
 
-NEVER use FluentAssertions directly. Allways use base methods.
-NEVER use test packages except theses:
+NEVER use FluentAssertions directly. Always use base methods.
+NEVER use test packages except these:
 - Testcontainers.*
 - Moq
 - AutoFixture
@@ -502,7 +504,7 @@ public record AddCellphoneToPersonCommand : IAxisCommand<AddCellphoneToPersonRes
     public string? CellphoneNumber { get; init; }
 }
 
-public record AddCellphoneToPersonResponse : ICommandResponseTrix
+public record AddCellphoneToPersonResponse : IAxisCommandResponse
 {
     public required CellphoneId CellphoneId { get; init; }
 }
@@ -527,7 +529,7 @@ internal class AddCellphoneToPersonHandler(
 
 **Validator**:
 ```csharp
-public class AddCellphoneToPersonValidator : AxisValidatorBase<AddCellphoneToPersonCommand>
+internal class AddCellphoneToPersonValidator : AxisValidatorBase<AddCellphoneToPersonCommand>
 {
     public AddCellphoneToPersonValidator()
     {
@@ -550,7 +552,7 @@ public record GetPersonByEmailQuery : IAxisQuery<GetPersonByEmailResponse>
     public string? Email { get; init; }
 }
 
-public record GetPersonByEmailResponse : IQueryResponseTrix
+public record GetPersonByEmailResponse : IAxisQueryResponse
 {
     public required PersonId PersonId { get; init; }
     public required string DisplayName { get; init; }

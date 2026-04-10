@@ -46,7 +46,7 @@
     <Project Path="src/SaaS/IdentityTrix/Adapters/Driving/IdentityTrix.Sdk.Application/IdentityTrix.Sdk.Application.csproj" />
   </Folder>
   <Folder Name="/src/SaaS/IdentityTrix/Contracts/">
-    <Project Path="src/SaaS/IdentityTrix/Contracts/IndentityTrix.Contracts/IndentityTrix.Contracts.csproj" />
+    <Project Path="src/SaaS/IdentityTrix/Contracts/IdentityTrix.Contracts/IdentityTrix.Contracts.csproj" />
   </Folder>
   <Folder Name="/src/SaaS/IdentityTrix/Core/">
     <Project Path="src/SaaS/IdentityTrix/Core/IdentityTrix.Application/IdentityTrix.Application.csproj" />

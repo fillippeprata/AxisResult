@@ -1,6 +1,6 @@
 using AxisTrix.CQRS.Commands;
 
-namespace IndentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
+namespace IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 
 public record AuthenticateExternalApiCommand : IAxisCommand
 {
