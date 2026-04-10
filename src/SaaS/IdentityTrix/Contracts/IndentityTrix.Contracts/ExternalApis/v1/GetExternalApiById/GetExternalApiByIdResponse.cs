@@ -1,6 +1,6 @@
 using AxisTrix.CQRS.Queries;
 
-namespace IndentityTrix.Contracts.ExternalApis.v1.GetById;
+namespace IndentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 
 public record GetExternalApiByIdResponse : IAxisQueryResponse
 {

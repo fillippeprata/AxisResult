@@ -2,7 +2,7 @@ using IdentityTrix.Driven.Repositories.Postgres.ExternalApis.Scripts;
 using IdentityTrix.IntegrationTests.Postgres;
 using IdentityTrix.SharedKernel.ExternalApis;
 using IndentityTrix.Contracts.ExternalApis.v1;
-using IndentityTrix.Contracts.ExternalApis.v1.GetById;
+using IndentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityTrix.IntegrationTests.ExternalApis;

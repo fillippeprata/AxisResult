@@ -2,9 +2,9 @@ using AxisTrix.CQRS.Queries;
 using AxisTrix.Results;
 using IdentityTrix.Ports.ExternalApis;
 using IdentityTrix.SharedKernel.ExternalApis;
-using IndentityTrix.Contracts.ExternalApis.v1.GetById;
+using IndentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 
-namespace IdentityTrix.Application.ExternalApis.Handlers.v1;
+namespace IdentityTrix.Application.ExternalApis.UseCases.v1.GetExternalApiById;
 
 internal class GetExternalApiByIdHandler(
     IExternalApiReaderPort readerPort

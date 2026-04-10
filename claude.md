@@ -1,6 +1,7 @@
 # AxisTrix — Guide for AI Agents
 
-> **It is essential to have a clear direction for any action to be taken, especially in terms of architecture.**. If something is unclear or undefined, ask the developer before proceeding.
+> **Tudo que você for fazer tem que ter uma referência clara neste arquivo de como fazer em termos arquiteturais.** 
+> Se não estiver um scaffold ou documentação clara de como prosseguir, pergunte ao desenvolvedor como fazer e atualize este documento.
 
 ---
 
@@ -35,17 +36,19 @@
 {Domain}/
 └── {SubDomain}/
     ├── Contracts/{SubDomain}.Contracts/
+    │   └── {BC}/{Feature}/{UseCase}/v1/I{Feature}Mediator #Interface for SDK Implementation
     │   └── {BC}/{Feature}/{UseCase}/v1/    # If the feature has the same name as the BC (CRUDs, for example), there is no feature folder
     ├── Core/
     │   ├── {SubDomain}.SharedKernel/       # Entity interfaces, Value Objects, ApplicationConfig
     │   ├── {SubDomain}.Domain/             # Entities (Properties + Rules, partial classes)
     │   └── {SubDomain}.Application/        # Handlers, Validators, Factories, AggregateApplications
+    │   └── {SubDomain}.Application/{BC}    # DepenencyInjection, AggregateApplicationFactory, AggregateApplications
+    │   └── {SubDomain}.Application/{BC}/UseCases/v1/{SameContractStructure}  # Handlers and Validators
     ├── Ports/{SubDomain}.Ports/            # Reader/Writer port interfaces, IUnitOfWorkProvider
     ├── Adapters/
     │   ├── Driven/Repositories/{SubDomain}.Repository.[Technology]/ # Technology -> Postgres | MongoDb | etc.
     │   ├── Driven/Producers/{SubDomain}.Producers.[Technology]/ # Technology -> Kafka | RabbitMq | etc.
     │   ├── Driven/Others
-    │   └── Driving/SDK/{SubDomain}.SDK                 # SDK Ports
     │   └── Driving/SDK/{SubDomain}.SDK.Application     # SDK for Dependency Injection
     │   └── Driving/SDK/{SubDomain}.SDK.HttpClient      # SDK for Http Communication
     │   └── Driving/SDK/{SubDomain}.SDK.GrpcClient      # SDK for gRPC Communication
@@ -59,7 +62,7 @@
 
 If the architecture is not microservices-based, there will be no integration with Web API or gRPC. The monolith will use the SDK.Application to execute the use cases.
 
-**Project naming**: `{SubDomain}.{Layer}` — e.g., `IdentityTrix.Persons.Application`, `IdentityTrix.Authentication.Repository.Postgres`
+**Project naming**: `{SubDomain}.{Layer}` — e.g., `IdentityTrix.Application`, `IdentityTrix.Repository.Postgres`
 
 ---
 
@@ -82,7 +85,7 @@ If the architecture is not microservices-based, there will be no integration wit
 | Factory Interface | `I{Aggregate}AggregateApplicationFactory` | `IPersonAggregateApplicationFactory` |
 | Application Interface | `I{Aggregate}AggregateApplication` | `IPersonAggregateApplication` |
 | SDK Interface | `I{Feature}Mediator` | `IPersonsMediator` |
-| ApplicationConfig key | PascalCase, no dots | `AppKey = "IdentityTrixPersons"` |
+| ApplicationConfig key | PascalCase, no dots | `AppKey = "IdentityTrix"` |
 | Error Code | UPPER_SNAKE_CASE | `PERSON_NOT_ACTIVE`, `AUTH_CODE_NOT_VALID` |
 | DB Schema | UPPER_SNAKE_CASE | `IDENTITY_TRIX_PERSONS` |
 | DB Table | `{SCHEMA}.{NAME}` UPPER_SNAKE_CASE | `IDENTITY_TRIX_PERSONS.PERSONS` |
@@ -93,18 +96,18 @@ If the architecture is not microservices-based, there will be no integration wit
 
 ## Access Modifiers
 
-| Component                                                                | Modifier |
-|--------------------------------------------------------------------------|----------|
-| Commands, Queries, Responses                                             | `public record` |
-| Validators                                                               | `internal class` |
-| Handlers                                                                 | `internal class` |
-| Entities                                                                 | `internal partial class` |
-| DbEntities                                                               | `internal record` |
-| Repositories, Factories (impl), Application (impl), SDK Mediators (impl) | `internal class` |
-| Ports, Factory/Application/SDK (interfaces), SharedKernel interfaces     | `public interface` |
-| DI extensions (public modules)                                           | `public static class` |
-| DI extensions (internal modules)                                         | `internal static class` |
-| Value Objects                                                            | `readonly partial record struct` |
+| Component                                                  | Modifier |
+|------------------------------------------------------------|----------|
+| Commands, Queries, Responses                               | `public record` |
+| Validators                                                 | `internal class` |
+| Handlers                                                   | `internal class` |
+| Entities                                                   | `internal partial class` |
+| DbEntities                                                 | `internal record` |
+| Repositories, Factories, Application, SDK Mediators (impl) | `internal class` |
+| Ports, BC Mediators (interfaces), SharedKernel interfaces  | `public interface` |
+| DI extensions (public modules)                             | `public static class` |
+| DI extensions (internal modules)                           | `internal static class` |
+| Value Objects                                              | `readonly partial record struct` |
 
 ---
 

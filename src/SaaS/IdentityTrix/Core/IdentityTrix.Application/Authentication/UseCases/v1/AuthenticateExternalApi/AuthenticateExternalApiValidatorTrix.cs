@@ -2,7 +2,7 @@ using AxisTrix.Validation;
 using IdentityTrix.SharedKernel.ExternalApis;
 using IndentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 
-namespace IdentityTrix.Application.Authentication.Validators.v1;
+namespace IdentityTrix.Application.Authentication.UseCases.v1.AuthenticateExternalApi;
 
 public class AuthenticateExternalApiValidatorTrix : AxisValidatorBase<AuthenticateExternalApiCommand>
 {

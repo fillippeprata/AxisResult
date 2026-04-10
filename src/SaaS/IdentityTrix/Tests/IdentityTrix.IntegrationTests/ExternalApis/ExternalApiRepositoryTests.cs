@@ -3,7 +3,7 @@ using IdentityTrix.SharedKernel.ExternalApis;
 using IndentityTrix.Contracts.ExternalApis.v1;
 using IndentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using IndentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
-using IndentityTrix.Contracts.ExternalApis.v1.GetById;
+using IndentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityTrix.IntegrationTests.ExternalApis;

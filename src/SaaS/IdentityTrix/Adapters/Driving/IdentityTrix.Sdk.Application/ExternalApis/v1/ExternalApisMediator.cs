@@ -3,7 +3,7 @@ using AxisTrix.Results;
 using IndentityTrix.Contracts.ExternalApis.v1;
 using IndentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using IndentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
-using IndentityTrix.Contracts.ExternalApis.v1.GetById;
+using IndentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 
 namespace IdentityTrix.Sdk.Application.ExternalApis.v1;
 

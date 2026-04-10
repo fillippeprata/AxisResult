@@ -4,7 +4,7 @@ using IdentityTrix.Ports;
 using IdentityTrix.SharedKernel.ExternalApis;
 using IndentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 
-namespace IdentityTrix.Application.ExternalApis.Handlers.v1;
+namespace IdentityTrix.Application.ExternalApis.UseCases.v1.AddExternalApi;
 
 internal class AddExternalApiHandler(
     IUnitOfWorkProvider uowProvider,
@@ -18,8 +18,8 @@ internal class AddExternalApiHandler(
 
         return factory.CreateAsync(new() { ApiName = cmd.ApiName!, HashedSecret = hashedSecret })
             .TapAsync(_ => uowProvider.UnitOfWork.SaveChangesAsync())
-            .MapAsync<IExternalApiAggregateApplication, AddExternalApiResponse>(app
-                => new AddExternalApiResponse
+            .MapAsync<IExternalApiAggregateApplication, AddExternalApiResponse>(
+                app => new AddExternalApiResponse
                 {
                     ExternalApiId = app.ExternalApiId,
                     Name = app.ApiName,

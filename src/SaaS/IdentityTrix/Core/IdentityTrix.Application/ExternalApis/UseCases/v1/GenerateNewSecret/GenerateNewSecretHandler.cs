@@ -5,9 +5,9 @@ using IdentityTrix.Ports;
 using IdentityTrix.SharedKernel.ExternalApis;
 using IndentityTrix.Contracts.ExternalApis.v1.GenerateNewSecret;
 
-namespace IdentityTrix.Application.ExternalApis.Handlers.v1;
+namespace IdentityTrix.Application.ExternalApis.UseCases.v1.GenerateNewSecret;
 
-internal class GenerateNewExternalApiSecretHandler(
+internal class GenerateNewSecretHandler(
     IUnitOfWorkProvider uowProvider,
     IExternalApiAggregateApplicationFactory factory,
     ICachedExternalApiSecretResolver cacheResolver
@@ -23,10 +23,11 @@ internal class GenerateNewExternalApiSecretHandler(
             .TapAsync(app => app.UpdateSecretAsync(hashedSecret))
             .TapAsync(_ => uowProvider.UnitOfWork.SaveChangesAsync())
             .TapAsync(_ => cacheResolver.RemoveAsync(externalApiId))
-            .MapAsync<IExternalApiAggregateApplication, GenerateNewExternalApiSecretResponse>(_ => new()
-            {
-                ExternalApiId = externalApiId,
-                Secret = plainSecret
-            });
+            .MapAsync<IExternalApiAggregateApplication, GenerateNewExternalApiSecretResponse>(_ =>
+                new GenerateNewExternalApiSecretResponse
+                {
+                    ExternalApiId = externalApiId,
+                    Secret = plainSecret
+                });
     }
 }
