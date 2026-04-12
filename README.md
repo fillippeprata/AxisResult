@@ -8,9 +8,9 @@ A zero-dependency Result monad built for real-world .NET applications. No except
 public Task<AxisResult<AddCellphoneResponse>> HandleAsync(AddCellphoneCommand cmd)
     => personFactory.GetByIdAsync(cmd.PersonId)
         .ThenAsync(person => cellphoneMediator.AddAsync(new() { CountryId = cmd.CountryId, Number = cmd.Number }))
-        .ThenAsync(response => person.AddCellphoneAsync(response.CellphoneId))
+        .ThenAsync(response => response.AddCellphoneAsync(cmd.CellphoneId))
         .ThenAsync(_ => unitOfWork.SaveChangesAsync())
-        .MapAsync(_ => new AddCellphoneResponse { CellphoneId = response.CellphoneId });
+        .MapAsync(_ => new AddCellphoneResponse { CellphoneId = cmd.CellphoneId });
 ```
 
 Every operation either succeeds and flows forward, or fails and short-circuits. No nesting. No branching. No ambiguity.
@@ -174,7 +174,7 @@ Designed for ASP.NET controllers, not for domain logic. Basic `Map`/`Bind` suppo
 ### Installation
 
 ```
-dotnet add package AxisTrix.Results
+dotnet add package AxisResult
 ```
 
 ### Creating Results
@@ -444,14 +444,14 @@ var result = await AxisResult.AllAsync(
 
 ```csharp
 var settings = await GetUserSettingsAsync(userId)
-    .RecoverNotFound(() => DefaultSettings.Create());
+    .RecoverNotFoundAsync(() => DefaultSettings.Create());
 ```
 
 ### RecoverWhen: Conditional Recovery
 
 ```csharp
 var data = await FetchFromPrimaryAsync()
-    .RecoverWhen(AxisErrorType.ServiceUnavailable, () => FetchFromFallbackAsync());
+    .RecoverWhenAsync(AxisErrorType.ServiceUnavailable, () => FetchFromFallbackAsync());
 ```
 
 ### OrElse: Try an Alternative
@@ -503,10 +503,10 @@ This is built into the type system. Circuit breakers, retry policies, and health
 
 ```csharp
 var result = await internalService.ProcessAsync()
-    .MapErrorAsync(error => AxisError.InternalServerError($"PROCESSING_{error.Code}"));
+    .MapErrorAsync(errors => errors.Select(e => AxisError.InternalServerError($"PROCESSING_{e.Code}")));
 ```
 
-Remap error codes and types as they cross architectural boundaries.
+Remap error codes and types as they cross architectural boundaries. Use the single-error overload (`Func<AxisError, AxisError>`) when transforming each error individually, or the list overload (`Func<IReadOnlyList<AxisError>, IEnumerable<AxisError>>`) when you need to filter or restructure the error collection.
 
 ---
 
@@ -516,20 +516,20 @@ For developers who prefer comprehension syntax:
 
 ```csharp
 AxisResult<decimal> total =
-    from customer in GetCustomerAsync(customerId)
-    from order in CreateOrderAsync(customer.Id, productId)
+    from customer in GetCustomer(customerId)
+    from order in CreateOrder(customer.Id, productId)
     select order.Total;
 ```
 
 Equivalent to:
 
 ```csharp
-var total = await GetCustomerAsync(customerId)
-    .ThenAsync(customer => CreateOrderAsync(customer.Id, productId))
-    .MapAsync(order => order.Total);
+var total = GetCustomer(customerId)
+    .Then(customer => CreateOrder(customer.Id, productId))
+    .Map(order => order.Total);
 ```
 
-Both styles are first-class. Use whichever reads better for your team.
+Both styles are first-class. Use whichever reads better for your team. For async pipelines, use the fluent `ThenAsync`/`MapAsync` chain instead.
 
 ---
 
@@ -592,7 +592,12 @@ On hot paths where the result is often cached or synchronous, `ValueTask` avoids
 | `Ensure(predicate, error)` | Guard clause — fails if predicate is false |
 | `Ensure(func)` | Delegated validation — func returns `AxisResult` |
 | `EnsureAsync` | Async versions |
-| `ActionAsync(func)` | Failable async validation that preserves value |
+
+### Failable Side Effects
+
+| Method | Description |
+|--------|-------------|
+| `ActionAsync(func)` | Run a failable operation (`T -> Task<AxisResult>`) and **preserve the original value** on success. Unlike `ThenAsync`, which replaces the value, `ActionAsync` keeps it — ideal for domain validation, persistence, or any step where you need the value downstream |
 
 ### Combining Values
 
