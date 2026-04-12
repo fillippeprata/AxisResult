@@ -91,9 +91,18 @@ public class AxisErrorTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Constructor_Throws_On_Blank_Code(string? code)
+    public void Factory_Falls_Back_To_Sentinel_On_Blank_Code(string? code)
     {
-        Assert.Throws<ArgumentException>(() => AxisError.NotFound(code!));
+        var e = AxisError.NotFound(code!);
+        Assert.Equal(AxisError.MissingCodeSentinel, e.Code);
+        Assert.Equal(AxisErrorType.NotFound, e.Type);
+    }
+
+    [Fact]
+    public void Factory_Does_Not_Throw_On_Blank_Code()
+    {
+        var ex = Record.Exception(() => AxisError.InternalServerError(null!));
+        Assert.Null(ex);
     }
 
     [Theory]

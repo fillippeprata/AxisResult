@@ -1,13 +1,20 @@
-﻿namespace AxisResult;
+using System.Diagnostics;
 
+namespace AxisResult;
+
+[DebuggerDisplay("{Type,nq} {Code,nq}")]
 public record AxisError
 {
+    /// <summary>
+    /// Sentinel code used when an <see cref="AxisError"/> is constructed with a null, empty or
+    /// whitespace code. A Result library must never throw from its own factory — this sentinel
+    /// keeps the "errors as values" invariant while still signalling the programmer bug loudly.
+    /// </summary>
+    public const string MissingCodeSentinel = "AXIS_ERROR_CODE_MISSING";
+
     private AxisError(string code, AxisErrorType type)
     {
-        if (string.IsNullOrWhiteSpace(code))
-            throw new ArgumentException("Error code cannot be null or whitespace.", nameof(code));
-
-        Code = code;
+        Code = string.IsNullOrWhiteSpace(code) ? MissingCodeSentinel : code;
         Type = type;
     }
 

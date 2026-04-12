@@ -165,7 +165,9 @@ Designed for ASP.NET controllers, not for domain logic. Basic `Map`/`Bind` suppo
 | Parallel aggregation (Combine/All) | **Yes** | No | No | Yes | No |
 | Error accumulation (OrElse) | **Yes** | Partial | No | No | No |
 | Zero external dependencies | **Yes** | Partial | Partial | No | Yes |
-| Lightweight (~200KB) | **Yes** | Yes | Yes | No (7.5MB) | Yes |
+| Lightweight (~240KB) | **Yes** | Yes | Yes | No (7.5MB) | Yes |
+| CancellationToken-aware overloads | **Yes** | No | No | Partial | No |
+| Parallel zip (independent ops) | **Yes** | No | No | Partial | No |
 
 ---
 
@@ -376,6 +378,24 @@ protected async Task<AxisResult<T>> GetAsync<T>(
 
 The only `try/catch` in the entire architecture lives at the infrastructure boundary. Database exceptions are converted to `AxisResult` once, at the edge. Everything above — handlers, factories, domain rules — is exception-free.
 
+> **Boundary adapter pattern.** For `HttpClient`, database drivers, message brokers
+> and any other infrastructure with a leaky exception surface, the recommended
+> pattern is to write a thin **adapter** whose job is *exclusively* converting the
+> external surface into `AxisResult<Response>`. Every exception the underlying
+> client can throw is mapped to a typed `AxisError` (timeouts → `Timeout`,
+> 5xx → `ServiceUnavailable`, 401 → `Unauthorized`, etc.). The rest of the
+> application consumes only `AxisResult<Response>` and never sees a raw
+> `HttpResponseMessage`. Dedicated helper libraries for the HTTP and repository
+> adapters are on the roadmap.
+
+> **Note on `Try` / `TryAsync`.** `AxisResult.Try` does **not** catch "programmer
+> error" exceptions — `NullReferenceException`, `ArgumentNullException`,
+> `OperationCanceledException`, `OutOfMemoryException`, `StackOverflowException`
+> and `ThreadAbortException` are rethrown. These represent bugs or genuinely
+> unrecoverable situations and should not be silently turned into a result value.
+> If you want a specific exception type captured, pass an `errorHandler` override
+> or catch it manually in your adapter.
+
 ### Validator: Automatic Pipeline Validation
 
 Validators run automatically before the handler (via pipeline behavior):
@@ -490,6 +510,46 @@ AxisError.GatewayTimeout("UPSTREAM_TIMEOUT")       // → 504
 AxisError.Mapping("INVALID_DATA_FORMAT")           // → 500
 ```
 
+### Why No `Message` Field on `AxisError`?
+
+`AxisError` carries **only** a stable `Code` and a `Type`. This is deliberate:
+
+- **The code is the primary key.** It must be immutable and stable across releases
+  so that logs, metrics, alerting rules and retry policies can pivot on it without
+  parsing strings.
+- **Human messages are a different concern.** Localization, tone, wording, and the
+  decision of whether to expose an internal detail to an end-user — none of that
+  belongs inside a pipeline value.
+
+The recommended pattern is a **code → message resolver** at the presentation boundary:
+
+```csharp
+public interface IAxisErrorMessageResolver
+{
+    string Resolve(AxisError error, CultureInfo culture);
+}
+
+// In an API controller or gRPC interceptor:
+return result.Match(
+    onSuccess: value => Ok(value),
+    onFailure: errors => Problem(
+        title: errors[0].Type.ToString(),
+        detail: messageResolver.Resolve(errors[0], CultureInfo.CurrentUICulture)
+    )
+);
+```
+
+Benefits:
+
+- Codes stay small and canonical (`USER_NOT_FOUND`), messages live in resource files.
+- Multiple UIs (REST, gRPC, CLI, internal admin) can render the same code differently.
+- Tests assert on codes, not on English prose.
+- No PII or internal state accidentally leaks into error payloads.
+
+If you need to pass **details** about a failure (user id, attempted quantity, etc.),
+emit multiple `AxisError` values — one per detail — rather than stuffing them into a
+message. The error list is already the natural collection for this.
+
 ### Transient Detection
 
 ```csharp
@@ -530,6 +590,65 @@ var total = GetCustomer(customerId)
 ```
 
 Both styles are first-class. Use whichever reads better for your team. For async pipelines, use the fluent `ThenAsync`/`MapAsync` chain instead.
+
+---
+
+## Cancellation
+
+Every core pipeline operator has a `CancellationToken`-aware overload. The delegate
+receives the token as a second parameter and the extension method forwards it
+automatically, so the token flows through the whole chain without polluting closures:
+
+```csharp
+public Task<AxisResult<CreateOrderResponse>> HandleAsync(CreateOrderCommand cmd, CancellationToken ct)
+    => customerFactory.GetByIdAsync(cmd.CustomerId, ct)
+        .ThenAsync((customer, ct) => orderFactory.CreateAsync(new()
+        {
+            CustomerId = customer.CustomerId,
+            ProductId = cmd.ProductId,
+            Quantity = cmd.Quantity
+        }, ct), ct)
+        .ActionAsync((order, ct) => unitOfWork.SaveChangesAsync(ct), ct)
+        .MapAsync((order, ct) => Task.FromResult(new CreateOrderResponse { OrderId = order.Id }), ct);
+```
+
+The CT-less overloads are preserved — you can still close over a token via lambda if
+that's your style, or mix both patterns in the same chain. Overloads exist for
+`ThenAsync`, `MapAsync`, `TapAsync`, `EnsureAsync`, `ZipAsync`, `ActionAsync` and
+`ZipParallelAsync`, on both `Task<AxisResult<T>>` and `ValueTask<AxisResult<T>>`.
+
+> **Preferred pattern:** when using DI, the `CancellationToken` of the current request
+> can be registered as a scoped service (resolved from `IHttpContextAccessor` or a
+> custom ambient context) so handlers don't have to thread it through every method.
+> The CT-aware overloads exist for cases where explicit threading is preferred, or
+> where the scoped-CT pattern isn't available.
+
+---
+
+## Parallel Zip
+
+`ZipAsync` is sequential and fail-fast. When two operations are **independent** (neither
+depends on the other's result), use `ZipParallelAsync` to run them concurrently via
+`Task.WhenAll` and accumulate errors if both sides fail:
+
+```csharp
+var dashboard = await GetUserAsync(userId)
+    .ZipParallelAsync(() => GetRecentOrdersAsync(userId))   // runs in parallel
+    .MapAsync((user, orders) => new DashboardResponse
+    {
+        UserName = user.Name,
+        OrderCount = orders.Count
+    });
+```
+
+Semantics:
+
+- **Both succeed** → tuple `(T1, T2)`.
+- **One fails** → that side's errors propagate.
+- **Both fail** → errors are **accumulated** (concatenated), so the caller sees every
+  failure at once.
+
+A CT-aware overload is available: `ZipParallelAsync(ct => ..., ct)`.
 
 ---
 
@@ -618,6 +737,8 @@ On hot paths where the result is often cached or synchronous, `ValueTask` avoids
 | `CombineAsync(tasks)` | Async version |
 | `All(results)` | Join N typed results into `IReadOnlyList<T>` |
 | `AllAsync(tasks)` | Async version |
+| `ZipParallelAsync(() => other)` | Run an independent op concurrently, zip into tuple, accumulate errors if both fail |
+| `ZipParallelAsync(ct => other, ct)` | CT-aware variant |
 
 ### Recovery and Fallbacks
 
@@ -669,6 +790,64 @@ On hot paths where the result is often cached or synchronous, `ValueTask` avoids
 |--------|-------------|
 | `AsTaskAsync()` | Wrap sync result in `Task` |
 | `AsValueTaskAsync()` | Wrap sync result in `ValueTask` |
+
+### Cancellation
+
+Every core async operator has a CT-aware overload whose delegate receives the token
+as a second parameter. Available on both `Task<AxisResult<T>>` and
+`ValueTask<AxisResult<T>>`:
+
+| Method | Delegate shape |
+|--------|----------------|
+| `ThenAsync` | `(T, CancellationToken) => Task<AxisResult<TNew>>` |
+| `ThenAsync` | `(T, CancellationToken) => Task<AxisResult>` (preserves value) |
+| `MapAsync` | `(T, CancellationToken) => Task<TNew>` |
+| `TapAsync` | `(T, CancellationToken) => Task` |
+| `EnsureAsync` | `(T, CancellationToken) => Task<bool>` |
+| `EnsureAsync` | `(T, CancellationToken) => Task<AxisResult>` |
+| `ZipAsync` | `(T, CancellationToken) => Task<TNew>` |
+| `ZipAsync` | `(T, CancellationToken) => Task<AxisResult<TNew>>` |
+| `ActionAsync` | `(T, CancellationToken) => Task<AxisResult>` (preserves value) |
+| `ZipParallelAsync` | `(CancellationToken) => Task<AxisResult<TNew>>` |
+
+### Deconstruction
+
+| Syntax | Yields |
+|--------|--------|
+| `var (isSuccess, errors) = result` | `AxisResult` |
+| `var (isSuccess, value, errors) = result` | `AxisResult<T>` (value is `default` on failure) |
+
+---
+
+## Ergonomics
+
+### Deconstruction
+
+Both `AxisResult` and `AxisResult<T>` support positional deconstruction:
+
+```csharp
+var (isSuccess, errors) = AxisResult.Ok();                 // non-generic
+var (isSuccess, value, errors) = AxisResult.Ok(42);        // generic
+
+// Also usable in positional patterns:
+if (result is (true, var v, _))
+    Console.WriteLine($"got {v}");
+```
+
+On a failed `AxisResult<T>`, `value` is `default(T)` (not an exception) — the
+deconstruction never throws, so it's safe to use in pattern matching without
+pre-checking `IsSuccess`.
+
+### Debugger Experience
+
+`AxisResult`, `AxisResult<T>` and `AxisError` all carry `[DebuggerDisplay]` attributes.
+In the debugger you see:
+
+- `Ok` / `Ok(42)` for success
+- `Error[2]: USER_NOT_FOUND, INVALID_EMAIL` for failures
+- `NotFound USER_NOT_FOUND` for individual errors
+
+No more inspecting private fields or expanding every node.
 
 ---
 
