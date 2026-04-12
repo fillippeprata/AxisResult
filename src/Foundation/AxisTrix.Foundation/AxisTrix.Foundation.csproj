@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Results\AxisTrix.Results\AxisTrix.Results.csproj" />
+    <ProjectReference Include="..\Results\AxisResult\AxisResult.csproj" />
     <ProjectReference Include="..\Types\AxisTrix.Types\AxisTrix.Types.csproj" />
   </ItemGroup>
 

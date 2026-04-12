@@ -28,8 +28,8 @@
     <Project Path="src/Foundation/Repository/AxisTrix.Repository.Postgres/AxisTrix.Repository.Postgres.csproj" />
   </Folder>
   <Folder Name="/src/Foundation/Results/">
-    <Project Path="src/Foundation/Results/AxisTrix.Results.UnitTests/AxisTrix.Results.UnitTests.csproj" />
-    <Project Path="src/Foundation/Results/AxisTrix.Results/AxisTrix.Results.csproj" />
+    <Project Path="src/Foundation/Results/AxisResult.UnitTests/AxisResult.UnitTests.csproj" />
+    <Project Path="src/Foundation/Results/AxisResult/AxisResult.csproj" />
   </Folder>
   <Folder Name="/src/Foundation/SourceGen/">
     <Project Path="src/Foundation/SourceGen/AxisTrix.SourceGen/AxisTrix.SourceGen.csproj" />
