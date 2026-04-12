@@ -30,6 +30,8 @@ bld/
 [Ll]og/
 [Ll]ogs/
 artifacts/
+artifacts-*/
+[Aa]rtifacts/
 **/[Bb]in/
 
 # NuGet

@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write   # required to attach artifacts to the GitHub Release
+
+jobs:
+  publish:
+    name: Pack and publish to NuGet
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (full history for SourceLink)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.x
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Extract version from tag
+        id: ver
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          version="${tag#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Resolved package version: ${version}"
+
+      - name: Restore
+        run: dotnet restore AxisResult.slnx
+
+      - name: Test (safety net)
+        run: >
+          dotnet test src/AxisResult.UnitTests/AxisResult.UnitTests.csproj
+          -c Release
+          --no-restore
+
+      - name: Pack
+        run: >
+          dotnet pack src/AxisResult/AxisResult.csproj
+          -c Release
+          --no-restore
+          -p:Version=${{ steps.ver.outputs.version }}
+          -o artifacts
+
+      - name: Push to NuGet.org
+        run: >
+          dotnet nuget push "artifacts/*.nupkg"
+          --api-key ${{ secrets.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
+
+      - name: Attach packages to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/*.nupkg
+            artifacts/*.snupkg
