@@ -1,6 +1,6 @@
 using AxisTrix.SourceGen;
 
-namespace AxisTrix.Types;
+namespace AxisTrix.Types.Localization;
 
 [ValueObject]
 public readonly partial record struct CountryId

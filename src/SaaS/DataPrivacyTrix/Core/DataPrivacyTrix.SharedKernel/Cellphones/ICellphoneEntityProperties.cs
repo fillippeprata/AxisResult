@@ -1,4 +1,4 @@
-﻿using AxisTrix.Types;
+﻿using CountryId = AxisTrix.Types.Localization.CountryId;
 
 namespace DataPrivacyTrix.SharedKernel.Cellphones;
 

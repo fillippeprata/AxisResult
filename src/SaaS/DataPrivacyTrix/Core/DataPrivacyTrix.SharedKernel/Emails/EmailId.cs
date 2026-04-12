@@ -1,6 +1,6 @@
 using AxisTrix.SourceGen;
 
-namespace IdentityTrix.SharedKernel.DataPrivacy;
+namespace DataPrivacyTrix.SharedKernel.Emails;
 
 [ValueObject(UseInvariantCulture = true)]
 public readonly partial record struct EmailId

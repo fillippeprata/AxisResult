@@ -685,4 +685,32 @@ public class AxisResultFunctionalSyncTests
     }
 
     #endregion
+
+    #region RequireNotFound (non-generic)
+
+    [Fact]
+    public void RequireNotFound_NG_Success_ReturnsError()
+    {
+        var r = AxisResult.Ok().RequireNotFound(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "ALREADY_EXISTS");
+    }
+
+    [Fact]
+    public void RequireNotFound_NG_AllNotFound_ReturnsOk()
+    {
+        var r = AxisResult.Error(AxisError.NotFound("NF")).RequireNotFound(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public void RequireNotFound_NG_MixedErrors_PropagatesOriginal()
+    {
+        var errors = new[] { AxisError.NotFound("NF"), AxisError.ValidationRule("VR") };
+        var r = AxisResult.Error(errors).RequireNotFound(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "VR");
+    }
+
+    #endregion
 }

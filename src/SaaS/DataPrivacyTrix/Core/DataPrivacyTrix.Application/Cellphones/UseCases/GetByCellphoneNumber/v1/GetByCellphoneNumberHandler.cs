@@ -1,7 +1,5 @@
 using AxisTrix.CQRS.Queries;
 using AxisTrix.Results;
-using AxisTrix.Types;
-using AxisTrix.Validation.Localization;
 using DataPrivacyTrix.Contracts.Cellphones.v1.GetByCellphoneNumber;
 using DataPrivacyTrix.Ports.Cellphones;
 
@@ -11,12 +9,7 @@ internal class GetByCellphoneNumberHandler(
     ICellphonesReaderPort readerPort
 ) : IAxisQueryHandler<GetByCellphoneNumberQuery, GetByCellphoneNumberResponse>
 {
-    public Task<AxisResult<GetByCellphoneNumberResponse>> HandleAsync(GetByCellphoneNumberQuery query)
-    {
-        CountryId countryId = query.CountryId;
-
-        return countryId.GetFormattedPhone(query.CellphoneNumber)
-            .ThenAsync(formattedPhone => readerPort.GetByCellphoneNumberAsync(countryId, formattedPhone))
+    public Task<AxisResult<GetByCellphoneNumberResponse>> HandleAsync(GetByCellphoneNumberQuery query) =>
+        readerPort.GetByCellphoneNumberAsync(query.CountryId, query.CellphoneNumber!)
             .MapAsync(entity => new GetByCellphoneNumberResponse { CellphoneId = entity.CellphoneId});
-    }
 }

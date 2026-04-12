@@ -1,9 +1,9 @@
 using AxisTrix.CQRS.Commands;
 using AxisTrix.Results;
 using IdentityTrix.Application.Authentication.Services;
+using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
 using IdentityTrix.Ports;
 using IdentityTrix.SharedKernel.ExternalApis;
-using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
 
 namespace IdentityTrix.Application.ExternalApis.UseCases.v1.GenerateNewExternalApiSecret;
 
@@ -20,9 +20,9 @@ internal class GenerateNewExternalApiSecretHandler(
         var hashedSecret = ExternalApiSecret.Hash(plainSecret);
 
         return factory.GetByIdAsync(externalApiId)
-            .TapAsync(app => app.UpdateSecretAsync(hashedSecret))
-            .TapAsync(_ => uowProvider.UnitOfWork.SaveChangesAsync())
-            .TapAsync(_ => cacheResolver.RemoveAsync(externalApiId))
+            .ThenAsync(app => app.UpdateSecretAsync(hashedSecret))
+            .ThenAsync(_ => uowProvider.UnitOfWork.SaveChangesAsync())
+            .ThenAsync(_ => cacheResolver.RemoveAsync(externalApiId))
             .MapAsync<IExternalApiAggregateApplication, GenerateNewExternalApiSecretResponse>(_ =>
                 new GenerateNewExternalApiSecretResponse
                 {

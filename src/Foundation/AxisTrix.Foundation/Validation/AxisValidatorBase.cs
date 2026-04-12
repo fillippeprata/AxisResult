@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
-using AxisTrix.Types;
-using AxisTrix.Validation.Localization;
+using AxisTrix.Results;
+using AxisTrix.Types.Localization;
 using AxisTrix.Validation.Localization.Brazil;
 using FluentValidation;
 
@@ -40,26 +40,37 @@ public class AxisValidatorBase<T> : AbstractValidator<T>
                 }));
     }
 
-    public void DocumentId(Expression<Func<T, string?>> expression, CountryId countryId, string errorCode)
+    protected void DependentRules<TProperty1, TProperty2>(
+        Expression<Func<T, TProperty1?>> expression1, string errorCode1,
+        Expression<Func<T, TProperty2?>> expression2, string errorCode2,
+        Func<TProperty1, TProperty2, AxisResult> dependentRules)
     {
-        PrivateNotNullOrEmpty(expression, errorCode)
+        RuleFor(expression1)
+            .NotNull().WithErrorCode(errorCode1)
             .DependentRules(() =>
-                RuleFor(expression).Must(x =>
-                {
-                    if (countryId == CountryIds.Br) return CpfValidator.Validate(x);
-
-                    return false;
-                }).WithErrorCode("INVALID_DOCUMENT_ID"));
+                RuleFor(expression2)
+                    .NotNull().WithErrorCode(errorCode2)
+                    .DependentRules(() =>
+                        RuleFor(expression1).Custom((_, context) =>
+                        {
+                            var value1 = expression1.Compile()(context.InstanceToValidate);
+                            var value2 = expression2.Compile()(context.InstanceToValidate);
+                            if (value1 is not null && value2 is not null)
+                                RuleFor(expression2).Must(_ => dependentRules(value1, value2).IsSuccess).WithErrorCode(errorCode2);
+                        })));
     }
 
-    public void DocumentId(Expression<Func<T, string?>> expression, Func<T, CountryId?> countrySelector, string errorCode)
+    public void DocumentId(Expression<Func<T, string?>> expression, Func<T, string?> countrySelector, string errorCode)
     {
         PrivateNotNullOrEmpty(expression, errorCode)
             .DependentRules(() =>
                 RuleFor(expression).Must((instance, x) =>
                 {
                     var countryId = countrySelector(instance);
-                    if (countryId == CountryIds.Br) return CpfValidator.Validate(x);
+                    if (string.IsNullOrEmpty(countryId))
+                        return false;
+
+                    if ((CountryId)countryId == CountryIds.Br) return CpfValidator.Validate(x);
 
                     return false;
                 }).WithErrorCode("INVALID_DOCUMENT_ID"));
@@ -88,14 +99,6 @@ public class AxisValidatorBase<T> : AbstractValidator<T>
     {
         PrivateNotNullOrEmpty(expression, errorCode)
             .EmailAddress().WithErrorCode(errorCode);
-    }
-
-    protected void RequiredCellPhone(Expression<Func<T, string?>> expression, CountryId countryId, string errorCode)
-    {
-        PrivateNotNullOrEmpty(expression, errorCode)
-            .DependentRules(() =>
-                RuleFor(expression).Must(phone => countryId.GetFormattedPhone(phone).IsSuccess)
-                    .WithErrorCode(errorCode));
     }
 
     public void RequiredTryParse(Expression<Func<T, string?>> expression, string errorCode, Func<object?, bool> parse)

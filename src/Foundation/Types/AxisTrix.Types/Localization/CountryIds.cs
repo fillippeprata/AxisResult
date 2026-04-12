@@ -1,4 +1,4 @@
-﻿namespace AxisTrix.Types;
+﻿namespace AxisTrix.Types.Localization;
 
 public static class CountryIds
 {
@@ -14,7 +14,7 @@ public static class CountryIds
         };
     }
 
-    public static CountryId? GetById(string? id) => AllCountries.TryGetValue(id?.ToLowerInvariant() ?? "", out var countryId) ? countryId : null;
+    // public static CountryId? GetById(string? id) => AllCountries.TryGetValue(id?.ToLowerInvariant() ?? "", out var countryId) ? countryId : null;
 
     public static readonly CountryId Br;
     public static readonly CountryId Us;

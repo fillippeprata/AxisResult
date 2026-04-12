@@ -1,9 +1,9 @@
 using AxisTrix.Results;
-using IdentityTrix.SharedKernel.ExternalApis;
-using IdentityTrix.UnitTests.Mocks;
 using IdentityTrix.Contracts.ExternalApis.v1;
 using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
+using IdentityTrix.SharedKernel.ExternalApis;
+using IdentityTrix.UnitTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 

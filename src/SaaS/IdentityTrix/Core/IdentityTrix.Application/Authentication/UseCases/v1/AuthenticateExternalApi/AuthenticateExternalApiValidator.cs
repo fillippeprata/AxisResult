@@ -1,6 +1,6 @@
 using AxisTrix.Validation;
-using IdentityTrix.SharedKernel.ExternalApis;
 using IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
+using IdentityTrix.SharedKernel.ExternalApis;
 
 namespace IdentityTrix.Application.Authentication.UseCases.v1.AuthenticateExternalApi;
 

@@ -159,7 +159,7 @@ public class AxisResultExtensionsTaskTests
     public async Task T_ThenAsync_Generic_Sync_Typed()
     {
         var r = await TOkAsync(5).ThenAsync(x => AxisResult.Ok(x.ToString()));
-        Assert.Equal("5", r.Value);
+        Assert.Equal(5, r.Value);
     }
 
     [Fact]
@@ -172,8 +172,8 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_Generic_Async_Typed()
     {
-        var r = await TOkAsync(5).ThenAsync(x => Task.FromResult(AxisResult.Ok(x.ToString())));
-        Assert.Equal("5", r.Value);
+        var r = await TOkAsync(5).ThenAsync(AxisResult.Ok);
+        Assert.Equal(5, r.Value);
     }
 
     [Fact]
@@ -692,6 +692,111 @@ public class AxisResultExtensionsTaskTests
         var t = Task.FromResult(AxisResult.Ok((1, 2, 3, 4)));
         var r = await t.MapAsync((a, b, c, d) => Task.FromResult(a + b + c + d));
         Assert.Equal(10, r.Value);
+    }
+
+    #endregion
+
+    #region WithValueAsync
+
+    [Fact]
+    public async Task T_WithValueAsync_Success_ReturnsNewValue()
+    {
+        var r = await TOkAsync().WithValueAsync(42);
+        Assert.True(r.IsSuccess);
+        Assert.Equal(42, r.Value);
+    }
+
+    [Fact]
+    public async Task T_WithValueAsync_Failure_PropagatesErrors()
+    {
+        var r = await TErrAsync(E1).WithValueAsync(42);
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E1");
+    }
+
+    #endregion
+
+    #region RequireNotFoundAsync (NonGeneric)
+
+    [Fact]
+    public async Task T_RequireNotFoundAsync_NG_Success_ReturnsError()
+    {
+        var r = await TOkAsync().RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "ALREADY_EXISTS");
+    }
+
+    [Fact]
+    public async Task T_RequireNotFoundAsync_NG_NotFoundError_ReturnsOk()
+    {
+        var notFound = AxisError.NotFound("NOT_FOUND");
+        var r = await TErrAsync(notFound).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public async Task T_RequireNotFoundAsync_NG_OtherError_PropagatesOriginal()
+    {
+        var r = await TErrAsync(E2).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E2");
+    }
+
+    #endregion
+
+    #region RequireNotFoundAsync (Generic)
+
+    [Fact]
+    public async Task T_RequireNotFoundAsync_Generic_Success_ReturnsError()
+    {
+        var r = await TOkAsync(5).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "ALREADY_EXISTS");
+    }
+
+    [Fact]
+    public async Task T_RequireNotFoundAsync_Generic_NotFoundError_ReturnsOk()
+    {
+        var notFound = AxisError.NotFound("NOT_FOUND");
+        var r = await TErrAsync<int>(notFound).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public async Task T_RequireNotFoundAsync_Generic_OtherError_PropagatesOriginal()
+    {
+        var r = await TErrAsync<int>(E2).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E2");
+    }
+
+    #endregion
+
+    #region ThenAsync (Value-Preserving Overload)
+
+    [Fact]
+    public async Task T_ThenAsync_ValuePreserving_Success_ReturnsOriginalValue()
+    {
+        var r = await TOkAsync(42).ThenAsync(_ => Task.FromResult(AxisResult.Ok()));
+        Assert.True(r.IsSuccess);
+        Assert.Equal(42, r.Value);
+    }
+
+    [Fact]
+    public async Task T_ThenAsync_ValuePreserving_InnerFailure_PropagatesErrors()
+    {
+        var r = await TOkAsync(42).ThenAsync(_ => Task.FromResult(AxisResult.Error(E1)));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E1");
+    }
+
+    [Fact]
+    public async Task T_ThenAsync_ValuePreserving_OuterFailure_SkipsInner()
+    {
+        var called = false;
+        var r = await TErrAsync<int>(E1).ThenAsync(_ => { called = true; return Task.FromResult(AxisResult.Ok()); });
+        Assert.False(called);
+        Assert.True(r.IsFailure);
     }
 
     #endregion

@@ -1,4 +1,5 @@
-using AxisTrix.Types;
+using AxisTrix.Types.Localization;
+using CountryId = AxisTrix.Types.Localization.CountryId;
 
 namespace AxisTrix.Mediator.UnitTests.Types;
 
@@ -44,47 +45,83 @@ public class CountryIdTests
         Assert.Equal(2, CountryIds.AllCountries.Count);
     }
 
-    // ── GetById ─────────────────────────────────────────────────────────────
+    // ── CountryId TryParse ─────────────────────────────────────────────────
 
-    [Theory]
-    [InlineData("br")]
-    [InlineData("Br")]
-    [InlineData("BR")]
-    public void GetById_ValidBr_CaseInsensitive_ReturnsBr(string id)
+    [Fact]
+    public void TryParse_ValidBrString_ReturnsTrue()
     {
-        var result = CountryIds.GetById(id);
+        var result = CountryId.TryParse("br", out var countryId);
 
-        Assert.NotNull(result);
-        Assert.Equal(CountryIds.Br, result.Value);
-    }
-
-    [Theory]
-    [InlineData("us")]
-    [InlineData("Us")]
-    [InlineData("US")]
-    public void GetById_ValidUs_CaseInsensitive_ReturnsUs(string id)
-    {
-        var result = CountryIds.GetById(id);
-
-        Assert.NotNull(result);
-        Assert.Equal(CountryIds.Us, result.Value);
+        Assert.True(result);
+        Assert.Equal("br", countryId.Value);
     }
 
     [Fact]
-    public void GetById_Null_ThrowsArgumentException()
+    public void TryParse_ValidUpperCase_ReturnsTrueLowered()
     {
-        Assert.Throws<ArgumentException>(() => CountryIds.GetById(null));
+        var result = CountryId.TryParse("BR", out var countryId);
+
+        Assert.True(result);
+        Assert.Equal("br", countryId.Value);
     }
 
     [Fact]
-    public void GetById_Empty_ThrowsArgumentException()
+    public void TryParse_NullValue_ReturnsFalse()
     {
-        Assert.Throws<ArgumentException>(() => CountryIds.GetById(""));
+        var result = CountryId.TryParse(null, out _);
+
+        Assert.False(result);
     }
 
     [Fact]
-    public void GetById_UnknownCountry_ThrowsArgumentException()
+    public void TryParse_EmptyString_ReturnsFalse()
     {
-        Assert.Throws<ArgumentException>(() => CountryIds.GetById("xx"));
+        var result = CountryId.TryParse("", out _);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void TryParse_ObjectOverload_ValidString_ReturnsTrue()
+    {
+        var result = CountryId.TryParse((object)"us");
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void TryParse_ObjectOverload_NullObject_ReturnsFalse()
+    {
+        var result = CountryId.TryParse((object?)null);
+
+        Assert.False(result);
+    }
+
+    // ── Implicit conversions and ToString ──────────────────────────────────
+
+    [Fact]
+    public void ImplicitToString_ReturnsValue()
+    {
+        CountryId id = new("br");
+        string value = id;
+
+        Assert.Equal("br", value);
+    }
+
+    [Fact]
+    public void ToString_ReturnsValue()
+    {
+        var id = new CountryId("us");
+
+        Assert.Equal("us", id.ToString());
+    }
+
+    [Fact]
+    public void GetHashCode_SameValues_AreCaseInsensitiveEqual()
+    {
+        var id1 = new CountryId("br");
+        var id2 = new CountryId("BR");
+
+        Assert.Equal(id1.GetHashCode(), id2.GetHashCode());
     }
 }

@@ -64,11 +64,29 @@ public static class AxisResultExtensions
         public async Task<AxisResult<TNew>> MapAsync<TNew>(Func<TValue, Task<TNew>> mapper)
             => await (await task).MapAsync(mapper);
 
-        public async Task<AxisResult> ThenAsync(Func<TValue, AxisResult> next)
-            => (await task).Then(next);
+        public async Task<AxisResult<TValue>> ActionAsync(Func<TValue, Task<AxisResult>> next)
+        {
+            var result = await task;
+            if (result.IsFailure)
+                return result;
 
-        public async Task<AxisResult<TNew>> ThenAsync<TNew>(Func<TValue, AxisResult<TNew>> next)
-            => (await task).Then(next);
+            var nextResult = await next(result.Value);
+            return nextResult.IsSuccess
+                ? result
+                : nextResult.Errors.ToArray();
+        }
+
+        public async Task<AxisResult<TValue>> ThenAsync(Func<TValue, AxisResult> next)
+        {
+            var result = await task;
+            if (result.IsFailure)
+                return result;
+
+            var nextResult = next(result.Value);
+            return nextResult.IsSuccess
+                ? result
+                : nextResult.Errors.ToArray();
+        }
 
         public async Task<AxisResult<TValue>> ThenAsync(Func<TValue, Task<AxisResult>> next)
         {
@@ -76,14 +94,11 @@ public static class AxisResultExtensions
             if (result.IsFailure)
                 return result;
 
-            var actionResult = await next(result.Value);
-            if (actionResult.IsFailure) return actionResult.Errors.ToArray();
-
-            return AxisResult.Ok(result.Value);
+            var nextResult = await next(result.Value);
+            return nextResult.IsSuccess
+                ? result
+                : nextResult.Errors.ToArray();
         }
-
-        public async Task<AxisResult<TNew>> ThenAsync<TNew>(Func<TValue, Task<AxisResult<TNew>>> next)
-            => await (await task).ThenAsync(next);
 
         public async Task<AxisResult<TValue>> TapAsync(Action<TValue> action)
             => (await task).Tap(action);

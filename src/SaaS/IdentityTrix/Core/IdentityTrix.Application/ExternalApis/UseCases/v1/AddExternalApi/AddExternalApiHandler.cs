@@ -1,8 +1,8 @@
 using AxisTrix.CQRS.Commands;
 using AxisTrix.Results;
+using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using IdentityTrix.Ports;
 using IdentityTrix.SharedKernel.ExternalApis;
-using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 
 namespace IdentityTrix.Application.ExternalApis.UseCases.v1.AddExternalApi;
 
@@ -17,7 +17,7 @@ internal class AddExternalApiHandler(
         var hashedSecret = ExternalApiSecret.Hash(plainSecret);
 
         return factory.CreateAsync(new() { ApiName = cmd.ApiName!, HashedSecret = hashedSecret })
-            .TapAsync(_ => uowProvider.UnitOfWork.SaveChangesAsync())
+            .ThenAsync(_ => uowProvider.UnitOfWork.SaveChangesAsync())
             .MapAsync<IExternalApiAggregateApplication, AddExternalApiResponse>(
                 app => new AddExternalApiResponse
                 {

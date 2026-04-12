@@ -5,6 +5,7 @@
   </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Foundation\Results\AxisTrix.Results\AxisTrix.Results.csproj" />
       <ProjectReference Include="..\DataPrivacyTrix.SharedKernel\DataPrivacyTrix.SharedKernel.csproj" />
     </ItemGroup>
 

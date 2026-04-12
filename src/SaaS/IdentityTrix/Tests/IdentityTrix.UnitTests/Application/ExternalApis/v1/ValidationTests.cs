@@ -1,7 +1,7 @@
 ﻿using AxisTrix.Results;
-using IdentityTrix.UnitTests.Mocks;
 using IdentityTrix.Contracts.ExternalApis.v1;
 using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
+using IdentityTrix.UnitTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityTrix.UnitTests.Application.ExternalApis.v1;

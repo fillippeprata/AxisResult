@@ -66,6 +66,19 @@ If the architecture is not microservices-based, there will be no integration wit
 
 **Project naming**: `{SubDomain}.{Layer}` — e.g., `IdentityTrix.Application`, `IdentityTrix.Repository.Postgres`
 
+### Foundation Modules
+
+The Foundation layer is split into independent modules:
+
+| Module | Project | Purpose |
+|--------|---------|---------|
+| **Results** | `AxisTrix.Results` | `AxisResult`, `AxisError`, `AxisErrorType` — can be referenced directly by Domain projects without depending on the full Foundation |
+| **Types** | `AxisTrix.Types` | Shared types (`CountryId`, `PersonData`) — namespaced under `AxisTrix.Types.Localization`, `AxisTrix.Types.Persons` |
+| **Foundation** | `AxisTrix.Foundation` | CQRS, Validation, Pipelines, Logging, Telemetry — references Results + Types |
+| **SourceGen** | `AxisTrix.SourceGen` | `[ValueObject]` source generator |
+
+Domain projects that only need `AxisResult` (e.g., for entity rules) should reference `AxisTrix.Results` directly instead of the full Foundation.
+
 ---
 
 ## Naming Conventions
@@ -146,6 +159,7 @@ If the architecture is not microservices-based, there will be no integration wit
 - Use functional composition
 - Manage UoW
 - Queries go directly handler → port (never through Application/Domain)
+- Use `.ThenAsync()` (not `.TapAsync()`) for failable operations whose errors must propagate (UoW, write ports, cache invalidation). Use `.TapAsync()` only for fire-and-forget side effects (logging, metrics)
 
 ### AxisResult Composition Methods
 
@@ -174,6 +188,7 @@ If the architecture is not microservices-based, there will be no integration wit
 | `.Then(func)` | Chain to an operation that **may fail** and returns a **new value** (`AxisResult<TNew>`): `User → AxisResult<Order>` |
 | `.Then(func)` | Chain to a **failable side effect** (`AxisResult`) that **preserves the original value** — propagates errors if the operation fails, returns the original `AxisResult<T>` on success |
 | `.ThenAsync(func)` | Async version of `Then` (both overloads) |                  
+| `.ActionAsync(func)` | Run a **failable async side effect** (`Func<TValue, Task<AxisResult>>`) that **preserves the original value** — use for domain validation in factories (e.g., `.ActionAsync(app => app.IsValidAsync())`) |
 | `.Ensure(predicate, error)` | Guard clause — fails with `error` if predicate is false |          
 | `.Ensure(func)` | Delegated validation — `func` returns `AxisResult`, fails if that result fails |                                
 | `.EnsureAsync(predicate, error)` | Async version of `Ensure` |  
@@ -214,7 +229,7 @@ If the architecture is not microservices-based, there will be no integration wit
 | Method | When to Use |
 |--------|-------------|
 | `.RequireNotFound(error)` | Invert a lookup: **success (found) → error**, **NotFound → Ok()**, other errors propagate. Use for "create if not exists" flows |
-| `.RequireNotFoundAsync(error)` | Async extension (Task/ValueTask) version of `RequireNotFound` |
+| `.RequireNotFoundAsync(error)` | Async extension (Task/ValueTask) version of `RequireNotFound` — works on both `Task<AxisResult>` and `Task<AxisResult<TValue>>`, always returns `AxisResult` (untyped) |
 
 #### Recovery & Fallback          
                                  
@@ -262,7 +277,9 @@ If the architecture is not microservices-based, there will be no integration wit
 | `.AsTaskAsync()` | Wrap a sync `AxisResult` into `Task<AxisResult>` |                            
 | `.AsValueTaskAsync()` | Wrap a sync `AxisResult` into `ValueTask<AxisResult>` |                  
                                  
-> **Task vs ValueTask**: every combinator above exists in both `Task` and `ValueTask` variants. Use `ValueTask` on hot paths to avoid allocations; use `Task` when you need `Task.WhenAll` or similar APIs.                            
+> **Task vs ValueTask**: every combinator above exists in both `Task` and `ValueTask` variants. Use `ValueTask` on hot paths to avoid allocations; use `Task` when you need `Task.WhenAll` or similar APIs.
+> 
+> **C# 14 extension members**: `AxisResultExtensions.cs` uses the new `extension(Type) { ... }` syntax (C# 14 preview). This replaces the traditional `static class` + `this` parameter style for extension methods.                            
 
 #### AxisError Properties         
                                  
@@ -290,37 +307,51 @@ If the architecture is not microservices-based, there will be no integration wit
 | `RequiredEmail` | `(expression, errorCode)` | Not-null + email format |
 | `RequiredGuid7` | `(expression, errorCode)` | Not-null + valid UUID v7 |
 | `RequiredTryParse` | `(expression, errorCode, Func<object?, bool> parse)` | Not-null + custom parse predicate (e.g., Value Object `TryParse`) |
-| `RequiredCellPhone` | `(expression, countryId, errorCode)` | Not-null + phone format for the given `CountryId` |
-| `DocumentId` | `(expression, countryId, errorCode)` | Not-null + document validation by country (e.g., CPF for Brazil) |
-| `DocumentId` | `(expression, Func<T, CountryId?> countrySelector, errorCode)` | Same, but resolves `CountryId` dynamically from another property |
+| `DocumentId` | `(expression, Func<T, string?> countrySelector, errorCode)` | Not-null + document validation by country resolved dynamically from another property (e.g., CPF for Brazil) |
+| `DependentRules` | `<TProperty1, TProperty2>(expression1, errorCode1, expression2, errorCode2, Func<TProperty1, TProperty2, AxisResult> dependentRules)` | Validates two properties are not null, then runs a cross-field validation function returning `AxisResult` |
 
 #### Dependent Rules Pattern
 
-The third overload of `NotNullOrEmpty` enables **chained conditional validation** — validate a property first, then use its resolved value to validate another property. This is the primary pattern for cross-field validation:
+There are two patterns for cross-field validation:
+
+**Pattern 1 — `DependentRules<TProperty1, TProperty2>`** (preferred for two-property cross-validation with domain logic):
 
 ```csharp
-// 1. Validate CountryId exists via lookup → if valid, use the resolved CountryId to validate phone format
-NotNullOrEmpty(x => CountryIds.GetById(x.CountryId), "COUNTRY_ID_NULL_OR_NOT_VALID",
-    countryId => RequiredCellPhone(x => x.CellphoneNumber, countryId!.Value, "CELLPHONE_NUMBER_NULL_OR_NOT_VALID"));
-
-// 2. Validate CountryId via TryParse first, then chain document validation using a selector
-RequiredTryParse(x => x.CountryId, "COUNTRY_ID_NULL_OR_NOT_VALID", value => CountryId.TryParse(value?.ToString(), out _));
-DocumentId(x => x.DocumentId, instance => CountryId.Parse(instance.CountryId), "DOCUMENT_ID_NULL_OR_NOT_VALID");
+// Validate CountryId and CellphoneNumber are not null, then run domain validation (returns AxisResult)
+DependentRules<CountryId, string>(
+    x => (CountryId)x.CountryId,
+    "COUNTRY_ID_NULL_OR_NOT_VALID",
+    x => x.CellphoneNumber,
+    "CELLPHONE_NUMBER_NULL_OR_NOT_VALID",
+    (countryId, cellphone) => countryId.GetFormattedPhone(cellphone)
+);
 ```
 
-**How it works**: `NotNullOrEmpty(expr, errorCode, Action<TProperty>)` first validates the expression is not null. Only if it passes, it invokes the lambda with the **already-validated non-null value**, allowing you to safely use it as input for the next validation rule (e.g., passing a resolved `CountryId` into `RequiredCellPhone`).
+**How it works**: validates both expressions are not null (short-circuits on first failure), then invokes the `Func<TProperty1, TProperty2, AxisResult>` with both validated values. If the function returns a failure `AxisResult`, the second property's error code is used.
+
+**Pattern 2 — `NotNullOrEmpty` with `Action<TProperty>`** (for chaining one property into another validator):
+
+```csharp
+// Validate CountryId via TryParse first, then chain document validation using a selector
+RequiredTryParse(x => x.CountryId, "COUNTRY_ID_NULL_OR_NOT_VALID", value => CountryId.TryParse(value?.ToString(), out _));
+DocumentId(x => x.DocumentId, instance => instance.CountryId, "DOCUMENT_ID_NULL_OR_NOT_VALID");
+```
+
+**How it works**: `NotNullOrEmpty(expr, errorCode, Action<TProperty>)` first validates the expression is not null. Only if it passes, it invokes the lambda with the **already-validated non-null value**, allowing you to safely use it as input for the next validation rule.
 
 ---
 
 ## Domain Entities
 
-Each entity is split into two partial class files:
+Each entity has a Properties file; a Rules file is only needed when the entity has domain rules:
 
-**`{Entity}EntityProperties.cs`** — `internal partial class` with primary constructor, implements `I{Entity}EntityProperties`, immutable `{ get; }` properties. Secondary constructor accepts the interface for rehydration.
+**`{Entity}EntityProperties.cs`** — `internal partial class` with primary constructor, implements `I{Entity}EntityProperties`, immutable `{ get; }` properties. Secondary constructor accepts the interface for rehydration. If the entity has no domain rules, this is the only file and the class does NOT need to be `partial`.
 
-**`{Entity}EntityRules.cs`** — `internal partial class`, business methods returning `AxisResult`. Private methods for internal rules; public methods compose private ones. Static methods for value generation.
+**`{Entity}EntityRules.cs`** — `internal partial class`, business methods returning `AxisResult` or `Task<AxisResult>`. Private methods for internal rules; public/protected methods compose private ones. Static methods for value generation. Rules that delegate to domain-specific validation (e.g., phone formatting) should use `protected` access so the AggregateApplication can expose them via the `new` keyword.
 
 **SharedKernel interface** — `I{Entity}EntityProperties` defines the read contract. Can have computed properties (e.g., `bool IsActive => WasAuthenticated && !CanceledAt.HasValue`).
+
+**Domain-specific validation** — Country-specific validators (e.g., phone formatting, document validation) live in the Domain layer under `{Aggregate}/Validation/`, NOT in Foundation. They return `AxisResult<T>` and are called from Entity Rules.
 
 Root entities: `{Aggregate}/Root/`. Non-root: `{Aggregate}/Entities/`.
 
@@ -334,14 +365,16 @@ Root entities: `{Aggregate}/Root/`. Non-root: `{Aggregate}/Entities/`.
 
 **Factory** (`I{Name}AggregateApplicationFactory`):
 - Methods: `GetByIdAsync()` and `CreateAsync(NewArgs)` where `NewArgs` is a nested record
-- `GetByIdAsync()` → reader port + `.MapAsync()` to wrap in Application
-- `CreateAsync()` → use `.RequireNotFound()` for duplicate detection, then `.TapAsync(writePort.CreateAsync)`
-- `NewInstance(I{Entity}EntityProperties properties)` — private helper that constructs the Application by passing `properties` directly to the AggregateApplication constructor (never wrap in `new {Entity}Entity(properties)` first — the AggregateApplication's base call handles the rehydration)
+- `GetByIdAsync()` → reader port + `.MapAsync()` to wrap in Application, optionally + `.ActionAsync()` for domain validation
+- `CreateAsync()` → use `.RequireNotFoundAsync()` for duplicate detection, then `.ThenAsync(writePort.CreateAsync)`
+- When the entity has domain validation rules, use `.ActionAsync(app => app.IsValidAsync())` after `.MapAsync(NewInstance)` to validate before returning
+- `NewInstance(I{Entity}EntityProperties properties)` — **private static** helper that constructs the Application by passing `properties` directly to the AggregateApplication constructor (never wrap in `new {Entity}Entity(properties)` first — the AggregateApplication's base call handles the rehydration)
 
 **AggregateApplication** (`I{Name}AggregateApplication : I{Entity}EntityProperties`):
 - `internal class {Name}AggregateApplication(I{Entity}EntityProperties properties, ...) : {Entity}(properties), I{Name}AggregateApplication`
 - The first constructor parameter is always `I{Entity}EntityProperties properties` — never the concrete `{Entity}Entity` type. The base call `: {Entity}(properties)` rehydrates the entity from the interface via its secondary constructor.
 - Coordinates: call the inherited domain rule directly (no `root.` prefix) → `.TapAsync(() => {child}Writer.{Action}())`. Example: `AddCellphone().TapAsync(() => cellphonesWriter.AddCellphoneAsync(PersonId, cellphoneId))`.
+- When the entity has `protected` domain rules, expose them via `public new` methods: `public new Task<AxisResult> IsValidAsync() => base.IsValidAsync();`
 
 **DI**: `AddScoped<I{Name}AggregateApplicationFactory, {Name}AggregateApplicationFactory>()`
 
@@ -556,8 +589,8 @@ internal class AddCellphoneToPersonHandler(
     public Task<AxisResult<AddCellphoneToPersonResponse>> HandleAsync(AddCellphoneToPersonCommand cmd)
         => personApplicationFactory.GetByIdAsync(cmd.PersonId)
             .ThenAsync(application => cellphoneMediator.AddAsync(new() { CountryId = cmd.CountryId, CellphoneNumber = cmd.CellphoneNumber })
-                .TapAsync(r => application.AddCellphoneAsync(r.CellphoneId))
-                .TapAsync(_ => unitOfWorkProvider.UnitOfWork.SaveChangesAsync())
+                .ThenAsync(r => application.AddCellphoneAsync(r.CellphoneId))
+                .ThenAsync(_ => unitOfWorkProvider.UnitOfWork.SaveChangesAsync())
                 .MapAsync(r => new AddCellphoneToPersonResponse { CellphoneId = r.CellphoneId }));
 }
 ```
@@ -568,9 +601,9 @@ internal class AddCellphoneToPersonValidator : AxisValidatorBase<AddCellphoneToP
 {
     public AddCellphoneToPersonValidator()
     {
+        RequiredTryParse(x => x.PersonId, "PERSON_ID_NULL_OR_NOT_VALID", value => PersonId.TryParse(value?.ToString(), out _));
         RequiredTryParse(x => x.CountryId, "COUNTRY_ID_NULL_OR_NOT_VALID", value => CountryId.TryParse(value?.ToString(), out _));
-        NotNullOrEmpty(x => CountryIds.GetById(x.CountryId), "COUNTRY_ID_NULL_OR_NOT_VALID",
-            countryId => RequiredCellPhone(x => x.CellphoneNumber, countryId!.Value, "CELLPHONE_NUMBER_NULL_OR_NOT_VALID"));
+        NotNullOrEmpty(x => x.CellphoneNumber, "CELLPHONE_NUMBER_NULL_OR_NOT_VALID");
     }
 }
 ```
@@ -658,6 +691,16 @@ internal partial class PersonEntity
     public AxisResult AddEmail() => CheckIfIsActive();
 }
 ```
+
+**Rules with domain validation** (e.g., `CellphoneEntityRules.cs`):
+```csharp
+internal partial class CellphoneEntity
+{
+    protected Task<AxisResult> IsValidAsync()
+        => Task.FromResult<AxisResult>(CountryId.GetFormattedPhone(CellphoneNumber));
+}
+```
+Use `protected` when the rule needs to be exposed through the AggregateApplication via `public new`.
 
 ---
 
@@ -788,7 +831,7 @@ internal class PersonAggregateApplicationFactory(
     IPersonEmailsWriter emailsWriter
 ) : IPersonAggregateApplicationFactory
 {
-    private IPersonAggregateApplication NewInstance(IPersonEntityProperties p)
+    private static IPersonAggregateApplication NewInstance(IPersonEntityProperties p)
         => new PersonAggregateApplication(p, cellphonesWriter, emailsWriter);
 
     public Task<AxisResult<IPersonAggregateApplication>> GetByIdAsync(PersonId personId)
@@ -796,13 +839,35 @@ internal class PersonAggregateApplicationFactory(
 
     public Task<AxisResult<IPersonAggregateApplication>> CreateAsync(IPersonAggregateApplicationFactory.NewArgs args)
         => readerPort.GetByNationalIdAsync(args.NationalId)
-            .RequireNotFound(AxisError.BusinessRule("DOCUMENT_ID_ALREADY_ADDED"))
-            .ThenAsync(() =>
-            {
-                IPersonEntityProperties newEntity = new PersonEntity(true, PersonId.New, args.DisplayName, args.PictureProxyUrl, args.OriginId);
-                return AxisResult.Ok(newEntity).TapAsync(writePort.CreateAsync);
-            })
-            .MapAsync(NewInstance);
+            .RequireNotFoundAsync(AxisError.BusinessRule("DOCUMENT_ID_ALREADY_ADDED"))
+            .WithValueAsync(new PersonEntity(true, PersonId.New, args.DisplayName, args.PictureProxyUrl, args.OriginId))
+            .MapAsync(NewInstance)
+            .ThenAsync(writePort.CreateAsync);
+}
+```
+
+**Factory with domain validation** (e.g., `CellphoneAggregateApplicationFactory.cs`):
+```csharp
+internal class CellphoneAggregateApplicationFactory(
+    ICellphonesReaderPort readerPort,
+    ICellphonesWritePort writePort
+) : ICellphoneAggregateApplicationFactory
+{
+    private static ICellphoneAggregateApplication NewInstance(ICellphoneEntityProperties properties)
+        => new CellphoneAggregateApplication(properties);
+
+    public Task<AxisResult<ICellphoneAggregateApplication>> GetByIdAsync(CellphoneId id)
+        => readerPort.GetByIdAsync(id)
+            .MapAsync(NewInstance)
+            .ActionAsync(app => app.IsValidAsync());  // Domain validation after load
+
+    public Task<AxisResult<ICellphoneAggregateApplication>> CreateAsync(NewArgs args)
+        => GetByCellphoneNumberAsync(args.CountryId, args.CellphoneNumber)
+            .RequireNotFoundAsync(AxisError.ValidationRule("CELLPHONE_ALREADY_EXISTS"))
+            .WithValueAsync(new CellphoneEntity(CellphoneId.New, args.CountryId, args.CellphoneNumber))
+            .MapAsync(NewInstance)
+            .ActionAsync(app => app.IsValidAsync())    // Domain validation before save
+            .ThenAsync(writePort.CreateAsync);
 }
 ```
 
@@ -825,6 +890,22 @@ internal class PersonAggregateApplication(
 
     public Task<AxisResult> AddEmailAsync(EmailId emailId)
         => AddEmail().TapAsync(() => emailsWriter.AddEmailAsync(PersonId, emailId));
+}
+```
+
+**AggregateApplication exposing protected entity rules** (e.g., `CellphoneAggregateApplication.cs`):
+```csharp
+internal interface ICellphoneAggregateApplication : ICellphoneEntityProperties
+{
+    Task<AxisResult> IsValidAsync();
+}
+
+internal class CellphoneAggregateApplication(
+    ICellphoneEntityProperties properties
+) : CellphoneEntity(properties), ICellphoneAggregateApplication
+{
+    public new Task<AxisResult> IsValidAsync()
+        => base.IsValidAsync();
 }
 ```
 

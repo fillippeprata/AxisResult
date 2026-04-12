@@ -1,9 +1,9 @@
-using AxisTrix.Types;
 using DataPrivacyTrix.SharedKernel.Cellphones;
+using CountryId = AxisTrix.Types.Localization.CountryId;
 
 namespace DataPrivacyTrix.Domain.Cellphones.Root;
 
-internal class CellphoneEntity(
+internal partial class CellphoneEntity(
     CellphoneId cellphoneId,
     CountryId countryId,
     string cellphoneNumber)

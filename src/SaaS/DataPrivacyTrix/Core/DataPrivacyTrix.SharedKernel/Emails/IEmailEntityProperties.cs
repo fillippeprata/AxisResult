@@ -1,9 +1,7 @@
-﻿using IdentityTrix.SharedKernel.DataPrivacy;
-
-namespace DataPrivacyTrix.SharedKernel.Emails;
+﻿namespace DataPrivacyTrix.SharedKernel.Emails;
 
 public interface IEmailEntityProperties
 {
     EmailId EmailId { get; }
-    string Email { get;}
+    string EmailAddress { get;}
 }

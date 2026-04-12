@@ -1,8 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace AxisTrix.Validation.Localization.Brazil;
+namespace DataPrivacyTrix.Domain.Cellphones.Validation;
 
-public static partial class CellphoneValidator
+public static partial class BrazilCellphoneValidator
 {
     public static bool TryFormat(string? cellphone, out string? formatted)
     {

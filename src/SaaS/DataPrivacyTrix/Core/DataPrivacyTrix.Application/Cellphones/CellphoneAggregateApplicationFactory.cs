@@ -1,9 +1,8 @@
 using AxisTrix.Results;
-using AxisTrix.Types;
-using AxisTrix.Validation.Localization;
 using DataPrivacyTrix.Domain.Cellphones.Root;
 using DataPrivacyTrix.Ports.Cellphones;
 using DataPrivacyTrix.SharedKernel.Cellphones;
+using CountryId = AxisTrix.Types.Localization.CountryId;
 
 namespace DataPrivacyTrix.Application.Cellphones;
 
@@ -29,19 +28,20 @@ internal class CellphoneAggregateApplicationFactory(
 
     public Task<AxisResult<ICellphoneAggregateApplication>> GetByIdAsync(CellphoneId id)
         => readerPort.GetByIdAsync(id)
-            .MapAsync(NewInstance);
+            .MapAsync(NewInstance)
+            .ActionAsync(app => app.IsValidAsync());
 
     public Task<AxisResult<ICellphoneAggregateApplication>> GetByCellphoneNumberAsync(CountryId countryId, string cellphoneNumber)
-        =>  countryId.GetFormattedPhone(cellphoneNumber)
-            .ThenAsync(formattedNumber => readerPort.GetByCellphoneNumberAsync(countryId, formattedNumber))
+        =>  readerPort.GetByCellphoneNumberAsync(countryId, cellphoneNumber)
             .MapAsync(NewInstance);
 
     public Task<AxisResult<ICellphoneAggregateApplication>> CreateAsync(ICellphoneAggregateApplicationFactory.NewArgs args)
         => GetByCellphoneNumberAsync(args.CountryId, args.CellphoneNumber)
             .RequireNotFoundAsync(AxisError.ValidationRule("CELLPHONE_ALREADY_EXISTS"))
             .WithValueAsync(new CellphoneEntity(CellphoneId.New, args.CountryId, args.CellphoneNumber))
-            .ThenAsync(writePort.CreateAsync)
-            .MapAsync(NewInstance);
+            .MapAsync(NewInstance)
+            .ActionAsync(app => app.IsValidAsync())
+            .ThenAsync(writePort.CreateAsync);
 }
 
 

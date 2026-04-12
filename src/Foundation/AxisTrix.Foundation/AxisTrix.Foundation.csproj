@@ -17,7 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Results\AxisTrix.Results\AxisTrix.Results.csproj" />
     <ProjectReference Include="..\Types\AxisTrix.Types\AxisTrix.Types.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Results\" />
   </ItemGroup>
 
 </Project>
