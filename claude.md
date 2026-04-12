@@ -277,9 +277,38 @@ If the architecture is not microservices-based, there will be no integration wit
 ### Validators
 - Extend `AxisValidatorBase<TCommand>`
 - Rules in constructor; error codes in UPPER_SNAKE_CASE
-- Available methods: `RequiredEmail()`, `RequiredGuid7()`, `RequiredTryParse()`, `RequiredWithMaxLength()`, `NotNullOrEmpty()`, `RequiredCellPhone()`, `DocumentId()`
-- Use `dependentRules:` for conditional validation
 - Run automatically before the handler (via `ValidationBehavior`)
+
+#### Available Methods
+
+| Method | Signature | Purpose |
+|--------|-----------|---------|
+| `NotNullOrEmpty` | `(expression, errorCode)` | Validates that the property is not null, not default, and not whitespace (for strings) |
+| `NotNullOrEmpty` | `(expression, errorCode, Action dependentRules)` | Validates not-null, then runs `dependentRules` only when the value is present (conditional block) |
+| `NotNullOrEmpty` | `(expression, errorCode, Action<TProperty> dependentRules)` | Validates not-null, then passes the **non-null value** into `dependentRules` for chained validation |
+| `RequiredWithMaxLength` | `(expression, errorCode, length?)` | Not-null + max length check (default 255) |
+| `RequiredEmail` | `(expression, errorCode)` | Not-null + email format |
+| `RequiredGuid7` | `(expression, errorCode)` | Not-null + valid UUID v7 |
+| `RequiredTryParse` | `(expression, errorCode, Func<object?, bool> parse)` | Not-null + custom parse predicate (e.g., Value Object `TryParse`) |
+| `RequiredCellPhone` | `(expression, countryId, errorCode)` | Not-null + phone format for the given `CountryId` |
+| `DocumentId` | `(expression, countryId, errorCode)` | Not-null + document validation by country (e.g., CPF for Brazil) |
+| `DocumentId` | `(expression, Func<T, CountryId?> countrySelector, errorCode)` | Same, but resolves `CountryId` dynamically from another property |
+
+#### Dependent Rules Pattern
+
+The third overload of `NotNullOrEmpty` enables **chained conditional validation** — validate a property first, then use its resolved value to validate another property. This is the primary pattern for cross-field validation:
+
+```csharp
+// 1. Validate CountryId exists via lookup → if valid, use the resolved CountryId to validate phone format
+NotNullOrEmpty(x => CountryIds.GetById(x.CountryId), "COUNTRY_ID_NULL_OR_NOT_VALID",
+    countryId => RequiredCellPhone(x => x.CellphoneNumber, countryId!.Value, "CELLPHONE_NUMBER_NULL_OR_NOT_VALID"));
+
+// 2. Validate CountryId via TryParse first, then chain document validation using a selector
+RequiredTryParse(x => x.CountryId, "COUNTRY_ID_NULL_OR_NOT_VALID", value => CountryId.TryParse(value?.ToString(), out _));
+DocumentId(x => x.DocumentId, instance => CountryId.Parse(instance.CountryId), "DOCUMENT_ID_NULL_OR_NOT_VALID");
+```
+
+**How it works**: `NotNullOrEmpty(expr, errorCode, Action<TProperty>)` first validates the expression is not null. Only if it passes, it invokes the lambda with the **already-validated non-null value**, allowing you to safely use it as input for the next validation rule (e.g., passing a resolved `CountryId` into `RequiredCellPhone`).
 
 ---
 
