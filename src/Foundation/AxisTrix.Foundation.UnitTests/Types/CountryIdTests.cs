@@ -84,7 +84,7 @@ public class CountryIdTests
     [Fact]
     public void TryParse_ObjectOverload_ValidString_ReturnsTrue()
     {
-        var result = CountryId.TryParse((object)"us");
+        var result = CountryId.TryParse("us");
 
         Assert.True(result);
     }
@@ -92,7 +92,7 @@ public class CountryIdTests
     [Fact]
     public void TryParse_ObjectOverload_NullObject_ReturnsFalse()
     {
-        var result = CountryId.TryParse((object?)null);
+        var result = CountryId.TryParse(null);
 
         Assert.False(result);
     }
