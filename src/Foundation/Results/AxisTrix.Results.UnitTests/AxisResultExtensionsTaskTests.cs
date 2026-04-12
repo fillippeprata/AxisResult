@@ -1,4 +1,4 @@
-namespace AxisTrix.Mediator.UnitTests.Results;
+namespace AxisTrix.Results.UnitTests;
 
 public class AxisResultExtensionsTaskTests
 {
