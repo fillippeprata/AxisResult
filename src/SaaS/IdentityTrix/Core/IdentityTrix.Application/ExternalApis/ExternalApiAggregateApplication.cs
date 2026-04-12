@@ -12,16 +12,16 @@ internal interface IExternalApiAggregateApplication : IExternalApiEntityProperti
 }
 
 internal class ExternalApiAggregateApplication(
-    ExternalApiEntity root,
-    IExternalApiWritePort writePort
-) : ExternalApiEntity(root), IExternalApiAggregateApplication
+    IExternalApiEntityProperties properties,
+    IExternalApisWritePort writePort
+) : ExternalApiEntity(properties), IExternalApiAggregateApplication
 {
     public Task<AxisResult> UpdateSecretAsync(string hashedSecret)
-        => writePort.UpdateSecretAsync(root.ExternalApiId, hashedSecret);
+        => writePort.UpdateSecretAsync(ExternalApiId, hashedSecret);
 
     public AxisResult VerifySecret(string plainSecret)
     {
-        if (root.ValidateSecret(plainSecret))
+        if (ValidateSecret(plainSecret))
             return AxisResult.Ok();
         return AxisError.Unauthorized("INVALID_EXTERNAL_API_ID_OR_SECRET");
     }

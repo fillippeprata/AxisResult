@@ -18,17 +18,18 @@ internal interface IExternalApiAggregateApplicationFactory
 }
 
 internal class ExternalApiAggregateApplicationFactory(
-    IExternalApiReaderPort readerPort,
-    IExternalApiWritePort writePort
+    IExternalApisReaderPort readerPort,
+    IExternalApisWritePort writePort
 ) : IExternalApiAggregateApplicationFactory
 {
     private IExternalApiAggregateApplication NewInstance(IExternalApiEntityProperties properties)
-        => new ExternalApiAggregateApplication(new ExternalApiEntity(properties), writePort);
+        => new ExternalApiAggregateApplication(properties, writePort);
 
     public Task<AxisResult<IExternalApiAggregateApplication>> GetByIdAsync(ExternalApiId id)
-        => readerPort.GetExternalApiByIdAsync(id)
+        => readerPort.GetByIdAsync(id)
             .MapAsync(NewInstance);
 
+    //todo: Verificar se api name já existe. Usar mesmo padrão de DataPrivacyTrix.Cellphones
     public Task<AxisResult<IExternalApiAggregateApplication>> CreateAsync(IExternalApiAggregateApplicationFactory.NewArgs args)
         => AxisResult.Ok<IExternalApiEntityProperties>(new ExternalApiEntity(ExternalApiId.New, args.HashedSecret, args.ApiName))
             .TapAsync(writePort.CreateAsync)

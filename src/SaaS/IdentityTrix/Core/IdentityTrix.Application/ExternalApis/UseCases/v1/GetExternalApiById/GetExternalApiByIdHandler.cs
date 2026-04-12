@@ -7,11 +7,11 @@ using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 namespace IdentityTrix.Application.ExternalApis.UseCases.v1.GetExternalApiById;
 
 internal class GetExternalApiByIdHandler(
-    IExternalApiReaderPort readerPort
+    IExternalApisReaderPort readerPort
 ) : IAxisQueryHandler<GetExternalApiByIdQuery, GetExternalApiByIdResponse>
 {
     public Task<AxisResult<GetExternalApiByIdResponse>> HandleAsync(GetExternalApiByIdQuery cmd)
-        => readerPort.GetExternalApiByIdAsync(cmd.ExternalApiId)
+        => readerPort.GetByIdAsync(cmd.ExternalApiId)
             .MapAsync<IExternalApiEntityProperties, GetExternalApiByIdResponse>(
                 entity => new GetExternalApiByIdResponse
                 {

@@ -36,25 +36,27 @@
 {Domain}/
 └── {SubDomain}/
     ├── Contracts/{SubDomain}.Contracts/
-    │   └── {BC}/{Feature}/{UseCase}/v1/I{Feature}Mediator #Interface for SDK Implementation
-    │   └── {BC}/{Feature}/{UseCase}/v1/    # If the feature has the same name as the BC (CRUDs, for example), there is no feature folder
+    │   ├── {BC}/{Feature}/{UseCase}/v1/I{Feature}Mediator       # Interface for SDK Implementation
+    │   └── {BC}/{Feature}/{UseCase}/v1/                         # If the feature has the same name as the BC (CRUDs), there is no feature folder
     ├── Core/
-    │   ├── {SubDomain}.SharedKernel/       # Entity interfaces, Value Objects, ApplicationConfig
-    │   ├── {SubDomain}.Domain/             # Entities (Properties + Rules, partial classes)
-    │   └── {SubDomain}.Application/        # Handlers, Validators, Factories, AggregateApplications
-    │   └── {SubDomain}.Application/{BC}    # DependencyInjection, AggregateApplicationFactory, AggregateApplications
-    │   └── {SubDomain}.Application/{BC}/UseCases/v1/{SameContractStructure}  # Handlers and Validators
-    ├── Ports/{SubDomain}.Ports/            # Reader/Writer port interfaces, IUnitOfWorkProvider
+    │   ├── {SubDomain}.SharedKernel/                            # Entity interfaces, Value Objects, ApplicationConfig
+    │   ├── {SubDomain}.Domain/                                  # Entities (Properties + Rules, partial classes)
+    │   └── {SubDomain}.Application/                             # Handlers, Validators, Factories, AggregateApplications
+    │       ├── {BC}/                                            # DependencyInjection, AggregateApplicationFactory, AggregateApplications
+    │       └── {BC}/UseCases/v1/{SameContractStructure}/        # Handlers and Validators
+    ├── Ports/{SubDomain}.Ports/                                 # Reader/Writer port interfaces, IUnitOfWorkProvider
     ├── Adapters/
-    │   ├── Driven/Repositories/{SubDomain}.Repository.[Technology]/ # Technology -> Postgres | MongoDb | etc.
-    │   ├── Driven/Producers/{SubDomain}.Producers.[Technology]/ # Technology -> Kafka | RabbitMq | etc.
-    │   ├── Driven/Others
-    │   └── Driving/SDK/{SubDomain}.SDK.Application     # SDK for Dependency Injection
-    │   └── Driving/SDK/{SubDomain}.SDK.HttpClient      # SDK for Http Communication
-    │   └── Driving/SDK/{SubDomain}.SDK.GrpcClient      # SDK for gRPC Communication
-    │   └── Driving/{SubDomain}.WebApi/                 # Web Api for microservices
-    │   └── Driving/{SubDomain}.Grpc/                   # gRpc for microservices
-    │   ├── Driven/Consumers/{SubDomain}.Consumers.[Technology]/ # Technology -> Kafka | RabbitMq | etc.
+    │   ├── Driven/
+    │   │   ├── Repositories/{SubDomain}.Repository.[Technology]/   # Postgres | MongoDb | etc.
+    │   │   ├── Producers/{SubDomain}.Producers.[Technology]/       # Kafka | RabbitMq | etc.
+    │   │   ├── Consumers/{SubDomain}.Consumers.[Technology]/       # Kafka | RabbitMq | etc.
+    │   │   └── Others/
+    │   └── Driving/
+    │       ├── SDK/{SubDomain}.SDK.Application/                    # SDK for Dependency Injection
+    │       ├── SDK/{SubDomain}.SDK.HttpClient/                     # SDK for HTTP Communication
+    │       ├── SDK/{SubDomain}.SDK.GrpcClient/                     # SDK for gRPC Communication
+    │       ├── {SubDomain}.WebApi/                                 # Web Api for microservices
+    │       └── {SubDomain}.Grpc/                                   # gRPC for microservices
     └── Tests/
         ├── {SubDomain}.UnitTests/
         └── {SubDomain}.IntegrationTests/
@@ -77,8 +79,8 @@ If the architecture is not microservices-based, there will be no integration wit
 | Validator | `<Command/QueryName>Validator` | `AddCellphoneToPersonValidator` |
 | Entity | `{Name}Entity` split into `{Name}EntityProperties.cs` + `{Name}EntityRules.cs` | `PersonEntityProperties.cs` |
 | Entity Interface | `I{Name}EntityProperties` | `IPersonEntityProperties` |
-| Port Reader | `I{Entities}ReaderPort` or `I{Entities}Reader` | `IPersonsReaderPort` |
-| Port Writer | `I{Entities}WritePort` or `I{Entities}Writer` | `IPersonsWritePort` |
+| Port Reader | `I{Entities}ReaderPort` or `I{Entities}Reader` — **{Entities} is the entity name in plural** | `IPersonsReaderPort`, `IExternalApisReaderPort` (never `IPersonReaderPort`) |
+| Port Writer | `I{Entities}WritePort` or `I{Entities}Writer` — **{Entities} is the entity name in plural** | `IPersonsWritePort`, `IExternalApisWritePort` (never `IPersonWritePort`) |
 | Repository | `{Entities}Repository` | `PersonsRepository` |
 | DbEntity | `{Entity}DbEntity` | `PersonDbEntity` |
 | Table Constants | `{Entities}Table` | `PersonsTable` |
@@ -169,11 +171,13 @@ If the architecture is not microservices-based, there will be no integration wit
 |--------|-------------|         
 | `.Map(func)` | Transform the success value (pure, cannot fail): `User → string` |                
 | `.MapAsync(func)` | Async version of `Map` |                   
-| `.Then(func)` | Chain to an operation that **may fail** (returns `AxisResult`): `User → AxisResult<Order>` |                      
-| `.ThenAsync(func)` | Async version of `Then` |                  
+| `.Then(func)` | Chain to an operation that **may fail** and returns a **new value** (`AxisResult<TNew>`): `User → AxisResult<Order>` |
+| `.Then(func)` | Chain to a **failable side effect** (`AxisResult`) that **preserves the original value** — propagates errors if the operation fails, returns the original `AxisResult<T>` on success |
+| `.ThenAsync(func)` | Async version of `Then` (both overloads) |                  
 | `.Ensure(predicate, error)` | Guard clause — fails with `error` if predicate is false |          
 | `.Ensure(func)` | Delegated validation — `func` returns `AxisResult`, fails if that result fails |                                
 | `.EnsureAsync(predicate, error)` | Async version of `Ensure` |  
+| `.WithValueAsync(value)` | Promote an untyped `AxisResult` to `AxisResult<T>` by attaching a fixed value on success — use when the previous step has no return value but the next step needs one |
 
 #### Combining Values (Zip)       
                                  
@@ -283,11 +287,11 @@ If the architecture is not microservices-based, there will be no integration wit
 
 Each entity is split into two partial class files:
 
-**`{Entity}Properties.cs`** — `internal partial class` with primary constructor, implements `I{Entity}Properties`, immutable `{ get; }` properties. Secondary constructor accepts the interface for rehydration.
+**`{Entity}EntityProperties.cs`** — `internal partial class` with primary constructor, implements `I{Entity}EntityProperties`, immutable `{ get; }` properties. Secondary constructor accepts the interface for rehydration.
 
-**`{Entity}Rules.cs`** — `internal partial class`, business methods returning `AxisResult`. Private methods for internal rules; public methods compose private ones. Static methods for value generation.
+**`{Entity}EntityRules.cs`** — `internal partial class`, business methods returning `AxisResult`. Private methods for internal rules; public methods compose private ones. Static methods for value generation.
 
-**SharedKernel interface** — `I{Entity}Properties` defines the read contract. Can have computed properties (e.g., `bool IsActive => WasAuthenticated && !CanceledAt.HasValue`).
+**SharedKernel interface** — `I{Entity}EntityProperties` defines the read contract. Can have computed properties (e.g., `bool IsActive => WasAuthenticated && !CanceledAt.HasValue`).
 
 Root entities: `{Aggregate}/Root/`. Non-root: `{Aggregate}/Entities/`.
 
@@ -303,11 +307,12 @@ Root entities: `{Aggregate}/Root/`. Non-root: `{Aggregate}/Entities/`.
 - Methods: `GetByIdAsync()` and `CreateAsync(NewArgs)` where `NewArgs` is a nested record
 - `GetByIdAsync()` → reader port + `.MapAsync()` to wrap in Application
 - `CreateAsync()` → use `.RequireNotFound()` for duplicate detection, then `.TapAsync(writePort.CreateAsync)`
-- `NewInstance()` — private helper wrapping entity in Application
+- `NewInstance(I{Entity}EntityProperties properties)` — private helper that constructs the Application by passing `properties` directly to the AggregateApplication constructor (never wrap in `new {Entity}Entity(properties)` first — the AggregateApplication's base call handles the rehydration)
 
-**AggregateApplication** (`I{Name}AggregateApplication : I{Entity}Properties`):
-- `internal class {Name}AggregateApplication(...) : {Entity}(root), I{Name}AggregateApplication`
-- Coordinates: `root.{DomainRule}()` → `.TapAsync(() => writerPort.{Action}())`
+**AggregateApplication** (`I{Name}AggregateApplication : I{Entity}EntityProperties`):
+- `internal class {Name}AggregateApplication(I{Entity}EntityProperties properties, ...) : {Entity}(properties), I{Name}AggregateApplication`
+- The first constructor parameter is always `I{Entity}EntityProperties properties` — never the concrete `{Entity}Entity` type. The base call `: {Entity}(properties)` rehydrates the entity from the interface via its secondary constructor.
+- Coordinates: call the inherited domain rule directly (no `root.` prefix) → `.TapAsync(() => {child}Writer.{Action}())`. Example: `AddCellphone().TapAsync(() => cellphonesWriter.AddCellphoneAsync(PersonId, cellphoneId))`.
 
 **DI**: `AddScoped<I{Name}AggregateApplicationFactory, {Name}AggregateApplicationFactory>()`
 
@@ -317,8 +322,9 @@ Interface and implementation live in the **same `.cs` file** for both Factory an
 
 ## Ports
 
-- Reader: `I{Resource}ReaderPort` — return `Task<AxisResult<I{Entity}Properties>>`, never nullable
-- Writer: `I{Resource}WritePort` — return `Task<AxisResult>`, accept `I{Entity}Properties`
+- **Entity ports always use the plural form of the entity name**: `I{Entities}ReaderPort` / `I{Entities}WritePort`. Example: for a `Person` entity, the ports are `IPersonsReaderPort` and `IPersonsWritePort` — never `IPersonReaderPort`/`IPersonWritePort`. This reflects that a port exposes operations over the *collection* of entities, not over a single one.
+- Reader: `I{Entities}ReaderPort` — return `Task<AxisResult<I{Entity}EntityProperties>>`, never nullable
+- Writer: `I{Entities}WritePort` — return `Task<AxisResult>`, accept `I{Entity}EntityProperties`
 - `IUnitOfWorkProvider` — `IUnitOfWork UnitOfWork { get; }`
 - Parameters use SharedKernel types; NEVER throw exceptions in port implementations
 
@@ -326,14 +332,14 @@ Interface and implementation live in the **same `.cs` file** for both Factory an
 
 ## Repositories (Postgres)
 
-- Extend `TechnologyRepositoryBase(mediator, uow)`
-- Constructor: `IAxisMediator mediator, [FromKeyedServices(ApplicationConfig.AppKey)] IPostgresUnitOfWork uow`
+- Extend `TechnologyRepositoryBase(mediator, logger, uow)`
+- Constructor: `IAxisMediator mediator, IAxisLogger<{Technology}RepositoryBase> logger, [FromKeyedServices(ApplicationConfig.AppKey)] I{Technology}UnitOfWork uow`
 - Implement Reader AND Writer ports in the same class when both use the same database
 - Base class methods: `ExecuteAsync()`, `GetAsync<T>()`, `ListAsync<T>()`
 - Raw parameterized SQL with table constants; `SelectColumns` as `const string`
 - Each BC has its own schema (e.g., `IDENTITY_TRIX_PERSONS`)
 
-**DbEntity** — `internal record : I{Entity}Properties` with `static FromReader(NpgsqlDataReader)` for ordinal mapping.
+**DbEntity** — `internal record : I{Entity}EntityProperties` with `static FromReader(NpgsqlDataReader)` for ordinal mapping.
 
 **Table constants** — `static class` with `const string Table`, column constants, and DDL as `const string V1`.
 
@@ -596,7 +602,7 @@ public interface IPersonEntityProperties
 }
 ```
 
-**Properties** (`{Aggregate}/Root/{Entity}Properties.cs`):
+**Properties** (`{Aggregate}/Root/{Entity}EntityProperties.cs`):
 ```csharp
 internal partial class PersonEntity(
     bool active, PersonId personId, string displayName, string? pictureProxyUrl, string originId
@@ -612,7 +618,7 @@ internal partial class PersonEntity(
 }
 ```
 
-**Rules** (`{Entity}Rules.cs`):
+**Rules** (`{Entity}EntityRules.cs`):
 ```csharp
 internal partial class PersonEntity
 {
@@ -630,20 +636,19 @@ internal partial class PersonEntity
 
 **Table constants**:
 ```csharp
-internal static class PersonsTable
+internal static class ExternalApisTable
 {
-    public const string Table = $"{DatabaseScripts.Schema}.PERSONS";
-    public const string PersonId = "PERSON_ID";
-    public const string Active = "ACTIVE";
-    public const string DisplayName = "DISPLAY_NAME";
-    // ... other columns
+    public const string Table = $"{DatabaseScripts.Schema}.EXTERNAL_APIS";
+    public const string ExternalApiId = "EXTERNAL_API_ID";
+    public const string Name = "NAME";
+    public const string Secret = "SECRET";
 
     public const string V1 = $"""
         CREATE TABLE IF NOT EXISTS {Table}
         (
-            {PersonId} VARCHAR(250) PRIMARY KEY,
-            {Active} BOOLEAN NOT NULL,
-            {DisplayName} VARCHAR(250) NOT NULL
+            {ExternalApiId} UUID PRIMARY KEY,
+            {Name} VARCHAR(250) NOT NULL,
+            {Secret} VARCHAR(500) NOT NULL
         );
     """;
 }
@@ -651,42 +656,53 @@ internal static class PersonsTable
 
 **DbEntity**:
 ```csharp
-internal record PersonDbEntity(PersonId PersonId, bool Active, string DisplayName, string? PictureProxyUrl, string OriginId)
-    : IPersonEntityProperties
+internal record ExternalApiDbEntity(ExternalApiId ExternalApiId, string ApiName, string HashedSecret)
+    : IExternalApiEntityProperties
 {
-    internal static PersonDbEntity FromReader(NpgsqlDataReader reader) => new(
-        PersonId: reader.GetString(0),
-        Active: reader.GetBoolean(1),
-        DisplayName: reader.GetString(2),
-        PictureProxyUrl: reader.IsDBNull(3) ? null : reader.GetString(3),
-        OriginId: reader.GetString(4)
+    internal static ExternalApiDbEntity FromReader(NpgsqlDataReader reader) => new(
+        ExternalApiId: reader.GetGuid(0).ToString(),
+        ApiName: reader.GetString(1),
+        HashedSecret: reader.GetString(2)
     );
 }
 ```
 
 **Repository**:
 ```csharp
-internal class PersonsRepository(
+internal class ExternalApisRepository(
     IAxisMediator mediator,
+    IAxisLogger<PostgresRepositoryBase> logger,
     [FromKeyedServices(ApplicationConfig.AppKey)] IPostgresUnitOfWork uow
-) : PostgresRepositoryBase(mediator, uow), IPersonsReaderPort, IPersonsWritePort
+) : PostgresRepositoryBase(mediator, logger, uow), IExternalApisReaderPort, IExternalApisWritePort
 {
-    private const string SelectColumns = $"p.{PersonsTable.PersonId}, p.{PersonsTable.Active}, ...";
+    private const string Select = $"SELECT {ExternalApisTable.ExternalApiId}, {ExternalApisTable.Name}, {ExternalApisTable.Secret}";
 
-    public Task<AxisResult> CreateAsync(IPersonEntityProperties properties)
+    public Task<AxisResult> CreateAsync(IExternalApiEntityProperties properties)
         => ExecuteAsync(
-            $"INSERT INTO {PersonsTable.Table} ({PersonsTable.PersonId}, ...) VALUES (@personId, ...)",
-            p => {
-                p.AddWithValue("personId", properties.PersonId.ToString());
-                // ...
-            });
+            $"INSERT INTO {ExternalApisTable.Table} ({ExternalApisTable.ExternalApiId}, {ExternalApisTable.Name}, {ExternalApisTable.Secret}) VALUES (@id, @name, @secret)",
+            p =>
+            {
+                p.AddWithValue("id", Guid.Parse(properties.ExternalApiId.ToString()));
+                p.AddWithValue("name", properties.ApiName);
+                p.AddWithValue("secret", properties.HashedSecret);
+            },
+            duplicateKeyCode: "EXTERNAL_API_ALREADY_EXISTS");
 
-    public Task<AxisResult<IPersonEntityProperties>> GetByIdAsync(PersonId personId)
-        => GetAsync<IPersonEntityProperties>(
-            $"SELECT {SelectColumns} FROM {PersonsTable.Table} p WHERE p.{PersonsTable.PersonId} = @filterValue",
-            p => p.AddWithValue("filterValue", personId.ToString()),
-            PersonDbEntity.FromReader,
-            "PERSON_ID_NOT_FOUND");
+    public Task<AxisResult<IExternalApiEntityProperties>> GetByIdAsync(ExternalApiId id)
+        => GetAsync<IExternalApiEntityProperties>(
+            $"{Select} FROM {ExternalApisTable.Table} WHERE {ExternalApisTable.ExternalApiId} = @id",
+            p => p.AddWithValue("id", id.ToString()),
+            ExternalApiDbEntity.FromReader,
+            "EXTERNAL_API_NOT_FOUND");
+
+    public Task<AxisResult> UpdateSecretAsync(ExternalApiId id, string hashedSecret)
+        => ExecuteAsync(
+            $"UPDATE {ExternalApisTable.Table} SET {ExternalApisTable.Secret} = @secret WHERE {ExternalApisTable.ExternalApiId} = @id",
+            p =>
+            {
+                p.AddWithValue("id", id.ToString());
+                p.AddWithValue("secret", hashedSecret);
+            });
 }
 ```
 
@@ -744,18 +760,19 @@ internal class PersonAggregateApplicationFactory(
 ) : IPersonAggregateApplicationFactory
 {
     private IPersonAggregateApplication NewInstance(IPersonEntityProperties p)
-        => new PersonAggregateApplication(new PersonEntity(p), cellphonesWriter, emailsWriter);
+        => new PersonAggregateApplication(p, cellphonesWriter, emailsWriter);
 
     public Task<AxisResult<IPersonAggregateApplication>> GetByIdAsync(PersonId personId)
         => readerPort.GetByIdAsync(personId).MapAsync(NewInstance);
 
-    public Task<AxisResult<IPersonAggregateApplication>>  CreateAsync(IPersonAggregateApplicationFactory.NewArgs args)
+    public Task<AxisResult<IPersonAggregateApplication>> CreateAsync(IPersonAggregateApplicationFactory.NewArgs args)
         => readerPort.GetByNationalIdAsync(args.NationalId)
-          .RequireNotFound(AxisError.BusinessRule("DOCUMENT_ID_ALREADY_ADDED"))
-          .ThenAsync(() => {
-                    IPersonEntityProperties newEntity = new PersonEntity(true, PersonId.New, args.DisplayName, args.PictureProxyUrl, args.OriginId);
-                    return AxisResult.Ok(newEntity).TapAsync(e => writePort.CreateAsync(e, args.NationalId));
-                })
+            .RequireNotFound(AxisError.BusinessRule("DOCUMENT_ID_ALREADY_ADDED"))
+            .ThenAsync(() =>
+            {
+                IPersonEntityProperties newEntity = new PersonEntity(true, PersonId.New, args.DisplayName, args.PictureProxyUrl, args.OriginId);
+                return AxisResult.Ok(newEntity).TapAsync(writePort.CreateAsync);
+            })
             .MapAsync(NewInstance);
 }
 ```
@@ -769,14 +786,16 @@ internal interface IPersonAggregateApplication : IPersonEntityProperties
 }
 
 internal class PersonAggregateApplication(
-    PersonEntity root, IPersonCellphonesWriter cellphonesWriter, IPersonEmailsWriter emailsWriter
-) : PersonEntity(root), IPersonAggregateApplication
+    IPersonEntityProperties properties,
+    IPersonCellphonesWriter cellphonesWriter,
+    IPersonEmailsWriter emailsWriter
+) : PersonEntity(properties), IPersonAggregateApplication
 {
     public Task<AxisResult> AddCellphoneAsync(CellphoneId cellphoneId)
-        => root.AddCellphone().TapAsync(() => cellphonesWriter.AddCellphoneAsync(root.PersonId, cellphoneId));
+        => AddCellphone().TapAsync(() => cellphonesWriter.AddCellphoneAsync(PersonId, cellphoneId));
 
     public Task<AxisResult> AddEmailAsync(EmailId emailId)
-        => root.AddEmail().TapAsync(() => emailsWriter.AddEmailAsync(root.PersonId, emailId));
+        => AddEmail().TapAsync(() => emailsWriter.AddEmailAsync(PersonId, emailId));
 }
 ```
 
@@ -850,7 +869,7 @@ public class BaseUnitTest
 - **Validation tests**: Use `DefaultServiceProvider()` with default mocks — only verify rejection
 - Resolve SDK mediator (not handler directly) to test the full pipeline
 - Assert: `Assert.True(result.IsSuccess)`, `Assert.True(result.IsFailure)`, `Assert.Contains(result.Errors, x => x.Code == "CODE")`
-- Use private `MockProperties` classes implementing `I{Entity}Properties`
+- Use private `MockProperties` classes implementing `I{Entity}EntityProperties`
 - NEVER use FluentAssertions
 
 ---

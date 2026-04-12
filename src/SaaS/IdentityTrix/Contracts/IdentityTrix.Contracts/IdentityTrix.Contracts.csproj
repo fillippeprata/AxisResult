@@ -2,12 +2,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\..\Foundation\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
-      <ProjectReference Include="..\..\Core\IdentityTrix.SharedKernel\IdentityTrix.SharedKernel.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="DataPrivacy\Cellphones\v1\GetByCellphoneNumber\" />
-      <Folder Include="DataPrivacy\Cellphones\v1\GetCellphoneById\" />
     </ItemGroup>
 
 </Project>

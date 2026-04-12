@@ -6,45 +6,37 @@ namespace AxisTrix.Mediator.UnitTests.Countries;
 public class LocalizationTrixTests
 {
     [Fact]
-    public void GetFormattedPhone_BrCountry_FormatsPhone()
+    public void GetFormattedPhone_BrCountry_ReturnsSuccessWithFormattedPhone()
     {
         var result = CountryIds.Br.GetFormattedPhone("11999887766");
 
-        Assert.NotNull(result);
-        Assert.Equal("(11) 99988-7766", result);
+        Assert.True(result.IsSuccess);
+        Assert.Equal("(11) 99988-7766", result.Value);
     }
 
     [Fact]
-    public void GetFormattedPhone_BrCountry_NullPhone_ReturnsNull()
+    public void GetFormattedPhone_BrCountry_NullPhone_ReturnsValidationFailure()
     {
         var result = CountryIds.Br.GetFormattedPhone(null);
 
-        Assert.Null(result);
+        Assert.True(result.IsFailure);
     }
 
     [Fact]
-    public void GetFormattedPhone_BrCountry_EmptyPhone_ReturnsNull()
+    public void GetFormattedPhone_BrCountry_EmptyPhone_ReturnsValidationFailure()
     {
         var result = CountryIds.Br.GetFormattedPhone("");
 
-        Assert.Null(result);
+        Assert.True(result.IsFailure);
     }
 
     [Fact]
-    public void GetFormattedPhone_UsCountry_ReturnsPhoneAsIs()
+    public void GetFormattedPhone_UsCountry_ReturnsMappingFailure()
     {
         var phone = "2025551234";
 
         var result = CountryIds.Us.GetFormattedPhone(phone);
 
-        Assert.Equal(phone, result);
-    }
-
-    [Fact]
-    public void GetFormattedPhone_UsCountry_NullPhone_ReturnsNull()
-    {
-        var result = CountryIds.Us.GetFormattedPhone(null);
-
-        Assert.Null(result);
+        Assert.Equal("THERE_IS_NO_VALIDATION_FOR_THIS_COUNTRY", result.Errors[0].Code);
     }
 }

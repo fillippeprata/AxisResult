@@ -22,7 +22,7 @@ public class HandlerTests
         var hashedSecret = ExternalApiSecret.Hash(plainSecret);
 
         var mocks = IdentityTrixMocks.CreateSuccessfulMocks();
-        mocks.ExternalApiReader.Setup(x => x.GetExternalApiByIdAsync(externalApiId))
+        mocks.ExternalApiReader.Setup(x => x.GetByIdAsync(externalApiId))
             .ReturnsAsync(AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, hashedSecret, "test-api")));
 
         var services = new ServiceCollection();
@@ -48,7 +48,7 @@ public class HandlerTests
         var wrongPlainSecret = ExternalApiSecret.Generate();
 
         var mocks = IdentityTrixMocks.CreateSuccessfulMocks();
-        mocks.ExternalApiReader.Setup(x => x.GetExternalApiByIdAsync(externalApiId))
+        mocks.ExternalApiReader.Setup(x => x.GetByIdAsync(externalApiId))
             .ReturnsAsync(AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, storedSecret, "test-api")));
 
         var services = new ServiceCollection();
@@ -73,7 +73,7 @@ public class HandlerTests
         var externalApiId = ExternalApiId.New;
 
         var mocks = IdentityTrixMocks.CreateSuccessfulMocks();
-        mocks.ExternalApiReader.Setup(x => x.GetExternalApiByIdAsync(It.IsAny<ExternalApiId>()))
+        mocks.ExternalApiReader.Setup(x => x.GetByIdAsync(It.IsAny<ExternalApiId>()))
             .ReturnsAsync(AxisError.NotFound("EXTERNAL_API_NOT_FOUND"));
 
         var services = new ServiceCollection();

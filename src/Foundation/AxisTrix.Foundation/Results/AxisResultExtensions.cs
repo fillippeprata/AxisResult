@@ -19,6 +19,12 @@ public static class AxisResultExtensions
         public async Task<AxisResult> ThenAsync(Func<AxisResult> next)
             => (await task).Then(next);
 
+        public async Task<AxisResult<TNew>> WithValueAsync<TNew>(TNew value)
+        {
+            var result = await task;
+            return result.IsSuccess ? AxisResult.Ok(value) : result.Errors.ToArray();
+        }
+
         public async Task<AxisResult<TNew>> ThenAsync<TNew>(Func<AxisResult<TNew>> next)
             => (await task).Then(next);
 
@@ -64,8 +70,17 @@ public static class AxisResultExtensions
         public async Task<AxisResult<TNew>> ThenAsync<TNew>(Func<TValue, AxisResult<TNew>> next)
             => (await task).Then(next);
 
-        public async Task<AxisResult> ThenAsync(Func<TValue, Task<AxisResult>> next)
-            => await (await task).ThenAsync(next);
+        public async Task<AxisResult<TValue>> ThenAsync(Func<TValue, Task<AxisResult>> next)
+        {
+            var result = await task;
+            if (result.IsFailure)
+                return result;
+
+            var actionResult = await next(result.Value);
+            if (actionResult.IsFailure) return actionResult.Errors.ToArray();
+
+            return AxisResult.Ok(result.Value);
+        }
 
         public async Task<AxisResult<TNew>> ThenAsync<TNew>(Func<TValue, Task<AxisResult<TNew>>> next)
             => await (await task).ThenAsync(next);

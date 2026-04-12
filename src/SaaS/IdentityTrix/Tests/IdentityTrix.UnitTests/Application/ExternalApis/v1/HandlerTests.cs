@@ -50,7 +50,7 @@ public class HandlerTests
         #region IdentityTrixMocks
 
         var mocks = IdentityTrixMocks.CreateSuccessfulMocks();
-        mocks.ExternalApiReader.Setup(x => x.GetExternalApiByIdAsync(externalApiId))
+        mocks.ExternalApiReader.Setup(x => x.GetByIdAsync(externalApiId))
             .ReturnsAsync(AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, testSecret, testName)));
 
         var services = new ServiceCollection();

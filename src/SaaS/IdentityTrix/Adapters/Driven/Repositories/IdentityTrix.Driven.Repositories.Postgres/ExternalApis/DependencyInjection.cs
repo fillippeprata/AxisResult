@@ -8,9 +8,9 @@ internal static class DependencyInjection
 {
     internal static ServiceCollectionBuilder AddExternalApiRepository(this ServiceCollectionBuilder builder)
     {
-        builder.Services.AddScoped<ExternalApiRepository>();
-        builder.Services.AddScoped<IExternalApiReaderPort>(sp => sp.GetRequiredService<ExternalApiRepository>());
-        builder.Services.AddScoped<IExternalApiWritePort>(sp => sp.GetRequiredService<ExternalApiRepository>());
+        builder.Services.AddScoped<ExternalApisRepository>();
+        builder.Services.AddScoped<IExternalApisReaderPort>(sp => sp.GetRequiredService<ExternalApisRepository>());
+        builder.Services.AddScoped<IExternalApisWritePort>(sp => sp.GetRequiredService<ExternalApisRepository>());
         return builder;
     }
 }

@@ -94,8 +94,7 @@ public class AxisValidatorBase<T> : AbstractValidator<T>
     {
         PrivateNotNullOrEmpty(expression, errorCode)
             .DependentRules(() =>
-                RuleFor(expression).Must(phone =>
-                        !string.IsNullOrWhiteSpace(countryId.GetFormattedPhone(phone)))
+                RuleFor(expression).Must(phone => countryId.GetFormattedPhone(phone).IsSuccess)
                     .WithErrorCode(errorCode));
     }
 

@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="DataPrivacyTrix.Application" />
+  </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DataPrivacyTrix.SharedKernel\DataPrivacyTrix.SharedKernel.csproj" />
+    </ItemGroup>
+
+</Project>

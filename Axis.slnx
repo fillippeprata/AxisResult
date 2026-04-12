@@ -35,7 +35,22 @@
     <Project Path="src/Foundation/Storage/AxisTrix.Storage.CloudflareR2.UnitTests/AxisTrix.Storage.CloudflareR2.UnitTests.csproj" />
     <Project Path="src/Foundation/Storage/AxisTrix.Storage.CloudflareR2/AxisTrix.Storage.CloudflareR2.csproj" />
   </Folder>
+  <Folder Name="/src/Foundation/Types/">
+    <Project Path="src/Foundation/Types/AxisTrix.Types/AxisTrix.Types.csproj" />
+  </Folder>
   <Folder Name="/src/SaaS/" />
+  <Folder Name="/src/SaaS/DataPrivacyTrix/" />
+  <Folder Name="/src/SaaS/DataPrivacyTrix/Contracts/">
+    <Project Path="src/SaaS/DataPrivacyTrix/Contracts/DataPrivacyTrix.Contracts/DataPrivacyTrix.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/src/SaaS/DataPrivacyTrix/Core/">
+    <Project Path="src/SaaS/DataPrivacyTrix/Core/DataPrivacyTrix.Application/DataPrivacyTrix.Application.csproj" />
+    <Project Path="src/SaaS/DataPrivacyTrix/Core/DataPrivacyTrix.Domain/DataPrivacyTrix.Domain.csproj" />
+    <Project Path="src/SaaS/DataPrivacyTrix/Core/DataPrivacyTrix.SharedKernel/DataPrivacyTrix.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/src/SaaS/DataPrivacyTrix/Ports/">
+    <Project Path="src/SaaS/DataPrivacyTrix/Ports/DataPrivacyTrix.Ports/DataPrivacyTrix.Ports.csproj" />
+  </Folder>
   <Folder Name="/src/SaaS/IdentityTrix/" />
   <Folder Name="/src/SaaS/IdentityTrix/Adapters/" />
   <Folder Name="/src/SaaS/IdentityTrix/Adapters/Driven/" />

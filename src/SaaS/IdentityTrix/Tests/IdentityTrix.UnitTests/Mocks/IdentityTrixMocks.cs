@@ -38,8 +38,8 @@ internal record IdentityTrixMocks
     }
 
     public Mock<IUnitOfWorkProvider> UowProvider { get; init; } = new();
-    public Mock<IExternalApiWritePort> ExternalApiWriter { get; init; } = new();
-    public Mock<IExternalApiReaderPort> ExternalApiReader { get; init; } = new();
+    public Mock<IExternalApisWritePort> ExternalApiWriter { get; init; } = new();
+    public Mock<IExternalApisReaderPort> ExternalApiReader { get; init; } = new();
 
     public Mock<IAxisCache> Cache { get; init; } = new();
 }
