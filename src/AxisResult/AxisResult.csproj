@@ -8,7 +8,7 @@
         <RootNamespace>AxisResult</RootNamespace>
 
         <!-- NuGet Package -->
-        <PackageId>AxisTrix.Results</PackageId>
+        <PackageId>AxisResult</PackageId>
         <Version>1.0.0</Version>
         <Authors>Fillippe Prata</Authors>
         <Description>Railway-Oriented Programming for C#. A zero-dependency Result monad with full async/ValueTask support, typed error categories, monadic composition (Then/Map/Zip), recovery patterns, and parallel aggregation.</Description>

@@ -1,6 +1,4 @@
-using AxisResult;
-
-namespace AxisTrix.Results.UnitTests;
+namespace AxisResult.UnitTests;
 
 public class AxisResultCoreTests
 {
@@ -10,7 +8,7 @@ public class AxisResultCoreTests
     [Fact]
     public void Ok_Is_Success_And_Has_No_Errors()
     {
-        var r = AxisResult.AxisResult.Ok();
+        var r = AxisResult.Ok();
         Assert.True(r.IsSuccess);
         Assert.False(r.IsFailure);
         Assert.Empty(r.Errors);
@@ -19,7 +17,7 @@ public class AxisResultCoreTests
     [Fact]
     public void Ok_Generic_Exposes_Value()
     {
-        var r = AxisResult.AxisResult.Ok(42);
+        var r = AxisResult.Ok(42);
         Assert.True(r.IsSuccess);
         Assert.Equal(42, r.Value);
     }
@@ -27,7 +25,7 @@ public class AxisResultCoreTests
     [Fact]
     public void Error_Single_Creates_Failure()
     {
-        var r = AxisResult.AxisResult.Error(Err1);
+        var r = AxisResult.Error(Err1);
         Assert.True(r.IsFailure);
         Assert.False(r.IsSuccess);
         Assert.Single(r.Errors);
@@ -37,7 +35,7 @@ public class AxisResultCoreTests
     [Fact]
     public void Error_Multiple_Creates_Failure_With_All()
     {
-        var r = AxisResult.AxisResult.Error(new[] { Err1, Err2 });
+        var r = AxisResult.Error([Err1, Err2]);
         Assert.True(r.IsFailure);
         Assert.Equal(2, r.Errors.Count);
     }
@@ -45,7 +43,7 @@ public class AxisResultCoreTests
     [Fact]
     public void Error_Generic_Single_Creates_Failure()
     {
-        var r = AxisResult.AxisResult.Error<int>(Err1);
+        var r = AxisResult.Error<int>(Err1);
         Assert.True(r.IsFailure);
         Assert.Single(r.Errors);
     }
@@ -53,14 +51,14 @@ public class AxisResultCoreTests
     [Fact]
     public void Error_Generic_Multiple_Creates_Failure()
     {
-        var r = AxisResult.AxisResult.Error<int>(new[] { Err1, Err2 });
+        var r = AxisResult.Error<int>([Err1, Err2]);
         Assert.Equal(2, r.Errors.Count);
     }
 
     [Fact]
     public void Accessing_Value_On_Failure_Throws()
     {
-        var r = AxisResult.AxisResult.Error<int>(Err1);
+        var r = AxisResult.Error<int>(Err1);
         var ex = Assert.Throws<NoAccessValueOnErrorResultException>(() => _ = r.Value);
         Assert.Single(ex.Errors);
         Assert.Contains("E1", ex.Message);
@@ -69,28 +67,28 @@ public class AxisResultCoreTests
     [Fact]
     public void JoinErrorCodes_Returns_Codes_Joined()
     {
-        var r = AxisResult.AxisResult.Error(new[] { Err1, Err2 });
+        var r = AxisResult.Error([Err1, Err2]);
         Assert.Equal("E1, E2", r.JoinErrorCodes());
     }
 
     [Fact]
     public void JoinErrorCodes_With_Custom_Separator()
     {
-        var r = AxisResult.AxisResult.Error(new[] { Err1, Err2 });
+        var r = AxisResult.Error([Err1, Err2]);
         Assert.Equal("E1 | E2", r.JoinErrorCodes(" | "));
     }
 
     [Fact]
     public void JoinErrorCodes_On_Success_Returns_Empty()
     {
-        var r = AxisResult.AxisResult.Ok();
+        var r = AxisResult.Ok();
         Assert.Equal(string.Empty, r.JoinErrorCodes());
     }
 
     [Fact]
     public void Errors_On_Success_Returns_Empty_List()
     {
-        var r = AxisResult.AxisResult.Ok();
+        var r = AxisResult.Ok();
         Assert.NotNull(r.Errors);
         Assert.Empty(r.Errors);
     }
@@ -98,7 +96,7 @@ public class AxisResultCoreTests
     [Fact]
     public void Implicit_From_AxisError_To_AxisResult()
     {
-        AxisResult.AxisResult r = Err1;
+        AxisResult r = Err1;
         Assert.True(r.IsFailure);
         Assert.Single(r.Errors);
     }
@@ -106,14 +104,14 @@ public class AxisResultCoreTests
     [Fact]
     public void Implicit_From_List_To_AxisResult()
     {
-        AxisResult.AxisResult r = new List<AxisError> { Err1, Err2 };
+        AxisResult r = new List<AxisError> { Err1, Err2 };
         Assert.Equal(2, r.Errors.Count);
     }
 
     [Fact]
     public void Implicit_From_Array_To_AxisResult()
     {
-        AxisResult.AxisResult r = new[] { Err1, Err2 };
+        AxisResult r = new[] { Err1, Err2 };
         Assert.Equal(2, r.Errors.Count);
     }
 

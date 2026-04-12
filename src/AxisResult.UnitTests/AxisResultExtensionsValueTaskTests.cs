@@ -1,6 +1,4 @@
-using AxisResult;
-
-namespace AxisTrix.Results.UnitTests;
+namespace AxisResult.UnitTests;
 
 public class AxisResultExtensionsValueTaskTests
 {
@@ -8,17 +6,17 @@ public class AxisResultExtensionsValueTaskTests
     private static readonly AxisError _e2 = AxisError.ValidationRule("E2");
 
     private static ValueTask<T> VtAsync<T>(T v) => new(v);
-    private static ValueTask<AxisResult.AxisResult> VtOkAsync() => new(AxisResult.AxisResult.Ok());
-    private static ValueTask<AxisResult<T>> VtOkAsync<T>(T v) => new(AxisResult.AxisResult.Ok(v));
-    private static ValueTask<AxisResult.AxisResult> VtErrAsync(AxisError e) => new(AxisResult.AxisResult.Error(e));
-    private static ValueTask<AxisResult<T>> VtErrAsync<T>(AxisError e) => new(AxisResult.AxisResult.Error<T>(e));
+    private static ValueTask<AxisResult> VtOkAsync() => new(AxisResult.Ok());
+    private static ValueTask<AxisResult<T>> VtOkAsync<T>(T v) => new(AxisResult.Ok(v));
+    private static ValueTask<AxisResult> VtErrAsync(AxisError e) => new(AxisResult.Error(e));
+    private static ValueTask<AxisResult<T>> VtErrAsync<T>(AxisError e) => new(AxisResult.Error<T>(e));
 
     #region AsValueTask
 
     [Fact]
     public async Task AsValueTask_NonGeneric()
     {
-        var vt = AxisResult.AxisResult.Ok().AsValueTaskAsync();
+        var vt = AxisResult.Ok().AsValueTaskAsync();
         var r = await vt;
         Assert.True(r.IsSuccess);
     }
@@ -26,7 +24,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task AsValueTask_Generic()
     {
-        var vt = AxisResult.AxisResult.Ok(5).AsValueTaskAsync();
+        var vt = AxisResult.Ok(5).AsValueTaskAsync();
         var r = await vt;
         Assert.Equal(5, r.Value);
     }
@@ -38,14 +36,14 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_ThenAsync_Sync_NG()
     {
-        var r = await VtOkAsync().ThenAsync(AxisResult.AxisResult.Ok);
+        var r = await VtOkAsync().ThenAsync(AxisResult.Ok);
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
     public async Task VT_Ext_ThenAsync_Sync_Typed()
     {
-        var r = await VtOkAsync().ThenAsync(() => AxisResult.AxisResult.Ok(5));
+        var r = await VtOkAsync().ThenAsync(() => AxisResult.Ok(5));
         Assert.Equal(5, r.Value);
     }
 
@@ -185,7 +183,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_ThenAsync_Generic_Sync_NG_Preserves_Value()
     {
-        var r = await VtOkAsync(5).ThenAsync(_ => AxisResult.AxisResult.Ok());
+        var r = await VtOkAsync(5).ThenAsync(_ => AxisResult.Ok());
         Assert.True(r.IsSuccess);
         Assert.Equal(5, r.Value);
     }
@@ -193,7 +191,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_ThenAsync_Generic_Sync_NG_Failure_Propagates()
     {
-        var r = await VtOkAsync(5).ThenAsync(_ => AxisResult.AxisResult.Error(_e1));
+        var r = await VtOkAsync(5).ThenAsync(_ => AxisResult.Error(_e1));
         Assert.True(r.IsFailure);
         Assert.Equal("E1", r.Errors[0].Code);
     }
@@ -201,7 +199,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_ThenAsync_Generic_Sync_Typed()
     {
-        var r = await VtOkAsync(5).ThenAsync(x => AxisResult.AxisResult.Ok(x.ToString()));
+        var r = await VtOkAsync(5).ThenAsync(x => AxisResult.Ok(x.ToString()));
         Assert.Equal("5", r.Value);
     }
 
@@ -277,7 +275,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_EnsureAsync_Validation_Sync()
     {
-        var r = await VtOkAsync(10).EnsureAsync(_ => AxisResult.AxisResult.Ok());
+        var r = await VtOkAsync(10).EnsureAsync(_ => AxisResult.Ok());
         Assert.True(r.IsSuccess);
     }
 
@@ -305,7 +303,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_EnsureAsync_Validation_Sync_Fail()
     {
-        var r = await VtOkAsync(10).EnsureAsync(_ => AxisResult.AxisResult.Error(_e1));
+        var r = await VtOkAsync(10).EnsureAsync(_ => AxisResult.Error(_e1));
         Assert.True(r.IsFailure);
     }
 
@@ -333,7 +331,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_ZipAsync_ResultSync()
     {
-        var r = await VtOkAsync(5).ZipAsync(x => AxisResult.AxisResult.Ok(x + 1));
+        var r = await VtOkAsync(5).ZipAsync(x => AxisResult.Ok(x + 1));
         Assert.Equal((5, 6), r.Value);
     }
 
@@ -459,7 +457,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_OrElseAsync_Sync()
     {
-        var r = await VtErrAsync<int>(_e1).OrElseAsync(_ => AxisResult.AxisResult.Ok(99));
+        var r = await VtErrAsync<int>(_e1).OrElseAsync(_ => AxisResult.Ok(99));
         Assert.Equal(99, r.Value);
     }
 
@@ -473,7 +471,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_OrElseAsync_Sync_Combine()
     {
-        var r = await VtErrAsync<int>(_e1).OrElseAsync(_ => AxisResult.AxisResult.Error<int>(_e2), combineErrors: true);
+        var r = await VtErrAsync<int>(_e1).OrElseAsync(_ => AxisResult.Error<int>(_e2), combineErrors: true);
         Assert.Equal(2, r.Errors.Count);
     }
 
@@ -515,7 +513,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Ext_SelectManyAsync_Sync()
     {
-        var r = await VtOkAsync(2).SelectManyAsync(x => AxisResult.AxisResult.Ok(x + 1), (x, y) => x * y);
+        var r = await VtOkAsync(2).SelectManyAsync(x => AxisResult.Ok(x + 1), (x, y) => x * y);
         Assert.Equal(6, r.Value);
     }
 
@@ -533,7 +531,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple2_MapAsync_Sync()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Ok((1, 2)));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Ok((1, 2)));
         var r = await vt.MapAsync((a, b) => a + b);
         Assert.Equal(3, r.Value);
     }
@@ -541,7 +539,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple2_MapAsync_Async()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Ok((1, 2)));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Ok((1, 2)));
         var r = await vt.MapAsync((a, b) => VtAsync(a + b));
         Assert.Equal(3, r.Value);
     }
@@ -549,7 +547,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple2_ZipAsync_Sync()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Ok((1, 2)));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Ok((1, 2)));
         var r = await vt.ZipAsync((a, b) => a + b);
         Assert.Equal((1, 2, 3), r.Value);
     }
@@ -557,7 +555,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple2_ZipAsync_Async()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Ok((1, 2)));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Ok((1, 2)));
         var r = await vt.ZipAsync((a, b) => VtAsync(a + b));
         Assert.Equal((1, 2, 3), r.Value);
     }
@@ -565,15 +563,15 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple2_ZipAsync_ResultSync()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Ok((1, 2)));
-        var r = await vt.ZipAsync((a, b) => AxisResult.AxisResult.Ok(a + b));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Ok((1, 2)));
+        var r = await vt.ZipAsync((a, b) => AxisResult.Ok(a + b));
         Assert.Equal((1, 2, 3), r.Value);
     }
 
     [Fact]
     public async Task VT_Tuple2_ZipAsync_ResultAsync()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Ok((1, 2)));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Ok((1, 2)));
         var r = await vt.ZipAsync((a, b) => VtOkAsync(a + b));
         Assert.Equal((1, 2, 3), r.Value);
     }
@@ -581,7 +579,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple2_ZipAsync_Sync_Fail()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Error<(int, int)>(_e1));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Error<(int, int)>(_e1));
         var r = await vt.ZipAsync((a, b) => a + b);
         Assert.True(r.IsFailure);
     }
@@ -589,7 +587,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple2_ZipAsync_Async_Fail()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Error<(int, int)>(_e1));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Error<(int, int)>(_e1));
         var r = await vt.ZipAsync((a, b) => VtAsync(a + b));
         Assert.True(r.IsFailure);
     }
@@ -597,23 +595,23 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple2_ZipAsync_ResultSync_Fail_Source()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Error<(int, int)>(_e1));
-        var r = await vt.ZipAsync((a, b) => AxisResult.AxisResult.Ok(a + b));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Error<(int, int)>(_e1));
+        var r = await vt.ZipAsync((a, b) => AxisResult.Ok(a + b));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task VT_Tuple2_ZipAsync_ResultSync_Fail_Mapper()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Ok((1, 2)));
-        var r = await vt.ZipAsync((_, _) => AxisResult.AxisResult.Error<int>(_e2));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Ok((1, 2)));
+        var r = await vt.ZipAsync((_, _) => AxisResult.Error<int>(_e2));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task VT_Tuple2_ZipAsync_ResultAsync_Fail_Source()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Error<(int, int)>(_e1));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Error<(int, int)>(_e1));
         var r = await vt.ZipAsync((a, b) => VtOkAsync(a + b));
         Assert.True(r.IsFailure);
     }
@@ -621,7 +619,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple2_ZipAsync_ResultAsync_Fail_Mapper()
     {
-        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.AxisResult.Ok((1, 2)));
+        var vt = new ValueTask<AxisResult<(int, int)>>(AxisResult.Ok((1, 2)));
         var r = await vt.ZipAsync((_, _) => VtErrAsync<int>(_e2));
         Assert.True(r.IsFailure);
     }
@@ -633,7 +631,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple3_MapAsync_Sync()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Ok((1, 2, 3)));
         var r = await vt.MapAsync((a, b, c) => a + b + c);
         Assert.Equal(6, r.Value);
     }
@@ -641,7 +639,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple3_MapAsync_Async()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Ok((1, 2, 3)));
         var r = await vt.MapAsync((a, b, c) => VtAsync(a + b + c));
         Assert.Equal(6, r.Value);
     }
@@ -649,7 +647,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple3_ZipAsync_Sync()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Ok((1, 2, 3)));
         var r = await vt.ZipAsync((a, b, c) => a + b + c);
         Assert.Equal((1, 2, 3, 6), r.Value);
     }
@@ -657,7 +655,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple3_ZipAsync_Async()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Ok((1, 2, 3)));
         var r = await vt.ZipAsync((a, b, c) => VtAsync(a + b + c));
         Assert.Equal((1, 2, 3, 6), r.Value);
     }
@@ -665,15 +663,15 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple3_ZipAsync_ResultSync()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3)));
-        var r = await vt.ZipAsync((a, b, c) => AxisResult.AxisResult.Ok(a + b + c));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Ok((1, 2, 3)));
+        var r = await vt.ZipAsync((a, b, c) => AxisResult.Ok(a + b + c));
         Assert.Equal((1, 2, 3, 6), r.Value);
     }
 
     [Fact]
     public async Task VT_Tuple3_ZipAsync_ResultAsync()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Ok((1, 2, 3)));
         var r = await vt.ZipAsync((a, b, c) => VtOkAsync(a + b + c));
         Assert.Equal((1, 2, 3, 6), r.Value);
     }
@@ -681,7 +679,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple3_ZipAsync_Sync_Fail()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Error<(int, int, int)>(_e1));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Error<(int, int, int)>(_e1));
         var r = await vt.ZipAsync((a, b, c) => a + b + c);
         Assert.True(r.IsFailure);
     }
@@ -689,7 +687,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple3_ZipAsync_Async_Fail()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Error<(int, int, int)>(_e1));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Error<(int, int, int)>(_e1));
         var r = await vt.ZipAsync((a, b, c) => VtAsync(a + b + c));
         Assert.True(r.IsFailure);
     }
@@ -697,23 +695,23 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple3_ZipAsync_ResultSync_Fail_Source()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Error<(int, int, int)>(_e1));
-        var r = await vt.ZipAsync((a, b, c) => AxisResult.AxisResult.Ok(a + b + c));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Error<(int, int, int)>(_e1));
+        var r = await vt.ZipAsync((a, b, c) => AxisResult.Ok(a + b + c));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task VT_Tuple3_ZipAsync_ResultSync_Fail_Mapper()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3)));
-        var r = await vt.ZipAsync((_, _, _) => AxisResult.AxisResult.Error<int>(_e2));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Ok((1, 2, 3)));
+        var r = await vt.ZipAsync((_, _, _) => AxisResult.Error<int>(_e2));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task VT_Tuple3_ZipAsync_ResultAsync_Fail_Source()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Error<(int, int, int)>(_e1));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Error<(int, int, int)>(_e1));
         var r = await vt.ZipAsync((a, b, c) => VtOkAsync(a + b + c));
         Assert.True(r.IsFailure);
     }
@@ -721,7 +719,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple3_ZipAsync_ResultAsync_Fail_Mapper()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var vt = new ValueTask<AxisResult<(int, int, int)>>(AxisResult.Ok((1, 2, 3)));
         var r = await vt.ZipAsync((_, _, _) => VtErrAsync<int>(_e2));
         Assert.True(r.IsFailure);
     }
@@ -733,7 +731,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple4_MapAsync_Sync()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3, 4)));
+        var vt = new ValueTask<AxisResult<(int, int, int, int)>>(AxisResult.Ok((1, 2, 3, 4)));
         var r = await vt.MapAsync((a, b, c, d) => a + b + c + d);
         Assert.Equal(10, r.Value);
     }
@@ -741,7 +739,7 @@ public class AxisResultExtensionsValueTaskTests
     [Fact]
     public async Task VT_Tuple4_MapAsync_Async()
     {
-        var vt = new ValueTask<AxisResult<(int, int, int, int)>>(AxisResult.AxisResult.Ok((1, 2, 3, 4)));
+        var vt = new ValueTask<AxisResult<(int, int, int, int)>>(AxisResult.Ok((1, 2, 3, 4)));
         var r = await vt.MapAsync((a, b, c, d) => VtAsync(a + b + c + d));
         Assert.Equal(10, r.Value);
     }

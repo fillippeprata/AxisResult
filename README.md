@@ -165,7 +165,7 @@ Designed for ASP.NET controllers, not for domain logic. Basic `Map`/`Bind` suppo
 | Parallel aggregation (Combine/All) | **Yes** | No | No | Yes | No |
 | Error accumulation (OrElse) | **Yes** | Partial | No | No | No |
 | Zero external dependencies | **Yes** | Partial | Partial | No | Yes |
-| Lightweight (< 50KB) | **Yes** | Yes | Yes | No (7.5MB) | Yes |
+| Lightweight (~200KB) | **Yes** | Yes | Yes | No (7.5MB) | Yes |
 
 ---
 
@@ -546,6 +546,8 @@ public ValueTask<AxisResult<User>> GetUserAsync(UserId id) => ...;
 ```
 
 On hot paths where the result is often cached or synchronous, `ValueTask` avoids heap allocations entirely. All composition methods (`ThenAsync`, `MapAsync`, `TapAsync`, etc.) work identically with both.
+
+> **Benchmark reference:** The zero-allocation behavior of `ValueTask<T>` on synchronous completions is documented by the .NET team. See Stephen Toub's [*Understanding the Whys, Whats, and Whens of ValueTask*](https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/) (Microsoft .NET Blog) for the allocation profile and BCL benchmarks that back this claim.
 
 ---
 

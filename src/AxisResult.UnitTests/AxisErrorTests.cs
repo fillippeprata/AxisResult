@@ -1,6 +1,4 @@
-using AxisResult;
-
-namespace AxisTrix.Results.UnitTests;
+namespace AxisResult.UnitTests;
 
 public class AxisErrorTests
 {

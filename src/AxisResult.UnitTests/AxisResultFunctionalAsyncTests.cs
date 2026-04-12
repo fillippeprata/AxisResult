@@ -1,6 +1,4 @@
-using AxisResult;
-
-namespace AxisTrix.Results.UnitTests;
+namespace AxisResult.UnitTests;
 
 public class AxisResultFunctionalAsyncTests
 {
@@ -12,14 +10,14 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task MapAsync_NonGeneric_Success()
     {
-        var r = await AxisResult.AxisResult.Ok().MapAsync(() => Task.FromResult(10));
+        var r = await AxisResult.Ok().MapAsync(() => Task.FromResult(10));
         Assert.Equal(10, r.Value);
     }
 
     [Fact]
     public async Task MapAsync_NonGeneric_Failure_Propagates()
     {
-        AxisResult.AxisResult src = AxisResult.AxisResult.Error(E1);
+        AxisResult src = AxisResult.Error(E1);
         var r = await src.MapAsync(() => Task.FromResult(10));
         Assert.True(r.IsFailure);
     }
@@ -27,14 +25,14 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task MapAsync_Generic_Success_Transforms()
     {
-        var r = await AxisResult.AxisResult.Ok(5).MapAsync(x => Task.FromResult(x * 2));
+        var r = await AxisResult.Ok(5).MapAsync(x => Task.FromResult(x * 2));
         Assert.Equal(10, r.Value);
     }
 
     [Fact]
     public async Task MapAsync_Generic_Failure_Propagates()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).MapAsync(x => Task.FromResult(x * 2));
+        var r = await AxisResult.Error<int>(E1).MapAsync(x => Task.FromResult(x * 2));
         Assert.True(r.IsFailure);
     }
 
@@ -45,37 +43,37 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task ThenAsync_NonGeneric_Success_Chains()
     {
-        var r = await AxisResult.AxisResult.Ok().ThenAsync(() => Task.FromResult(AxisResult.AxisResult.Ok()));
+        var r = await AxisResult.Ok().ThenAsync(() => Task.FromResult(AxisResult.Ok()));
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
     public async Task ThenAsync_NonGeneric_Success_To_Typed()
     {
-        var r = await AxisResult.AxisResult.Ok().ThenAsync(() => Task.FromResult(AxisResult.AxisResult.Ok(7)));
+        var r = await AxisResult.Ok().ThenAsync(() => Task.FromResult(AxisResult.Ok(7)));
         Assert.Equal(7, r.Value);
     }
 
     [Fact]
     public async Task ThenAsync_NonGeneric_Failure_Returns_Self()
     {
-        var src = AxisResult.AxisResult.Error(E1);
-        var r = await src.ThenAsync(() => Task.FromResult(AxisResult.AxisResult.Ok()));
+        var src = AxisResult.Error(E1);
+        var r = await src.ThenAsync(() => Task.FromResult(AxisResult.Ok()));
         Assert.Same(src, r);
     }
 
     [Fact]
     public async Task ThenAsync_NonGeneric_Failure_Typed_Propagates()
     {
-        AxisResult.AxisResult src = AxisResult.AxisResult.Error(E1);
-        var r = await src.ThenAsync(() => Task.FromResult(AxisResult.AxisResult.Ok(1)));
+        AxisResult src = AxisResult.Error(E1);
+        var r = await src.ThenAsync(() => Task.FromResult(AxisResult.Ok(1)));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task ThenAsync_Generic_Success_To_NonGeneric_Preserves_Value()
     {
-        var r = await AxisResult.AxisResult.Ok(5).ThenAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok()));
+        var r = await AxisResult.Ok(5).ThenAsync(_ => Task.FromResult(AxisResult.Ok()));
         Assert.True(r.IsSuccess);
         Assert.Equal(5, r.Value);
     }
@@ -83,7 +81,7 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task ThenAsync_Generic_Success_To_NonGeneric_Failure_Propagates_Error()
     {
-        var r = await AxisResult.AxisResult.Ok(5).ThenAsync(_ => Task.FromResult(AxisResult.AxisResult.Error(E1)));
+        var r = await AxisResult.Ok(5).ThenAsync(_ => Task.FromResult(AxisResult.Error(E1)));
         Assert.True(r.IsFailure);
         Assert.Equal("E1", r.Errors[0].Code);
     }
@@ -91,15 +89,15 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task ThenAsync_Generic_Success_To_Typed()
     {
-        var r = await AxisResult.AxisResult.Ok(5).ThenAsync(x => Task.FromResult(AxisResult.AxisResult.Ok(x.ToString())));
+        var r = await AxisResult.Ok(5).ThenAsync(x => Task.FromResult(AxisResult.Ok(x.ToString())));
         Assert.Equal("5", r.Value);
     }
 
     [Fact]
     public async Task ThenAsync_Generic_Failure_To_NonGeneric_Propagates()
     {
-        var src = AxisResult.AxisResult.Error<int>(E1);
-        var r = await src.ThenAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok()));
+        var src = AxisResult.Error<int>(E1);
+        var r = await src.ThenAsync(_ => Task.FromResult(AxisResult.Ok()));
         Assert.True(r.IsFailure);
         Assert.Equal("E1", r.Errors[0].Code);
     }
@@ -107,7 +105,7 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task ThenAsync_Generic_Failure_To_Typed_Propagates()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).ThenAsync(x => Task.FromResult(AxisResult.AxisResult.Ok(x.ToString())));
+        var r = await AxisResult.Error<int>(E1).ThenAsync(x => Task.FromResult(AxisResult.Ok(x.ToString())));
         Assert.True(r.IsFailure);
     }
 
@@ -119,7 +117,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapAsync_NonGeneric_Success_Runs()
     {
         var called = false;
-        await AxisResult.AxisResult.Ok().TapAsync(() => { called = true; return Task.CompletedTask; });
+        await AxisResult.Ok().TapAsync(() => { called = true; return Task.CompletedTask; });
         Assert.True(called);
     }
 
@@ -127,7 +125,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapAsync_NonGeneric_Failure_Skips()
     {
         var called = false;
-        await AxisResult.AxisResult.Error(E1).TapAsync(() => { called = true; return Task.CompletedTask; });
+        await AxisResult.Error(E1).TapAsync(() => { called = true; return Task.CompletedTask; });
         Assert.False(called);
     }
 
@@ -135,7 +133,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapAsync_Generic_NoValue_Success()
     {
         var called = false;
-        AxisResult<int> r = await AxisResult.AxisResult.Ok(5).TapAsync(() => { called = true; return Task.CompletedTask; });
+        AxisResult<int> r = await AxisResult.Ok(5).TapAsync(() => { called = true; return Task.CompletedTask; });
         Assert.True(called);
         Assert.Equal(5, r.Value);
     }
@@ -144,7 +142,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapAsync_Generic_NoValue_Failure_Skips()
     {
         var called = false;
-        await AxisResult.AxisResult.Error<int>(E1).TapAsync(() => { called = true; return Task.CompletedTask; });
+        await AxisResult.Error<int>(E1).TapAsync(() => { called = true; return Task.CompletedTask; });
         Assert.False(called);
     }
 
@@ -152,7 +150,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapAsync_Generic_WithValue_Success()
     {
         var captured = 0;
-        await AxisResult.AxisResult.Ok(9).TapAsync(x => { captured = x; return Task.CompletedTask; });
+        await AxisResult.Ok(9).TapAsync(x => { captured = x; return Task.CompletedTask; });
         Assert.Equal(9, captured);
     }
 
@@ -160,7 +158,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapAsync_Generic_WithValue_Failure_Skips()
     {
         var captured = 0;
-        await AxisResult.AxisResult.Error<int>(E1).TapAsync(x => { captured = x; return Task.CompletedTask; });
+        await AxisResult.Error<int>(E1).TapAsync(x => { captured = x; return Task.CompletedTask; });
         Assert.Equal(0, captured);
     }
 
@@ -172,7 +170,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapErrorAsync_NonGeneric_Failure_Runs()
     {
         var captured = 0;
-        await AxisResult.AxisResult.Error(E1).TapErrorAsync(errs => { captured = errs.Count; return Task.CompletedTask; });
+        await AxisResult.Error(E1).TapErrorAsync(errs => { captured = errs.Count; return Task.CompletedTask; });
         Assert.Equal(1, captured);
     }
 
@@ -180,7 +178,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapErrorAsync_NonGeneric_Success_Skips()
     {
         var called = false;
-        await AxisResult.AxisResult.Ok().TapErrorAsync(_ => { called = true; return Task.CompletedTask; });
+        await AxisResult.Ok().TapErrorAsync(_ => { called = true; return Task.CompletedTask; });
         Assert.False(called);
     }
 
@@ -188,7 +186,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapErrorAsync_Generic_Failure_Runs()
     {
         var captured = 0;
-        await AxisResult.AxisResult.Error<int>(E1).TapErrorAsync(errs => { captured = errs.Count; return Task.CompletedTask; });
+        await AxisResult.Error<int>(E1).TapErrorAsync(errs => { captured = errs.Count; return Task.CompletedTask; });
         Assert.Equal(1, captured);
     }
 
@@ -196,7 +194,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task TapErrorAsync_Generic_Success_Skips()
     {
         var called = false;
-        await AxisResult.AxisResult.Ok(1).TapErrorAsync(_ => { called = true; return Task.CompletedTask; });
+        await AxisResult.Ok(1).TapErrorAsync(_ => { called = true; return Task.CompletedTask; });
         Assert.False(called);
     }
 
@@ -207,7 +205,7 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task MatchAsync_NonGeneric_Success()
     {
-        var s = await AxisResult.AxisResult.Ok().MatchAsync(
+        var s = await AxisResult.Ok().MatchAsync(
             () => Task.FromResult("ok"),
             _ => Task.FromResult("no"));
         Assert.Equal("ok", s);
@@ -216,7 +214,7 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task MatchAsync_NonGeneric_Failure()
     {
-        var s = await AxisResult.AxisResult.Error(E1).MatchAsync(
+        var s = await AxisResult.Error(E1).MatchAsync(
             () => Task.FromResult("ok"),
             errs => Task.FromResult($"c{errs.Count}"));
         Assert.Equal("c1", s);
@@ -225,7 +223,7 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task MatchAsync_Generic_Success()
     {
-        var s = await AxisResult.AxisResult.Ok(10).MatchAsync(
+        var s = await AxisResult.Ok(10).MatchAsync(
             v => Task.FromResult(v.ToString()),
             _ => Task.FromResult("x"));
         Assert.Equal("10", s);
@@ -234,7 +232,7 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task MatchAsync_Generic_Failure()
     {
-        var s = await AxisResult.AxisResult.Error<int>(E1).MatchAsync(
+        var s = await AxisResult.Error<int>(E1).MatchAsync(
             v => Task.FromResult(v.ToString()),
             _ => Task.FromResult("fail"));
         Assert.Equal("fail", s);
@@ -247,32 +245,32 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task MapErrorAsync_NonGeneric_Failure_Maps()
     {
-        var r = await AxisResult.AxisResult.Error(E1).MapErrorAsync(
-            _ => Task.FromResult<IEnumerable<AxisError>>(new[] { E2 }));
+        var r = await AxisResult.Error(E1).MapErrorAsync(
+            _ => Task.FromResult<IEnumerable<AxisError>>([E2]));
         Assert.Equal("E2", r.Errors[0].Code);
     }
 
     [Fact]
     public async Task MapErrorAsync_NonGeneric_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok();
-        var r = await src.MapErrorAsync(_ => Task.FromResult<IEnumerable<AxisError>>(new[] { E2 }));
+        var src = AxisResult.Ok();
+        var r = await src.MapErrorAsync(_ => Task.FromResult<IEnumerable<AxisError>>([E2]));
         Assert.Same(src, r);
     }
 
     [Fact]
     public async Task MapErrorAsync_Generic_Failure_Maps()
     {
-        AxisResult<int> r = await AxisResult.AxisResult.Error<int>(E1).MapErrorAsync(
-            _ => Task.FromResult<IEnumerable<AxisError>>(new[] { E2 }));
+        AxisResult<int> r = await AxisResult.Error<int>(E1).MapErrorAsync(
+            _ => Task.FromResult<IEnumerable<AxisError>>([E2]));
         Assert.Equal("E2", r.Errors[0].Code);
     }
 
     [Fact]
     public async Task MapErrorAsync_Generic_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok(1);
-        var r = await src.MapErrorAsync(_ => Task.FromResult<IEnumerable<AxisError>>(new[] { E2 }));
+        var src = AxisResult.Ok(1);
+        var r = await src.MapErrorAsync(_ => Task.FromResult<IEnumerable<AxisError>>([E2]));
         Assert.Same(src, r);
     }
 
@@ -283,48 +281,48 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task OrElseAsync_NonGeneric_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok();
-        var r = await src.OrElseAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok()));
+        var src = AxisResult.Ok();
+        var r = await src.OrElseAsync(_ => Task.FromResult(AxisResult.Ok()));
         Assert.Same(src, r);
     }
 
     [Fact]
     public async Task OrElseAsync_NonGeneric_Failure_Uses_Fallback()
     {
-        var r = await AxisResult.AxisResult.Error(E1).OrElseAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok()));
+        var r = await AxisResult.Error(E1).OrElseAsync(_ => Task.FromResult(AxisResult.Ok()));
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
     public async Task OrElseAsync_NonGeneric_Combine_True_Concats()
     {
-        var r = await AxisResult.AxisResult.Error(E1).OrElseAsync(
-            _ => Task.FromResult(AxisResult.AxisResult.Error(E2)), combineErrors: true);
+        var r = await AxisResult.Error(E1).OrElseAsync(
+            _ => Task.FromResult(AxisResult.Error(E2)), combineErrors: true);
         Assert.Equal(2, r.Errors.Count);
     }
 
     [Fact]
     public async Task OrElseAsync_NonGeneric_Combine_True_Fallback_Success()
     {
-        var r = await AxisResult.AxisResult.Error(E1).OrElseAsync(
-            _ => Task.FromResult(AxisResult.AxisResult.Ok()), combineErrors: true);
+        var r = await AxisResult.Error(E1).OrElseAsync(
+            _ => Task.FromResult(AxisResult.Ok()), combineErrors: true);
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
     public async Task OrElseAsync_NonGeneric_Combine_True_Source_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok();
+        var src = AxisResult.Ok();
         var r = await src.OrElseAsync(
-            _ => Task.FromResult(AxisResult.AxisResult.Error(E2)), combineErrors: true);
+            _ => Task.FromResult(AxisResult.Error(E2)), combineErrors: true);
         Assert.Same(src, r);
     }
 
     [Fact]
     public async Task OrElseAsync_NonGeneric_Combine_False_Replaces()
     {
-        var r = await AxisResult.AxisResult.Error(E1).OrElseAsync(
-            _ => Task.FromResult(AxisResult.AxisResult.Error(E2)), combineErrors: false);
+        var r = await AxisResult.Error(E1).OrElseAsync(
+            _ => Task.FromResult(AxisResult.Error(E2)), combineErrors: false);
         Assert.Single(r.Errors);
         Assert.Equal("E2", r.Errors[0].Code);
     }
@@ -332,48 +330,48 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task OrElseAsync_Generic_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok(5);
-        var r = await src.OrElseAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok(99)));
+        var src = AxisResult.Ok(5);
+        var r = await src.OrElseAsync(_ => Task.FromResult(AxisResult.Ok(99)));
         Assert.Equal(5, r.Value);
     }
 
     [Fact]
     public async Task OrElseAsync_Generic_Failure_Uses_Fallback()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).OrElseAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok(99)));
+        var r = await AxisResult.Error<int>(E1).OrElseAsync(_ => Task.FromResult(AxisResult.Ok(99)));
         Assert.Equal(99, r.Value);
     }
 
     [Fact]
     public async Task OrElseAsync_Generic_Combine_True_Concats()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).OrElseAsync(
-            _ => Task.FromResult(AxisResult.AxisResult.Error<int>(E2)), combineErrors: true);
+        var r = await AxisResult.Error<int>(E1).OrElseAsync(
+            _ => Task.FromResult(AxisResult.Error<int>(E2)), combineErrors: true);
         Assert.Equal(2, r.Errors.Count);
     }
 
     [Fact]
     public async Task OrElseAsync_Generic_Combine_True_Fallback_Success()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).OrElseAsync(
-            _ => Task.FromResult(AxisResult.AxisResult.Ok(7)), combineErrors: true);
+        var r = await AxisResult.Error<int>(E1).OrElseAsync(
+            _ => Task.FromResult(AxisResult.Ok(7)), combineErrors: true);
         Assert.Equal(7, r.Value);
     }
 
     [Fact]
     public async Task OrElseAsync_Generic_Combine_True_Source_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok(5);
+        var src = AxisResult.Ok(5);
         var r = await src.OrElseAsync(
-            _ => Task.FromResult(AxisResult.AxisResult.Ok(9)), combineErrors: true);
+            _ => Task.FromResult(AxisResult.Ok(9)), combineErrors: true);
         Assert.Equal(5, r.Value);
     }
 
     [Fact]
     public async Task OrElseAsync_Generic_Combine_False_Replaces()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).OrElseAsync(
-            _ => Task.FromResult(AxisResult.AxisResult.Error<int>(E2)), combineErrors: false);
+        var r = await AxisResult.Error<int>(E1).OrElseAsync(
+            _ => Task.FromResult(AxisResult.Error<int>(E2)), combineErrors: false);
         Assert.Single(r.Errors);
         Assert.Equal("E2", r.Errors[0].Code);
     }
@@ -385,35 +383,35 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task EnsureAsync_Predicate_Success_Passes()
     {
-        var r = await AxisResult.AxisResult.Ok(10).EnsureAsync(x => Task.FromResult(x > 0), E1);
+        var r = await AxisResult.Ok(10).EnsureAsync(x => Task.FromResult(x > 0), E1);
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
     public async Task EnsureAsync_Predicate_Fails()
     {
-        var r = await AxisResult.AxisResult.Ok(-1).EnsureAsync(x => Task.FromResult(x > 0), E1);
+        var r = await AxisResult.Ok(-1).EnsureAsync(x => Task.FromResult(x > 0), E1);
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task EnsureAsync_Predicate_Already_Failure_Propagates()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E2).EnsureAsync(x => Task.FromResult(x > 0), E1);
+        var r = await AxisResult.Error<int>(E2).EnsureAsync(x => Task.FromResult(x > 0), E1);
         Assert.Equal("E2", r.Errors[0].Code);
     }
 
     [Fact]
     public async Task EnsureAsync_Validation_Success_Passes()
     {
-        var r = await AxisResult.AxisResult.Ok(10).EnsureAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok()));
+        var r = await AxisResult.Ok(10).EnsureAsync(_ => Task.FromResult(AxisResult.Ok()));
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
     public async Task EnsureAsync_Validation_Fails()
     {
-        var r = await AxisResult.AxisResult.Ok(10).EnsureAsync(_ => Task.FromResult(AxisResult.AxisResult.Error(E1)));
+        var r = await AxisResult.Ok(10).EnsureAsync(_ => Task.FromResult(AxisResult.Error(E1)));
         Assert.True(r.IsFailure);
     }
 
@@ -421,7 +419,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task EnsureAsync_Validation_Already_Failure_Skips()
     {
         var called = false;
-        await AxisResult.AxisResult.Error<int>(E2).EnsureAsync(_ => { called = true; return Task.FromResult(AxisResult.AxisResult.Ok()); });
+        await AxisResult.Error<int>(E2).EnsureAsync(_ => { called = true; return Task.FromResult(AxisResult.Ok()); });
         Assert.False(called);
     }
 
@@ -432,28 +430,28 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task ZipAsync_PureMapper_Success()
     {
-        var r = await AxisResult.AxisResult.Ok(5).ZipAsync(x => Task.FromResult(x * 2));
+        var r = await AxisResult.Ok(5).ZipAsync(x => Task.FromResult(x * 2));
         Assert.Equal((5, 10), r.Value);
     }
 
     [Fact]
     public async Task ZipAsync_PureMapper_Failure_Propagates()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).ZipAsync(x => Task.FromResult(x * 2));
+        var r = await AxisResult.Error<int>(E1).ZipAsync(x => Task.FromResult(x * 2));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task ZipAsync_ResultMapper_Success()
     {
-        var r = await AxisResult.AxisResult.Ok(5).ZipAsync(x => Task.FromResult(AxisResult.AxisResult.Ok(x + 1)));
+        var r = await AxisResult.Ok(5).ZipAsync(x => Task.FromResult(AxisResult.Ok(x + 1)));
         Assert.Equal((5, 6), r.Value);
     }
 
     [Fact]
     public async Task ZipAsync_ResultMapper_Fails()
     {
-        var r = await AxisResult.AxisResult.Ok(5).ZipAsync(_ => Task.FromResult(AxisResult.AxisResult.Error<int>(E1)));
+        var r = await AxisResult.Ok(5).ZipAsync(_ => Task.FromResult(AxisResult.Error<int>(E1)));
         Assert.True(r.IsFailure);
     }
 
@@ -461,7 +459,7 @@ public class AxisResultFunctionalAsyncTests
     public async Task ZipAsync_ResultMapper_SourceFails_Skips()
     {
         var called = false;
-        await AxisResult.AxisResult.Error<int>(E1).ZipAsync(x => { called = true; return Task.FromResult(AxisResult.AxisResult.Ok(x)); });
+        await AxisResult.Error<int>(E1).ZipAsync(x => { called = true; return Task.FromResult(AxisResult.Ok(x)); });
         Assert.False(called);
     }
 
@@ -472,14 +470,14 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task RecoverAsync_WithErrors_Failure()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).RecoverAsync(errs => Task.FromResult(errs.Count * 10));
+        var r = await AxisResult.Error<int>(E1).RecoverAsync(errs => Task.FromResult(errs.Count * 10));
         Assert.Equal(10, r.Value);
     }
 
     [Fact]
     public async Task RecoverAsync_WithErrors_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok(5);
+        var src = AxisResult.Ok(5);
         var r = await src.RecoverAsync(_ => Task.FromResult(99));
         Assert.Same(src, r);
     }
@@ -487,14 +485,14 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task RecoverAsync_NoArgs_Failure()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).RecoverAsync(() => Task.FromResult(42));
+        var r = await AxisResult.Error<int>(E1).RecoverAsync(() => Task.FromResult(42));
         Assert.Equal(42, r.Value);
     }
 
     [Fact]
     public async Task RecoverAsync_NoArgs_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok(5);
+        var src = AxisResult.Ok(5);
         var r = await src.RecoverAsync(() => Task.FromResult(99));
         Assert.Same(src, r);
     }
@@ -506,7 +504,7 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task RecoverWhenAsync_Predicate_Match()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).RecoverWhenAsync(
+        var r = await AxisResult.Error<int>(E1).RecoverWhenAsync(
             errs => errs.Count == 1, _ => Task.FromResult(99));
         Assert.Equal(99, r.Value);
     }
@@ -514,7 +512,7 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task RecoverWhenAsync_Predicate_NoMatch()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).RecoverWhenAsync(
+        var r = await AxisResult.Error<int>(E1).RecoverWhenAsync(
             errs => errs.Count > 5, _ => Task.FromResult(99));
         Assert.True(r.IsFailure);
     }
@@ -522,7 +520,7 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task RecoverWhenAsync_Predicate_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok(1);
+        var src = AxisResult.Ok(1);
         var r = await src.RecoverWhenAsync(_ => true, _ => Task.FromResult(9));
         Assert.Same(src, r);
     }
@@ -530,21 +528,21 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task RecoverWhenAsync_Type_Match()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).RecoverWhenAsync(AxisErrorType.NotFound, () => Task.FromResult(99));
+        var r = await AxisResult.Error<int>(E1).RecoverWhenAsync(AxisErrorType.NotFound, () => Task.FromResult(99));
         Assert.Equal(99, r.Value);
     }
 
     [Fact]
     public async Task RecoverWhenAsync_Type_NoMatch()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).RecoverWhenAsync(AxisErrorType.Conflict, () => Task.FromResult(99));
+        var r = await AxisResult.Error<int>(E1).RecoverWhenAsync(AxisErrorType.Conflict, () => Task.FromResult(99));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task RecoverWhenAsync_Type_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok(1);
+        var src = AxisResult.Ok(1);
         var r = await src.RecoverWhenAsync(AxisErrorType.NotFound, () => Task.FromResult(9));
         Assert.Same(src, r);
     }
@@ -552,21 +550,21 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task RecoverWhenAsync_Code_Match()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).RecoverWhenAsync("E1", () => Task.FromResult(99));
+        var r = await AxisResult.Error<int>(E1).RecoverWhenAsync("E1", () => Task.FromResult(99));
         Assert.Equal(99, r.Value);
     }
 
     [Fact]
     public async Task RecoverWhenAsync_Code_NoMatch()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).RecoverWhenAsync("X", () => Task.FromResult(99));
+        var r = await AxisResult.Error<int>(E1).RecoverWhenAsync("X", () => Task.FromResult(99));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task RecoverWhenAsync_Code_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok(1);
+        var src = AxisResult.Ok(1);
         var r = await src.RecoverWhenAsync("E1", () => Task.FromResult(9));
         Assert.Same(src, r);
     }
@@ -574,21 +572,21 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task RecoverNotFoundAsync_AllNotFound()
     {
-        var r = await AxisResult.AxisResult.Error<int>(new[] { E1, AxisError.NotFound("X") }).RecoverNotFoundAsync(() => Task.FromResult(42));
+        var r = await AxisResult.Error<int>([E1, AxisError.NotFound("X")]).RecoverNotFoundAsync(() => Task.FromResult(42));
         Assert.Equal(42, r.Value);
     }
 
     [Fact]
     public async Task RecoverNotFoundAsync_Mixed()
     {
-        var r = await AxisResult.AxisResult.Error<int>(new[] { E1, E2 }).RecoverNotFoundAsync(() => Task.FromResult(42));
+        var r = await AxisResult.Error<int>([E1, E2]).RecoverNotFoundAsync(() => Task.FromResult(42));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task RecoverNotFoundAsync_Success_Skips()
     {
-        var src = AxisResult.AxisResult.Ok(1);
+        var src = AxisResult.Ok(1);
         var r = await src.RecoverNotFoundAsync(() => Task.FromResult(9));
         Assert.Same(src, r);
     }
@@ -600,8 +598,8 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task SelectManyAsync_Success_Chains()
     {
-        var r = await AxisResult.AxisResult.Ok(2).SelectManyAsync(
-            x => Task.FromResult(AxisResult.AxisResult.Ok(x + 1)),
+        var r = await AxisResult.Ok(2).SelectManyAsync(
+            x => Task.FromResult(AxisResult.Ok(x + 1)),
             (x, y) => x * y);
         Assert.Equal(6, r.Value);
     }
@@ -609,8 +607,8 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task SelectManyAsync_Source_Fails()
     {
-        var r = await AxisResult.AxisResult.Error<int>(E1).SelectManyAsync(
-            x => Task.FromResult(AxisResult.AxisResult.Ok(x + 1)),
+        var r = await AxisResult.Error<int>(E1).SelectManyAsync(
+            x => Task.FromResult(AxisResult.Ok(x + 1)),
             (x, y) => x * y);
         Assert.True(r.IsFailure);
     }
@@ -618,8 +616,8 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public async Task SelectManyAsync_Binder_Fails()
     {
-        var r = await AxisResult.AxisResult.Ok(2).SelectManyAsync(
-            _ => Task.FromResult(AxisResult.AxisResult.Error<int>(E2)),
+        var r = await AxisResult.Ok(2).SelectManyAsync(
+            _ => Task.FromResult(AxisResult.Error<int>(E2)),
             (x, y) => x * y);
         Assert.True(r.IsFailure);
     }
@@ -627,8 +625,8 @@ public class AxisResultFunctionalAsyncTests
     [Fact]
     public void SelectMany_Sync_Binder_Fails()
     {
-        var r = AxisResult.AxisResult.Ok(2).SelectMany(
-            _ => AxisResult.AxisResult.Error<int>(E2),
+        var r = AxisResult.Ok(2).SelectMany(
+            _ => AxisResult.Error<int>(E2),
             (x, y) => x * y);
         Assert.True(r.IsFailure);
     }
