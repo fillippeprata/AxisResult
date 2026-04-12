@@ -1,4 +1,4 @@
-namespace AxisTrix.Results;
+namespace AxisTrix;
 
 public sealed class NoAccessValueOnErrorResultException(IReadOnlyList<AxisError> errors) : InvalidOperationException(BuildMessage(errors))
 {

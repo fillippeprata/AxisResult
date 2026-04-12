@@ -1,4 +1,4 @@
-namespace AxisTrix.Results;
+namespace AxisTrix;
 
 public abstract partial class AxisResult<TValue>(TValue? value, List<AxisError>? errors = null) : AxisResult(errors)
 {

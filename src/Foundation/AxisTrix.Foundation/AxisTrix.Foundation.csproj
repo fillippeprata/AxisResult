@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Types\AxisTrix.Types\AxisTrix.Types.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Results\" />
-  </ItemGroup>
-
 </Project>

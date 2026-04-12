@@ -1,4 +1,4 @@
-﻿using AxisTrix.Results;
+﻿using AxisTrix;
 using AxisTrix.Types.Localization;
 using CountryId = AxisTrix.Types.Localization.CountryId;
 

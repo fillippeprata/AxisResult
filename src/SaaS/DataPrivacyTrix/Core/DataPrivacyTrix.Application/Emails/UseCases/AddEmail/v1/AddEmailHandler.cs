@@ -1,5 +1,5 @@
+using AxisTrix;
 using AxisTrix.CQRS.Commands;
-using AxisTrix.Results;
 using DataPrivacyTrix.Contracts.Emails.v1.AddEmail;
 using DataPrivacyTrix.Ports;
 

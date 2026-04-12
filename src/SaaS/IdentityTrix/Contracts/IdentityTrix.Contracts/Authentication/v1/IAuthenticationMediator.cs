@@ -1,4 +1,4 @@
-﻿using AxisTrix.Results;
+﻿using AxisTrix;
 using IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 
 namespace IdentityTrix.Contracts.Authentication.v1;

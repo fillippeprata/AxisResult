@@ -1,4 +1,4 @@
-using AxisTrix.Results;
+using AxisTrix;
 using IdentityTrix.Domain.ExternalApis.Root;
 using IdentityTrix.Ports.ExternalApis;
 using IdentityTrix.SharedKernel.ExternalApis;

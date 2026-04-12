@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using AxisTrix.CQRS;
 using AxisTrix.Logging;
-using AxisTrix.Results;
 
 namespace AxisTrix.Pipelines.Behaviors;
 

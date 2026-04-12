@@ -1,5 +1,4 @@
 ﻿using AxisTrix.Logging;
-using AxisTrix.Results;
 using AxisTrix.Telemetry;
 using Npgsql;
 

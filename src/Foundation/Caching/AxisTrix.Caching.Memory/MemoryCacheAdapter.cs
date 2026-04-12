@@ -1,5 +1,4 @@
 using AxisTrix.Accessor;
-using AxisTrix.Results;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace AxisTrix.Caching.Memory;

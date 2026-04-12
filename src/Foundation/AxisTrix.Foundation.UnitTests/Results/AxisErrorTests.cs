@@ -1,5 +1,3 @@
-using AxisTrix.Results;
-
 namespace AxisTrix.Mediator.UnitTests.Results;
 
 public class AxisErrorTests

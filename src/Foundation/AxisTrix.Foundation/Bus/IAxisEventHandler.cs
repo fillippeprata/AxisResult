@@ -1,5 +1,3 @@
-using AxisTrix.Results;
-
 namespace AxisTrix.Bus;
 
 public interface IAxisEventHandler<in TEvent> where TEvent : IAxisEvent

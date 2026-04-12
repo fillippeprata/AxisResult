@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 using AxisTrix.CQRS.Commands;
 using AxisTrix.CQRS.Queries;
 using AxisTrix.Pipelines;
-using AxisTrix.Results;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

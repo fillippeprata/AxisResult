@@ -1,5 +1,3 @@
-using AxisTrix.Results;
-
 namespace AxisTrix.Caching;
 
 public interface IAxisCache

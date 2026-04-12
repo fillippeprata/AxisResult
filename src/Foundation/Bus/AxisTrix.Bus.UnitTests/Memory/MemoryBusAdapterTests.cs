@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using AxisTrix.Bus.Memory;
-using AxisTrix.Results;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AxisTrix.Bus.UnitTests.Memory;

@@ -2,7 +2,6 @@ using System.Net;
 using Amazon.S3;
 using Amazon.S3.Model;
 using AxisTrix.Accessor;
-using AxisTrix.Results;
 
 namespace AxisTrix.Storage.CloudflareR2;
 

@@ -1,4 +1,3 @@
-using AxisTrix.Results;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AxisTrix.Bus.Memory;

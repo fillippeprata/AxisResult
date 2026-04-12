@@ -1,5 +1,5 @@
+using AxisTrix;
 using AxisTrix.CQRS.Queries;
-using AxisTrix.Results;
 using DataPrivacyTrix.Contracts.Cellphones.v1.GetByCellphoneNumber;
 using DataPrivacyTrix.Ports.Cellphones;
 

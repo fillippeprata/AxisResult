@@ -1,4 +1,4 @@
-namespace AxisTrix.Results;
+namespace AxisTrix;
 
 public static class AxisResultValueTaskExtensions
 {

@@ -1,4 +1,4 @@
-﻿namespace AxisTrix.Results;
+﻿namespace AxisTrix;
 
 public enum AxisErrorType
 {

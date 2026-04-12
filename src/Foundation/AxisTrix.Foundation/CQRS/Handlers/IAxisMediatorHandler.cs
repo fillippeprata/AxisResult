@@ -1,6 +1,5 @@
 using AxisTrix.CQRS.Commands;
 using AxisTrix.CQRS.Queries;
-using AxisTrix.Results;
 
 namespace AxisTrix.CQRS.Handlers;
 

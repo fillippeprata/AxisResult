@@ -1,5 +1,4 @@
 ﻿using AxisTrix;
-using AxisTrix.Results;
 using IdentityTrix.Contracts.Authentication.v1;
 using IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 

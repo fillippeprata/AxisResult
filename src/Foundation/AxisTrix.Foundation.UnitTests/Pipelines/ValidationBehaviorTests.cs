@@ -1,6 +1,5 @@
 using AxisTrix.CQRS;
 using AxisTrix.Pipelines;
-using AxisTrix.Results;
 using AxisTrix.Validation;
 
 namespace AxisTrix.Mediator.UnitTests.Pipelines;

@@ -1,5 +1,5 @@
+using AxisTrix;
 using AxisTrix.CQRS.Commands;
-using AxisTrix.Results;
 using IdentityTrix.Application.Authentication.Services;
 using IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 

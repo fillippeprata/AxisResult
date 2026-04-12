@@ -1,7 +1,6 @@
 using AxisTrix;
 using AxisTrix.Logging;
 using AxisTrix.Repository.Postgres;
-using AxisTrix.Results;
 using IdentityTrix.Driven.Repositories.Postgres.ExternalApis.Scripts;
 using IdentityTrix.Ports.ExternalApis;
 using IdentityTrix.SharedKernel;

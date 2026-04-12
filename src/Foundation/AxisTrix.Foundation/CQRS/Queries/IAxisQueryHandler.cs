@@ -1,5 +1,3 @@
-using AxisTrix.Results;
-
 namespace AxisTrix.CQRS.Queries;
 
 public interface IAxisQueryHandler<in TQuery, TResponse>

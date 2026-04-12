@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using AxisTrix.CQRS;
 using AxisTrix.CQRS.Queries;
-using AxisTrix.Results;
 using AxisTrix.Telemetry;
 
 namespace AxisTrix.Pipelines.Behaviors;

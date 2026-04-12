@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using AxisTrix.Results;
 using AxisTrix.Types.Localization;
 using AxisTrix.Validation.Localization.Brazil;
 using FluentValidation;

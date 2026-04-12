@@ -1,5 +1,3 @@
-using AxisTrix.Results;
-
 namespace AxisTrix.Repositories;
 
 public interface IAxisUnitOfWork : IDisposable, IAsyncDisposable

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using AxisTrix.Accessor;
 using AxisTrix.CQRS.Handlers;
-using AxisTrix.Results;
 using AxisTrix.Types.Persons;
 
 namespace AxisTrix;

@@ -1,4 +1,4 @@
-namespace AxisTrix.Results;
+namespace AxisTrix;
 
 internal sealed class AxisResultImpl(List<AxisError>? errors = null) : AxisResult(errors);
 

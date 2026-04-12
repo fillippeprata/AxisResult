@@ -1,4 +1,4 @@
-﻿using AxisTrix.Results;
+﻿using AxisTrix;
 using IdentityTrix.Contracts.ExternalApis.v1;
 using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 using IdentityTrix.UnitTests.Mocks;

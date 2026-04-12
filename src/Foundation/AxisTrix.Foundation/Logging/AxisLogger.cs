@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using AxisTrix.Results;
 using Microsoft.Extensions.Logging;
 
 namespace AxisTrix.Logging;

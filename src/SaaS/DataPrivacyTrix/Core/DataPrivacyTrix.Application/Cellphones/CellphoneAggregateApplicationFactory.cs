@@ -1,4 +1,4 @@
-using AxisTrix.Results;
+using AxisTrix;
 using DataPrivacyTrix.Domain.Cellphones.Root;
 using DataPrivacyTrix.Ports.Cellphones;
 using DataPrivacyTrix.SharedKernel.Cellphones;

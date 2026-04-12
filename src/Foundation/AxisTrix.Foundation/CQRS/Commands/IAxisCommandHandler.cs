@@ -1,5 +1,3 @@
-using AxisTrix.Results;
-
 namespace AxisTrix.CQRS.Commands;
 
 public interface IAxisCommandHandler<in TCommand> where TCommand : IAxisCommand

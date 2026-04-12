@@ -1,7 +1,6 @@
 using AxisTrix.Accessor;
 using AxisTrix.Caching.Memory;
 using AxisTrix.DependencyInjection;
-using AxisTrix.Results;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 

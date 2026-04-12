@@ -1,5 +1,4 @@
 using AxisTrix.CQRS;
-using AxisTrix.Results;
 
 namespace AxisTrix.Pipelines;
 

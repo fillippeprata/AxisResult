@@ -1,5 +1,3 @@
-using AxisTrix.Results;
-
 namespace AxisTrix.Validation;
 
 public interface IAxisValidator<in T>
