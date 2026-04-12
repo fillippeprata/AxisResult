@@ -790,6 +790,35 @@ public class AxisResultExtensionsTaskTests
 
     #endregion
 
+    #region ActionAsync
+
+    [Fact]
+    public async Task T_ActionAsync_Success_Preserves_Value()
+    {
+        var r = await TOkAsync(5).ActionAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok()));
+        Assert.True(r.IsSuccess);
+        Assert.Equal(5, r.Value);
+    }
+
+    [Fact]
+    public async Task T_ActionAsync_InnerFailure_PropagatesError()
+    {
+        var r = await TOkAsync(5).ActionAsync(_ => Task.FromResult(AxisResult.AxisResult.Error(E1)));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E1");
+    }
+
+    [Fact]
+    public async Task T_ActionAsync_SourceFailure_SkipsAction()
+    {
+        var called = false;
+        var r = await TErrAsync<int>(E1).ActionAsync(_ => { called = true; return Task.FromResult(AxisResult.AxisResult.Ok()); });
+        Assert.False(called);
+        Assert.True(r.IsFailure);
+    }
+
+    #endregion
+
     #region ThenAsync (Value-Preserving Overload)
 
     [Fact]

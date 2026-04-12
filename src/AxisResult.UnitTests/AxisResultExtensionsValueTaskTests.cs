@@ -747,4 +747,60 @@ public class AxisResultExtensionsValueTaskTests
     }
 
     #endregion
+
+    #region RequireNotFoundAsync (NonGeneric)
+
+    [Fact]
+    public async Task VT_RequireNotFoundAsync_NG_Success_ReturnsError()
+    {
+        var r = await VtOkAsync().RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "ALREADY_EXISTS");
+    }
+
+    [Fact]
+    public async Task VT_RequireNotFoundAsync_NG_NotFoundError_ReturnsOk()
+    {
+        var notFound = AxisError.NotFound("NOT_FOUND");
+        var r = await VtErrAsync(notFound).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public async Task VT_RequireNotFoundAsync_NG_OtherError_PropagatesOriginal()
+    {
+        var r = await VtErrAsync(_e2).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E2");
+    }
+
+    #endregion
+
+    #region RequireNotFoundAsync (Generic)
+
+    [Fact]
+    public async Task VT_RequireNotFoundAsync_Generic_Success_ReturnsError()
+    {
+        var r = await VtOkAsync(5).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "ALREADY_EXISTS");
+    }
+
+    [Fact]
+    public async Task VT_RequireNotFoundAsync_Generic_NotFoundError_ReturnsOk()
+    {
+        var notFound = AxisError.NotFound("NOT_FOUND");
+        var r = await VtErrAsync<int>(notFound).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public async Task VT_RequireNotFoundAsync_Generic_OtherError_PropagatesOriginal()
+    {
+        var r = await VtErrAsync<int>(_e2).RequireNotFoundAsync(AxisError.BusinessRule("ALREADY_EXISTS"));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E2");
+    }
+
+    #endregion
 }
