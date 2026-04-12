@@ -17,7 +17,7 @@ public abstract class PostgresRepositoryBase(
             await using var command = await uow.NewCommandAsync(sql);
             addParams(command.Parameters);
             await command.ExecuteNonQueryAsync(CancellationToken);
-            return await AxisResult.OkAsync();
+            return AxisResult.Ok();
         }
         catch (Exception ex)
         {

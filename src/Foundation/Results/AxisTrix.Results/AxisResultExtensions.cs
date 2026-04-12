@@ -65,40 +65,13 @@ public static class AxisResultExtensions
             => await (await task).MapAsync(mapper);
 
         public async Task<AxisResult<TValue>> ActionAsync(Func<TValue, Task<AxisResult>> next)
-        {
-            var result = await task;
-            if (result.IsFailure)
-                return result;
-
-            var nextResult = await next(result.Value);
-            return nextResult.IsSuccess
-                ? result
-                : nextResult.Errors.ToArray();
-        }
+            => await (await task).ThenAsync(next);
 
         public async Task<AxisResult<TValue>> ThenAsync(Func<TValue, AxisResult> next)
-        {
-            var result = await task;
-            if (result.IsFailure)
-                return result;
-
-            var nextResult = next(result.Value);
-            return nextResult.IsSuccess
-                ? result
-                : nextResult.Errors.ToArray();
-        }
+            => (await task).Then(next);
 
         public async Task<AxisResult<TValue>> ThenAsync(Func<TValue, Task<AxisResult>> next)
-        {
-            var result = await task;
-            if (result.IsFailure)
-                return result;
-
-            var nextResult = await next(result.Value);
-            return nextResult.IsSuccess
-                ? result
-                : nextResult.Errors.ToArray();
-        }
+            => await (await task).ThenAsync(next);
 
         public async Task<AxisResult<TValue>> TapAsync(Action<TValue> action)
             => (await task).Tap(action);

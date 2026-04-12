@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <RootNamespace>AxisTrix.Results.UnitTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +15,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AxisTrix.Results\AxisTrix.Results.csproj" />
   </ItemGroup>
 
 </Project>

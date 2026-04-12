@@ -121,9 +121,50 @@ public class AxisResultExtensionsValueTaskTests
         Assert.Equal("c1", s);
     }
 
+    [Fact]
+    public async Task VT_Ext_WithValueAsync_Success_ReturnsNewValue()
+    {
+        var r = await VtOkAsync().WithValueAsync(42);
+        Assert.True(r.IsSuccess);
+        Assert.Equal(42, r.Value);
+    }
+
+    [Fact]
+    public async Task VT_Ext_WithValueAsync_Failure_PropagatesErrors()
+    {
+        var r = await VtErrAsync(_e1).WithValueAsync(42);
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
+    }
+
     #endregion
 
     #region Generic ValueTask extensions
+
+    [Fact]
+    public async Task VT_Ext_ActionAsync_Success_Preserves_Value()
+    {
+        var r = await VtOkAsync(5).ActionAsync(_ => VtOkAsync());
+        Assert.True(r.IsSuccess);
+        Assert.Equal(5, r.Value);
+    }
+
+    [Fact]
+    public async Task VT_Ext_ActionAsync_Success_Failure_Propagates_Error()
+    {
+        var r = await VtOkAsync(5).ActionAsync(_ => VtErrAsync(_e1));
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
+    }
+
+    [Fact]
+    public async Task VT_Ext_ActionAsync_Source_Failure_Skips()
+    {
+        var called = false;
+        var r = await VtErrAsync<int>(_e1).ActionAsync(_ => { called = true; return VtOkAsync(); });
+        Assert.False(called);
+        Assert.True(r.IsFailure);
+    }
 
     [Fact]
     public async Task VT_Ext_MapAsync_Sync()
@@ -140,10 +181,19 @@ public class AxisResultExtensionsValueTaskTests
     }
 
     [Fact]
-    public async Task VT_Ext_ThenAsync_Generic_Sync_NG()
+    public async Task VT_Ext_ThenAsync_Generic_Sync_NG_Preserves_Value()
     {
         var r = await VtOkAsync(5).ThenAsync(_ => AxisResult.Ok());
         Assert.True(r.IsSuccess);
+        Assert.Equal(5, r.Value);
+    }
+
+    [Fact]
+    public async Task VT_Ext_ThenAsync_Generic_Sync_NG_Failure_Propagates()
+    {
+        var r = await VtOkAsync(5).ThenAsync(_ => AxisResult.Error(_e1));
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
     }
 
     [Fact]
@@ -154,10 +204,19 @@ public class AxisResultExtensionsValueTaskTests
     }
 
     [Fact]
-    public async Task VT_Ext_ThenAsync_Generic_Async_NG()
+    public async Task VT_Ext_ThenAsync_Generic_Async_NG_Preserves_Value()
     {
         var r = await VtOkAsync(5).ThenAsync(_ => VtOkAsync());
         Assert.True(r.IsSuccess);
+        Assert.Equal(5, r.Value);
+    }
+
+    [Fact]
+    public async Task VT_Ext_ThenAsync_Generic_Async_NG_Failure_Propagates()
+    {
+        var r = await VtOkAsync(5).ThenAsync(_ => VtErrAsync(_e1));
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
     }
 
     [Fact]

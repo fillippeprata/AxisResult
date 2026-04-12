@@ -40,6 +40,12 @@ public static class AxisResultValueTaskExtensions
         public async ValueTask<TResult> MatchAsync<TResult>(Func<ValueTask<TResult>> onSuccess, Func<IReadOnlyList<AxisError>, ValueTask<TResult>> onFailure)
             => await (await task).MatchAsync(onSuccess, onFailure);
 
+        public async ValueTask<AxisResult<TNew>> WithValueAsync<TNew>(TNew value)
+        {
+            var result = await task;
+            return result.IsSuccess ? AxisResult.Ok(value) : AxisResult.Error<TNew>(result.Errors);
+        }
+
         public async ValueTask<AxisResult> RequireNotFoundAsync(AxisError errorIfFound)
             => (await task).RequireNotFound(errorIfFound);
     }
@@ -51,11 +57,14 @@ public static class AxisResultValueTaskExtensions
         public async ValueTask<AxisResult<TNew>> MapAsync<TNew>(Func<TValue, ValueTask<TNew>> mapper)
             => await (await task).MapAsync(mapper);
 
-        public async ValueTask<AxisResult> ThenAsync(Func<TValue, AxisResult> next)
+        public async ValueTask<AxisResult<TValue>> ActionAsync(Func<TValue, ValueTask<AxisResult>> next)
+            => await (await task).ThenAsync(next);
+
+        public async ValueTask<AxisResult<TValue>> ThenAsync(Func<TValue, AxisResult> next)
             => (await task).Then(next);
         public async ValueTask<AxisResult<TNew>> ThenAsync<TNew>(Func<TValue, AxisResult<TNew>> next)
             => (await task).Then(next);
-        public async ValueTask<AxisResult> ThenAsync(Func<TValue, ValueTask<AxisResult>> next)
+        public async ValueTask<AxisResult<TValue>> ThenAsync(Func<TValue, ValueTask<AxisResult>> next)
             => await (await task).ThenAsync(next);
         public async ValueTask<AxisResult<TNew>> ThenAsync<TNew>(Func<TValue, ValueTask<AxisResult<TNew>>> next)
             => await (await task).ThenAsync(next);

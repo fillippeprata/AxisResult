@@ -147,10 +147,19 @@ public class AxisResultExtensionsTaskTests
     }
 
     [Fact]
-    public async Task T_ThenAsync_Generic_Sync_NG()
+    public async Task T_ThenAsync_Generic_Sync_NG_Preserves_Value()
     {
         var r = await TOkAsync(5).ThenAsync(_ => AxisResult.Ok());
         Assert.True(r.IsSuccess);
+        Assert.Equal(5, r.Value);
+    }
+
+    [Fact]
+    public async Task T_ThenAsync_Generic_Sync_NG_Failure_Propagates()
+    {
+        var r = await TOkAsync(5).ThenAsync(_ => AxisResult.Error(E1));
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
     }
 
     [Fact]
@@ -161,10 +170,19 @@ public class AxisResultExtensionsTaskTests
     }
 
     [Fact]
-    public async Task T_ThenAsync_Generic_Async_NG()
+    public async Task T_ThenAsync_Generic_Async_NG_Preserves_Value()
     {
         var r = await TOkAsync(5).ThenAsync(_ => Task.FromResult(AxisResult.Ok()));
         Assert.True(r.IsSuccess);
+        Assert.Equal(5, r.Value);
+    }
+
+    [Fact]
+    public async Task T_ThenAsync_Generic_Async_NG_Failure_Propagates()
+    {
+        var r = await TOkAsync(5).ThenAsync(_ => Task.FromResult(AxisResult.Error(E1)));
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
     }
 
     [Fact]

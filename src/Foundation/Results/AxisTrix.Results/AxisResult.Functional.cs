@@ -62,9 +62,19 @@ public abstract partial class AxisResult<TValue>
     public AxisResult<TNew> Map<TNew>(Func<TValue, TNew> mapper) => IsSuccess ? Ok(mapper(Value)) : PropagateErrors<TNew>(this);
     public async Task<AxisResult<TNew>> MapAsync<TNew>(Func<TValue, Task<TNew>> mapper) => IsSuccess ? Ok(await mapper(Value)) : PropagateErrors<TNew>(this);
 
-    public AxisResult Then(Func<TValue, AxisResult> next) => IsSuccess ? next(Value) : this;
+    public AxisResult<TValue> Then(Func<TValue, AxisResult> next)
+    {
+        if (IsFailure) return this;
+        var nextResult = next(Value);
+        return nextResult.IsSuccess ? this : PropagateErrors<TValue>(nextResult);
+    }
     public AxisResult<TNew> Then<TNew>(Func<TValue, AxisResult<TNew>> next) => IsSuccess ? next(Value) : PropagateErrors<TNew>(this);
-    public async Task<AxisResult> ThenAsync(Func<TValue, Task<AxisResult>> next) => IsSuccess ? await next(Value) : this;
+    public async Task<AxisResult<TValue>> ThenAsync(Func<TValue, Task<AxisResult>> next)
+    {
+        if (IsFailure) return this;
+        var nextResult = await next(Value);
+        return nextResult.IsSuccess ? this : PropagateErrors<TValue>(nextResult);
+    }
     public async Task<AxisResult<TNew>> ThenAsync<TNew>(Func<TValue, Task<AxisResult<TNew>>> next) => IsSuccess ? await next(Value) : PropagateErrors<TNew>(this);
 
     public new AxisResult<TValue> Tap(Action action) { if (IsSuccess) action(); return this; }

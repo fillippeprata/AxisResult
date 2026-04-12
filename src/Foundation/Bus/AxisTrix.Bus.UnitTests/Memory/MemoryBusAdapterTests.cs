@@ -18,7 +18,7 @@ public class MemoryBusAdapterTests
         public Task<AxisResult> HandleAsync(TestEvent @event)
         {
             WasCalled = true;
-            return AxisResult.OkAsync();
+            return Task.FromResult(AxisResult.Ok());
         }
     }
 
@@ -246,7 +246,7 @@ public class MemoryBusAdapterTests
         public Task<AxisResult> HandleAsync(TestEvent @event)
         {
             ReceivedEvent = @event;
-            return AxisResult.OkAsync();
+            return Task.FromResult(AxisResult.Ok());
         }
     }
 

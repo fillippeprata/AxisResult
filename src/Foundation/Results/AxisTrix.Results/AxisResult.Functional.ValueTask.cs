@@ -44,8 +44,12 @@ public abstract partial class AxisResult<TValue>
     public async ValueTask<AxisResult<TNew>> MapAsync<TNew>(Func<TValue, ValueTask<TNew>> mapper)
         => IsSuccess ? Ok(await mapper(Value)) : PropagateErrors<TNew>(this);
 
-    public async ValueTask<AxisResult> ThenAsync(Func<TValue, ValueTask<AxisResult>> next)
-        => IsSuccess ? await next(Value) : this;
+    public async ValueTask<AxisResult<TValue>> ThenAsync(Func<TValue, ValueTask<AxisResult>> next)
+    {
+        if (IsFailure) return this;
+        var nextResult = await next(Value);
+        return nextResult.IsSuccess ? this : PropagateErrors<TValue>(nextResult);
+    }
     public async ValueTask<AxisResult<TNew>> ThenAsync<TNew>(Func<TValue, ValueTask<AxisResult<TNew>>> next)
         => IsSuccess ? await next(Value) : PropagateErrors<TNew>(this);
 

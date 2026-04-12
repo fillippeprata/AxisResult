@@ -11,8 +11,8 @@ public record AxisError
         Type = type;
     }
 
-    public string Code { get; init; }
-    public AxisErrorType Type { get; init; }
+    public string Code { get; }
+    public AxisErrorType Type { get; }
 
     public bool IsTransient => Type is AxisErrorType.ServiceUnavailable
         or AxisErrorType.Timeout

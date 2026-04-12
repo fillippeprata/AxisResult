@@ -40,9 +40,6 @@ public abstract partial class AxisResult
 
     #region Async
 
-    public static Task<AxisResult> OkAsync() => Task.FromResult(Ok());
-    public static Task<AxisResult<TValue>> OkAsync<TValue>(TValue value) => Task.FromResult(Ok(value));
-
     public static async Task<AxisResult<IReadOnlyList<TValue>>> AllAsync<TValue>(IEnumerable<Task<AxisResult<TValue>>> tasks)
     {
         var results = await Task.WhenAll(tasks);
@@ -88,7 +85,7 @@ public abstract partial class AxisResult
     }
     public static async Task<AxisResult> TryAsync(Func<Task> action, Func<Exception, AxisError>? errorHandler = null)
     {
-        try { await action(); return await OkAsync(); }
+        try { await action(); return Ok(); }
         catch (Exception ex) when (!IsCritical(ex)) { return errorHandler?.Invoke(ex) ?? AxisError.InternalServerError(ex.Message); }
     }
 

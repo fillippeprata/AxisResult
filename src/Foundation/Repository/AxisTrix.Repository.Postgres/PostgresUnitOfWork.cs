@@ -56,7 +56,7 @@ public class PostgresUnitOfWork(
             await _transaction.CommitAsync(mediator.CancellationToken);
             _transaction = null;
             span.SetStatus(AxisSpanStatus.Ok);
-            return await AxisResult.OkAsync();
+            return AxisResult.Ok();
         }
         catch (Exception ex)
         {

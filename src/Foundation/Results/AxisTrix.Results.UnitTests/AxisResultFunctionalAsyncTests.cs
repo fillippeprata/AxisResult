@@ -71,10 +71,19 @@ public class AxisResultFunctionalAsyncTests
     }
 
     [Fact]
-    public async Task ThenAsync_Generic_Success_To_NonGeneric()
+    public async Task ThenAsync_Generic_Success_To_NonGeneric_Preserves_Value()
     {
         var r = await AxisResult.Ok(5).ThenAsync(_ => Task.FromResult(AxisResult.Ok()));
         Assert.True(r.IsSuccess);
+        Assert.Equal(5, r.Value);
+    }
+
+    [Fact]
+    public async Task ThenAsync_Generic_Success_To_NonGeneric_Failure_Propagates_Error()
+    {
+        var r = await AxisResult.Ok(5).ThenAsync(_ => Task.FromResult(AxisResult.Error(E1)));
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
     }
 
     [Fact]
@@ -85,11 +94,12 @@ public class AxisResultFunctionalAsyncTests
     }
 
     [Fact]
-    public async Task ThenAsync_Generic_Failure_To_NonGeneric_Returns_This()
+    public async Task ThenAsync_Generic_Failure_To_NonGeneric_Propagates()
     {
         var src = AxisResult.Error<int>(E1);
         var r = await src.ThenAsync(_ => Task.FromResult(AxisResult.Ok()));
-        Assert.Same(src, r);
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
     }
 
     [Fact]

@@ -98,24 +98,6 @@ public class AxisResultFactoryTests
 
     #endregion
 
-    #region Async factories
-
-    [Fact]
-    public async Task OkAsync_Is_Success()
-    {
-        var r = await AxisResult.OkAsync();
-        Assert.True(r.IsSuccess);
-    }
-
-    [Fact]
-    public async Task OkAsync_Generic_Contains_Value()
-    {
-        var r = await AxisResult.OkAsync("hello");
-        Assert.Equal("hello", r.Value);
-    }
-
-    #endregion
-
     #region AllAsync / CombineAsync Task
 
     [Fact]
