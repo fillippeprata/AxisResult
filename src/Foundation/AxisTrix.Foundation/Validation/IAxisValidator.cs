@@ -2,6 +2,6 @@ namespace AxisTrix.Validation;
 
 public interface IAxisValidator<in T>
 {
-    AxisResult Validate(T instance);
-    Task<AxisResult> ValidateAsync(T instance);
+    AxisResult.AxisResult Validate(T instance);
+    Task<AxisResult.AxisResult> ValidateAsync(T instance);
 }

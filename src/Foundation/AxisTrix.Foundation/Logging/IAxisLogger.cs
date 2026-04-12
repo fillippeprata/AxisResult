@@ -1,3 +1,5 @@
+using AxisResult;
+
 namespace AxisTrix.Logging;
 
 /// <summary>
@@ -14,5 +16,5 @@ public interface IAxisLogger<in T>
     void LogCritical(string message, params (string Key, object? Value)[] properties);
 
     /// <summary>Structured logging for an <see cref="AxisResult"/> outcome.</summary>
-    void LogResult(string tag, AxisResult result);
+    void LogResult(string tag, AxisResult.AxisResult result);
 }

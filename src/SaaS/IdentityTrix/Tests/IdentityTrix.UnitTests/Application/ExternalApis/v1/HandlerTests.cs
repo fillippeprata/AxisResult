@@ -1,4 +1,3 @@
-using AxisTrix;
 using IdentityTrix.Contracts.ExternalApis.v1;
 using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
@@ -51,7 +50,7 @@ public class HandlerTests
 
         var mocks = IdentityTrixMocks.CreateSuccessfulMocks();
         mocks.ExternalApiReader.Setup(x => x.GetByIdAsync(externalApiId))
-            .ReturnsAsync(AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, testSecret, testName)));
+            .ReturnsAsync(AxisResult.AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, testSecret, testName)));
 
         var services = new ServiceCollection();
         services.AddMocks(mocks);

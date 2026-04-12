@@ -1,4 +1,4 @@
-﻿using AxisTrix;
+﻿using AxisResult;
 using AxisTrix.Types.Localization;
 using CountryId = AxisTrix.Types.Localization.CountryId;
 
@@ -13,7 +13,7 @@ public static class LocalizationExtensions
             var formatted = BrazilCellphoneValidator.Format(phone);
             if (formatted == null)
                 return AxisError.ValidationRule("CELLPHONE_NUMBER_NULL_OR_NOT_VALID");
-            return AxisResult.Ok(formatted);
+            return AxisResult.AxisResult.Ok(formatted);
         }
 
         return AxisError.Mapping("THERE_IS_NO_VALIDATION_FOR_THIS_COUNTRY");

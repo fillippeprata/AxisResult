@@ -1,3 +1,4 @@
+using AxisResult;
 using AxisTrix.Accessor;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -8,16 +9,16 @@ public class MemoryCacheAdapter(IMemoryCache memoryCache, IAxisMediatorAccessor 
     private readonly CancellationToken _cancellationToken = mediatorAccessor.AxisMediator!.CancellationToken;
     public Task<AxisResult<T?>> GetAsync<T>(string key)
     {
-        return AxisResult.TryAsync(() =>
+        return AxisResult.AxisResult.TryAsync(() =>
         {
             _cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult(memoryCache.Get<T>(key));
         });
     }
 
-    public Task<AxisResult> SetAsync<T>(string key, T value, TimeSpan? expiration = null)
+    public Task<AxisResult.AxisResult> SetAsync<T>(string key, T value, TimeSpan? expiration = null)
     {
-        return AxisResult.TryAsync(() =>
+        return AxisResult.AxisResult.TryAsync(() =>
         {
             _cancellationToken.ThrowIfCancellationRequested();
 
@@ -37,7 +38,7 @@ public class MemoryCacheAdapter(IMemoryCache memoryCache, IAxisMediatorAccessor 
             _cancellationToken.ThrowIfCancellationRequested();
 
             if (memoryCache.TryGetValue(key, out T? value))
-                return AxisResult.Ok(value!);
+                return AxisResult.AxisResult.Ok(value!);
 
             var result = await factory();
             if (result.IsFailure)
@@ -52,13 +53,13 @@ public class MemoryCacheAdapter(IMemoryCache memoryCache, IAxisMediatorAccessor 
         }
         catch (Exception ex)
         {
-            return AxisResult.Error<T>(AxisError.InternalServerError(ex.Message));
+            return AxisResult.AxisResult.Error<T>(AxisError.InternalServerError(ex.Message));
         }
     }
 
-    public Task<AxisResult> RemoveAsync(string key)
+    public Task<AxisResult.AxisResult> RemoveAsync(string key)
     {
-        return AxisResult.TryAsync(() =>
+        return AxisResult.AxisResult.TryAsync(() =>
         {
             _cancellationToken.ThrowIfCancellationRequested();
             memoryCache.Remove(key);
@@ -68,7 +69,7 @@ public class MemoryCacheAdapter(IMemoryCache memoryCache, IAxisMediatorAccessor 
 
     public Task<AxisResult<bool>> ExistsAsync(string key)
     {
-        return AxisResult.TryAsync(() =>
+        return AxisResult.AxisResult.TryAsync(() =>
         {
             _cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult(memoryCache.TryGetValue(key, out _));

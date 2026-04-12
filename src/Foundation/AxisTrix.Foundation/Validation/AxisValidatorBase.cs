@@ -42,7 +42,7 @@ public class AxisValidatorBase<T> : AbstractValidator<T>
     protected void DependentRules<TProperty1, TProperty2>(
         Expression<Func<T, TProperty1?>> expression1, string errorCode1,
         Expression<Func<T, TProperty2?>> expression2, string errorCode2,
-        Func<TProperty1, TProperty2, AxisResult> dependentRules)
+        Func<TProperty1, TProperty2, AxisResult.AxisResult> dependentRules)
     {
         RuleFor(expression1)
             .NotNull().WithErrorCode(errorCode1)

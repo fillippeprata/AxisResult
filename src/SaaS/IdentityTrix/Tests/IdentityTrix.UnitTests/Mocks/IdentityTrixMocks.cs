@@ -1,4 +1,4 @@
-﻿using AxisTrix;
+﻿using AxisResult;
 using AxisTrix.Caching;
 using IdentityTrix.Application.ExternalApis;
 using IdentityTrix.Ports;
@@ -16,10 +16,10 @@ internal record IdentityTrixMocks
         var mocks = new IdentityTrixMocks();
 
         mocks.UowProvider.Setup(x => x.UnitOfWork.SaveChangesAsync())
-            .ReturnsAsync(AxisResult.Ok());
+            .ReturnsAsync(AxisResult.AxisResult.Ok());
 
         mocks.ExternalApiWriter.Setup(x => x.CreateAsync(It.IsAny<IExternalApiEntityProperties>()))
-            .ReturnsAsync(AxisResult.Ok());
+            .ReturnsAsync(AxisResult.AxisResult.Ok());
 
         mocks.Cache.Setup(x => x.GetOrCreateAsync(
                 It.IsAny<string>(),

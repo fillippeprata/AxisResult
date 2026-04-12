@@ -1,4 +1,5 @@
-﻿using AxisTrix.Logging;
+﻿using AxisResult;
+using AxisTrix.Logging;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
@@ -11,7 +12,7 @@ public class AxisEmailService(IOptions<AxisEmailSettings> emailSettings, IAxisLo
 {
     private readonly AxisEmailSettings _trixSettings = emailSettings.Value;
 
-    public async Task<AxisResult> SendAsync(AxisEmailData emailTrixData)
+    public async Task<AxisResult.AxisResult> SendAsync(AxisEmailData emailTrixData)
     {
         try
         {
@@ -38,7 +39,7 @@ public class AxisEmailService(IOptions<AxisEmailSettings> emailSettings, IAxisLo
             return AxisError.InternalServerError("ERROR_SENDING_EMAIL");
         }
 
-        return AxisResult.Ok();
+        return AxisResult.AxisResult.Ok();
     }
 
 }

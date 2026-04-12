@@ -1,3 +1,4 @@
+using AxisResult;
 using AxisTrix.CQRS;
 using AxisTrix.Logging;
 
@@ -8,7 +9,7 @@ public class LoggingBehavior<TRequest>(
 ) : IAxisPipelineBehavior<TRequest>
     where TRequest : IAxisRequest
 {
-    public async Task<AxisResult> HandleAsync(TRequest request, AxisPipelineContext context, Func<Task<AxisResult>> next)
+    public async Task<AxisResult.AxisResult> HandleAsync(TRequest request, AxisPipelineContext context, Func<Task<AxisResult.AxisResult>> next)
     {
         var requestName = typeof(TRequest).Name;
         logger.LogInformation($"Handling {requestName}.", ("RequestName", requestName));

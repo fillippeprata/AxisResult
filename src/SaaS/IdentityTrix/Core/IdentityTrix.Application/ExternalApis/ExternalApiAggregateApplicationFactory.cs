@@ -1,4 +1,4 @@
-using AxisTrix;
+using AxisResult;
 using IdentityTrix.Domain.ExternalApis.Root;
 using IdentityTrix.Ports.ExternalApis;
 using IdentityTrix.SharedKernel.ExternalApis;
@@ -31,7 +31,7 @@ internal class ExternalApiAggregateApplicationFactory(
 
     //todo: Verificar se api name já existe. Usar mesmo padrão de DataPrivacyTrix.Cellphones
     public Task<AxisResult<IExternalApiAggregateApplication>> CreateAsync(IExternalApiAggregateApplicationFactory.NewArgs args)
-        => AxisResult.Ok<IExternalApiEntityProperties>(new ExternalApiEntity(ExternalApiId.New, args.HashedSecret, args.ApiName))
+        => AxisResult.AxisResult.Ok<IExternalApiEntityProperties>(new ExternalApiEntity(ExternalApiId.New, args.HashedSecret, args.ApiName))
             .TapAsync(writePort.CreateAsync)
             .MapAsync(NewInstance);
 }

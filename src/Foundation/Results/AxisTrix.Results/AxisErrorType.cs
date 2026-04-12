@@ -1,4 +1,4 @@
-﻿namespace AxisTrix;
+﻿namespace AxisResult;
 
 public enum AxisErrorType
 {

@@ -1,10 +1,11 @@
+using AxisResult;
 using AxisTrix.CQRS;
 
 namespace AxisTrix.Pipelines;
 
 public interface IAxisPipelineBehavior<in TRequest> where TRequest : IAxisRequest
 {
-    Task<AxisResult> HandleAsync(TRequest request, AxisPipelineContext context, Func<Task<AxisResult>> next);
+    Task<AxisResult.AxisResult> HandleAsync(TRequest request, AxisPipelineContext context, Func<Task<AxisResult.AxisResult>> next);
 }
 
 public interface IAxisPipelineBehavior<in TRequest, TResponse>

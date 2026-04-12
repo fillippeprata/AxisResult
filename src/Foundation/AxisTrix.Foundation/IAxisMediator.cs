@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AxisResult;
 using AxisTrix.Accessor;
 using AxisTrix.CQRS.Handlers;
 using AxisTrix.Types.Persons;
@@ -45,7 +46,7 @@ internal class AxisMediator : IAxisMediator, IDisposable
             : null;
     }
 
-    public Task<AxisResult<PersonData>> GetPersonFromCacheAsync(string id) => Task.FromResult(AxisResult.Ok(new PersonData(id,"Test Person","temp", "pt-br")));
+    public Task<AxisResult<PersonData>> GetPersonFromCacheAsync(string id) => Task.FromResult(AxisResult.AxisResult.Ok(new PersonData(id,"Test Person","temp", "pt-br")));
 
     public string TraceId { get; } = ResolveTraceId();
     private static string ResolveTraceId()

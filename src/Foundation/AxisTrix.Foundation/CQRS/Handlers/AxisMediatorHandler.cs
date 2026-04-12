@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using AxisResult;
 using AxisTrix.CQRS.Commands;
 using AxisTrix.CQRS.Queries;
 using AxisTrix.Pipelines;
@@ -10,7 +11,7 @@ namespace AxisTrix.CQRS.Handlers;
 [SuppressMessage("Performance", "CA1873:Avoid logs than can be expensive")]
 internal class AxisMediatorHandler(IServiceProvider serviceProvider) : IAxisMediatorHandler
 {
-    public async Task<AxisResult> ExecuteAsync<TCommand>(TCommand command) where TCommand : IAxisCommand
+    public async Task<AxisResult.AxisResult> ExecuteAsync<TCommand>(TCommand command) where TCommand : IAxisCommand
     {
         var handler = serviceProvider.GetService<IAxisCommandHandler<TCommand>>();
         if (handler is null) return AxisError.NotFound(HandlerNotFoundMessage<TCommand>());
@@ -46,7 +47,7 @@ internal class AxisMediatorHandler(IServiceProvider serviceProvider) : IAxisMedi
             yield return item;
     }
 
-    private async Task<AxisResult> ExecutePipelineAsync<TRequest>(TRequest request, Func<Task<AxisResult>> handlerFunc)
+    private async Task<AxisResult.AxisResult> ExecutePipelineAsync<TRequest>(TRequest request, Func<Task<AxisResult.AxisResult>> handlerFunc)
         where TRequest : IAxisRequest
     {
         var context = new AxisPipelineContext();
@@ -81,7 +82,7 @@ internal class AxisMediatorHandler(IServiceProvider serviceProvider) : IAxisMedi
         return result;
     }
 
-    private void LogResult<TRequest>(AxisResult result)
+    private void LogResult<TRequest>(AxisResult.AxisResult result)
     {
         var logger = serviceProvider.GetRequiredService<ILogger<AxisMediatorHandler>>();
         var mediator = serviceProvider.GetRequiredService<IAxisMediator>();

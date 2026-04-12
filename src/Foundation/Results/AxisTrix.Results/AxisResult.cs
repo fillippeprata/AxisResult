@@ -1,4 +1,4 @@
-namespace AxisTrix;
+namespace AxisResult;
 
 public abstract partial class AxisResult(List<AxisError>? initErrors = null)
 {

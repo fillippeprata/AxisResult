@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AxisResult;
 using AxisTrix.Bus.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,34 +16,34 @@ public class MemoryBusAdapterTests
     {
         public bool WasCalled { get; private set; }
 
-        public Task<AxisResult> HandleAsync(TestEvent @event)
+        public Task<AxisResult.AxisResult> HandleAsync(TestEvent @event)
         {
             WasCalled = true;
-            return Task.FromResult(AxisResult.Ok());
+            return Task.FromResult(AxisResult.AxisResult.Ok());
         }
     }
 
     private class FailureHandler : IAxisEventHandler<TestEvent>
     {
-        public Task<AxisResult> HandleAsync(TestEvent @event)
-            => Task.FromResult<AxisResult>(AxisError.BusinessRule("HANDLER_FAILED"));
+        public Task<AxisResult.AxisResult> HandleAsync(TestEvent @event)
+            => Task.FromResult<AxisResult.AxisResult>(AxisError.BusinessRule("HANDLER_FAILED"));
     }
 
     private class SlowHandler : IAxisEventHandler<TestEvent>
     {
         public bool WasCalled { get; private set; }
 
-        public async Task<AxisResult> HandleAsync(TestEvent @event)
+        public async Task<AxisResult.AxisResult> HandleAsync(TestEvent @event)
         {
             await Task.Delay(50);
             WasCalled = true;
-            return AxisResult.Ok();
+            return AxisResult.AxisResult.Ok();
         }
     }
 
     private class ThrowingHandler : IAxisEventHandler<TestEvent>
     {
-        public Task<AxisResult> HandleAsync(TestEvent @event)
+        public Task<AxisResult.AxisResult> HandleAsync(TestEvent @event)
             => throw new InvalidOperationException("Handler exploded");
     }
 
@@ -243,10 +244,10 @@ public class MemoryBusAdapterTests
     {
         public TestEvent? ReceivedEvent { get; private set; }
 
-        public Task<AxisResult> HandleAsync(TestEvent @event)
+        public Task<AxisResult.AxisResult> HandleAsync(TestEvent @event)
         {
             ReceivedEvent = @event;
-            return Task.FromResult(AxisResult.Ok());
+            return Task.FromResult(AxisResult.AxisResult.Ok());
         }
     }
 

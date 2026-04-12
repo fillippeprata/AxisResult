@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>AxisTrix</RootNamespace>
+    <RootNamespace>AxisResult</RootNamespace>
   </PropertyGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-using AxisTrix;
+using AxisResult;
 using AxisTrix.CQRS.Commands;
 using IdentityTrix.Application.Authentication.Services;
 using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;

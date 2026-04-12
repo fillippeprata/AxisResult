@@ -1,3 +1,4 @@
+using AxisResult;
 using AxisTrix.CQRS;
 using AxisTrix.Pipelines;
 using AxisTrix.Validation;
@@ -11,14 +12,14 @@ public class ValidationBehaviorTests
 
     private class SuccessValidator : IAxisValidator<TestCommand>
     {
-        public AxisResult Validate(TestCommand instance) => AxisResult.Ok();
-        public Task<AxisResult> ValidateAsync(TestCommand instance) => Task.FromResult(AxisResult.Ok());
+        public AxisResult.AxisResult Validate(TestCommand instance) => AxisResult.AxisResult.Ok();
+        public Task<AxisResult.AxisResult> ValidateAsync(TestCommand instance) => Task.FromResult(AxisResult.AxisResult.Ok());
     }
 
     private class FailureValidator : IAxisValidator<TestCommand>
     {
-        public AxisResult Validate(TestCommand instance) => AxisError.ValidationRule("INVALID_COMMAND");
-        public Task<AxisResult> ValidateAsync(TestCommand instance) => Task.FromResult<AxisResult>(AxisError.ValidationRule("INVALID_COMMAND"));
+        public AxisResult.AxisResult Validate(TestCommand instance) => AxisError.ValidationRule("INVALID_COMMAND");
+        public Task<AxisResult.AxisResult> ValidateAsync(TestCommand instance) => Task.FromResult<AxisResult.AxisResult>(AxisError.ValidationRule("INVALID_COMMAND"));
     }
 
     private class StubServiceProvider(IAxisValidator<TestCommand>? validator) : IServiceProvider
@@ -38,7 +39,7 @@ public class ValidationBehaviorTests
         var result = await behavior.HandleAsync(new TestCommand(), new(), () =>
         {
             nextCalled = true;
-            return Task.FromResult(AxisResult.Ok());
+            return Task.FromResult(AxisResult.AxisResult.Ok());
         });
 
         Assert.True(nextCalled);
@@ -54,7 +55,7 @@ public class ValidationBehaviorTests
         var result = await behavior.HandleAsync(new TestCommand(), new(), () =>
         {
             nextCalled = true;
-            return Task.FromResult(AxisResult.Ok());
+            return Task.FromResult(AxisResult.AxisResult.Ok());
         });
 
         Assert.False(nextCalled);
@@ -70,7 +71,7 @@ public class ValidationBehaviorTests
         var result = await behavior.HandleAsync(new TestCommand(), new(), () =>
         {
             nextCalled = true;
-            return Task.FromResult(AxisResult.Ok());
+            return Task.FromResult(AxisResult.AxisResult.Ok());
         });
 
         Assert.True(nextCalled);
@@ -88,7 +89,7 @@ public class ValidationBehaviorTests
         var result = await behavior.HandleAsync(new TestCommand(), new(), () =>
         {
             nextCalled = true;
-            return Task.FromResult(AxisResult.Ok(new TestResponse()));
+            return Task.FromResult(AxisResult.AxisResult.Ok(new TestResponse()));
         });
 
         Assert.True(nextCalled);
@@ -104,7 +105,7 @@ public class ValidationBehaviorTests
         var result = await behavior.HandleAsync(new TestCommand(), new(), () =>
         {
             nextCalled = true;
-            return Task.FromResult(AxisResult.Ok(new TestResponse()));
+            return Task.FromResult(AxisResult.AxisResult.Ok(new TestResponse()));
         });
 
         Assert.False(nextCalled);
@@ -117,7 +118,7 @@ public class ValidationBehaviorTests
         var behavior = new ValidationBehavior<TestCommand, TestResponse>(new StubServiceProvider(new FailureValidator()));
 
         var result = await behavior.HandleAsync(new TestCommand(), new(), () =>
-            Task.FromResult(AxisResult.Ok(new TestResponse())));
+            Task.FromResult(AxisResult.AxisResult.Ok(new TestResponse())));
 
         Assert.Single(result.Errors);
         Assert.Equal("INVALID_COMMAND", result.Errors[0].Code);
@@ -132,7 +133,7 @@ public class ValidationBehaviorTests
         var result = await behavior.HandleAsync(new TestCommand(), new(), () =>
         {
             nextCalled = true;
-            return Task.FromResult(AxisResult.Ok(new TestResponse()));
+            return Task.FromResult(AxisResult.AxisResult.Ok(new TestResponse()));
         });
 
         Assert.True(nextCalled);

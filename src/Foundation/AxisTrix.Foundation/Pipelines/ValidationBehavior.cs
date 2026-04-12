@@ -1,3 +1,4 @@
+using AxisResult;
 using AxisTrix.CQRS;
 using AxisTrix.Validation;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +9,7 @@ public class ValidationBehavior<TRequest>(IServiceProvider serviceProvider)
     : IAxisPipelineBehavior<TRequest>
     where TRequest : IAxisRequest
 {
-    public async Task<AxisResult> HandleAsync(TRequest request, AxisPipelineContext context, Func<Task<AxisResult>> next)
+    public async Task<AxisResult.AxisResult> HandleAsync(TRequest request, AxisPipelineContext context, Func<Task<AxisResult.AxisResult>> next)
     {
         var validator = serviceProvider.GetService<IAxisValidator<TRequest>>();
         if (validator is null) return await next();

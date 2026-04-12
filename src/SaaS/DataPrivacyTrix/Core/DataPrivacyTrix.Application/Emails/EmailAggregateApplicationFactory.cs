@@ -1,4 +1,4 @@
-using AxisTrix;
+using AxisResult;
 using DataPrivacyTrix.Domain.Emails.Root;
 using DataPrivacyTrix.Ports.Emails;
 using DataPrivacyTrix.SharedKernel.Emails;

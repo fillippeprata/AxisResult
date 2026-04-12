@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AxisResult;
 using AxisTrix.CQRS;
 using AxisTrix.CQRS.Queries;
 using AxisTrix.Telemetry;
@@ -12,7 +13,7 @@ public class TelemetryBehavior<TRequest>(
 ) : IAxisPipelineBehavior<TRequest>
     where TRequest : IAxisRequest
 {
-    public async Task<AxisResult> HandleAsync(TRequest request, AxisPipelineContext context, Func<Task<AxisResult>> next)
+    public async Task<AxisResult.AxisResult> HandleAsync(TRequest request, AxisPipelineContext context, Func<Task<AxisResult.AxisResult>> next)
     {
         var requestName = typeof(TRequest).Name;
         using var span = telemetry.StartSpan($"AxisMediator.{requestName}");

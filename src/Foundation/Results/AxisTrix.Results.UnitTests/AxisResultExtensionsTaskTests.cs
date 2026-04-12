@@ -1,3 +1,5 @@
+using AxisResult;
+
 namespace AxisTrix.Results.UnitTests;
 
 public class AxisResultExtensionsTaskTests
@@ -5,17 +7,17 @@ public class AxisResultExtensionsTaskTests
     private static readonly AxisError E1 = AxisError.NotFound("E1");
     private static readonly AxisError E2 = AxisError.ValidationRule("E2");
 
-    private static Task<AxisResult> TOkAsync() => Task.FromResult(AxisResult.Ok());
-    private static Task<AxisResult<T>> TOkAsync<T>(T v) => Task.FromResult(AxisResult.Ok(v));
-    private static Task<AxisResult> TErrAsync(AxisError e) => Task.FromResult(AxisResult.Error(e));
-    private static Task<AxisResult<T>> TErrAsync<T>(AxisError e) => Task.FromResult(AxisResult.Error<T>(e));
+    private static Task<AxisResult.AxisResult> TOkAsync() => Task.FromResult(AxisResult.AxisResult.Ok());
+    private static Task<AxisResult<T>> TOkAsync<T>(T v) => Task.FromResult(AxisResult.AxisResult.Ok(v));
+    private static Task<AxisResult.AxisResult> TErrAsync(AxisError e) => Task.FromResult(AxisResult.AxisResult.Error(e));
+    private static Task<AxisResult<T>> TErrAsync<T>(AxisError e) => Task.FromResult(AxisResult.AxisResult.Error<T>(e));
 
     #region AsTask
 
     [Fact]
     public async Task AsTask_NonGeneric()
     {
-        var t = AxisResult.Ok().AsTaskAsync();
+        var t = AxisResult.AxisResult.Ok().AsTaskAsync();
         var r = await t;
         Assert.True(r.IsSuccess);
     }
@@ -23,7 +25,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task AsTask_Generic()
     {
-        var t = AxisResult.Ok(5).AsTaskAsync();
+        var t = AxisResult.AxisResult.Ok(5).AsTaskAsync();
         var r = await t;
         Assert.Equal(5, r.Value);
     }
@@ -35,14 +37,14 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_Sync_NG_Success()
     {
-        var r = await TOkAsync().ThenAsync(() => AxisResult.Ok());
+        var r = await TOkAsync().ThenAsync(() => AxisResult.AxisResult.Ok());
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
     public async Task T_ThenAsync_Sync_Typed_Success()
     {
-        var r = await TOkAsync().ThenAsync(() => AxisResult.Ok(5));
+        var r = await TOkAsync().ThenAsync(() => AxisResult.AxisResult.Ok(5));
         Assert.Equal(5, r.Value);
     }
 
@@ -64,7 +66,7 @@ public class AxisResultExtensionsTaskTests
     public async Task T_ThenAsync_Sync_NG_Failure_Skips()
     {
         var called = false;
-        await TErrAsync(E1).ThenAsync(() => { called = true; return AxisResult.Ok(); });
+        await TErrAsync(E1).ThenAsync(() => { called = true; return AxisResult.AxisResult.Ok(); });
         Assert.False(called);
     }
 
@@ -149,7 +151,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_Generic_Sync_NG_Preserves_Value()
     {
-        var r = await TOkAsync(5).ThenAsync(_ => AxisResult.Ok());
+        var r = await TOkAsync(5).ThenAsync(_ => AxisResult.AxisResult.Ok());
         Assert.True(r.IsSuccess);
         Assert.Equal(5, r.Value);
     }
@@ -157,7 +159,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_Generic_Sync_NG_Failure_Propagates()
     {
-        var r = await TOkAsync(5).ThenAsync(_ => AxisResult.Error(E1));
+        var r = await TOkAsync(5).ThenAsync(_ => AxisResult.AxisResult.Error(E1));
         Assert.True(r.IsFailure);
         Assert.Equal("E1", r.Errors[0].Code);
     }
@@ -165,14 +167,14 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_Generic_Sync_Typed()
     {
-        var r = await TOkAsync(5).ThenAsync(x => AxisResult.Ok(x.ToString()));
+        var r = await TOkAsync(5).ThenAsync(x => AxisResult.AxisResult.Ok(x.ToString()));
         Assert.Equal(5, r.Value);
     }
 
     [Fact]
     public async Task T_ThenAsync_Generic_Async_NG_Preserves_Value()
     {
-        var r = await TOkAsync(5).ThenAsync(_ => Task.FromResult(AxisResult.Ok()));
+        var r = await TOkAsync(5).ThenAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok()));
         Assert.True(r.IsSuccess);
         Assert.Equal(5, r.Value);
     }
@@ -180,7 +182,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_Generic_Async_NG_Failure_Propagates()
     {
-        var r = await TOkAsync(5).ThenAsync(_ => Task.FromResult(AxisResult.Error(E1)));
+        var r = await TOkAsync(5).ThenAsync(_ => Task.FromResult(AxisResult.AxisResult.Error(E1)));
         Assert.True(r.IsFailure);
         Assert.Equal("E1", r.Errors[0].Code);
     }
@@ -188,7 +190,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_Generic_Async_Typed()
     {
-        var r = await TOkAsync(5).ThenAsync(AxisResult.Ok);
+        var r = await TOkAsync(5).ThenAsync(AxisResult.AxisResult.Ok);
         Assert.Equal(5, r.Value);
     }
 
@@ -241,14 +243,14 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_EnsureAsync_Validation_Sync()
     {
-        var r = await TOkAsync(10).EnsureAsync(_ => AxisResult.Ok());
+        var r = await TOkAsync(10).EnsureAsync(_ => AxisResult.AxisResult.Ok());
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
     public async Task T_EnsureAsync_Validation_Async()
     {
-        var r = await TOkAsync(10).EnsureAsync(_ => Task.FromResult(AxisResult.Ok()));
+        var r = await TOkAsync(10).EnsureAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok()));
         Assert.True(r.IsSuccess);
     }
 
@@ -269,14 +271,14 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_EnsureAsync_Validation_Sync_Fails()
     {
-        var r = await TOkAsync(10).EnsureAsync(_ => AxisResult.Error(E1));
+        var r = await TOkAsync(10).EnsureAsync(_ => AxisResult.AxisResult.Error(E1));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task T_EnsureAsync_Validation_Async_Fails()
     {
-        var r = await TOkAsync(10).EnsureAsync(_ => Task.FromResult(AxisResult.Error(E1)));
+        var r = await TOkAsync(10).EnsureAsync(_ => Task.FromResult(AxisResult.AxisResult.Error(E1)));
         Assert.True(r.IsFailure);
     }
 
@@ -297,14 +299,14 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ZipAsync_ResultSync()
     {
-        var r = await TOkAsync(5).ZipAsync(x => AxisResult.Ok(x + 1));
+        var r = await TOkAsync(5).ZipAsync(x => AxisResult.AxisResult.Ok(x + 1));
         Assert.Equal((5, 6), r.Value);
     }
 
     [Fact]
     public async Task T_ZipAsync_ResultAsync()
     {
-        var r = await TOkAsync(5).ZipAsync(x => Task.FromResult(AxisResult.Ok(x + 1)));
+        var r = await TOkAsync(5).ZipAsync(x => Task.FromResult(AxisResult.AxisResult.Ok(x + 1)));
         Assert.Equal((5, 6), r.Value);
     }
 
@@ -423,28 +425,28 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_OrElseAsync_Sync()
     {
-        var r = await TErrAsync<int>(E1).OrElseAsync(_ => AxisResult.Ok(99));
+        var r = await TErrAsync<int>(E1).OrElseAsync(_ => AxisResult.AxisResult.Ok(99));
         Assert.Equal(99, r.Value);
     }
 
     [Fact]
     public async Task T_OrElseAsync_Async()
     {
-        var r = await TErrAsync<int>(E1).OrElseAsync(_ => Task.FromResult(AxisResult.Ok(99)));
+        var r = await TErrAsync<int>(E1).OrElseAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok(99)));
         Assert.Equal(99, r.Value);
     }
 
     [Fact]
     public async Task T_OrElseAsync_Sync_Combine()
     {
-        var r = await TErrAsync<int>(E1).OrElseAsync(_ => AxisResult.Error<int>(E2), combineErrors: true);
+        var r = await TErrAsync<int>(E1).OrElseAsync(_ => AxisResult.AxisResult.Error<int>(E2), combineErrors: true);
         Assert.Equal(2, r.Errors.Count);
     }
 
     [Fact]
     public async Task T_OrElseAsync_Async_Combine()
     {
-        var r = await TErrAsync<int>(E1).OrElseAsync(_ => Task.FromResult(AxisResult.Error<int>(E2)), combineErrors: true);
+        var r = await TErrAsync<int>(E1).OrElseAsync(_ => Task.FromResult(AxisResult.AxisResult.Error<int>(E2)), combineErrors: true);
         Assert.Equal(2, r.Errors.Count);
     }
 
@@ -479,14 +481,14 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_SelectManyAsync_Sync()
     {
-        var r = await TOkAsync(2).SelectManyAsync(x => AxisResult.Ok(x + 1), (x, y) => x * y);
+        var r = await TOkAsync(2).SelectManyAsync(x => AxisResult.AxisResult.Ok(x + 1), (x, y) => x * y);
         Assert.Equal(6, r.Value);
     }
 
     [Fact]
     public async Task T_SelectManyAsync_Async()
     {
-        var r = await TOkAsync(2).SelectManyAsync(x => Task.FromResult(AxisResult.Ok(x + 1)), (x, y) => x * y);
+        var r = await TOkAsync(2).SelectManyAsync(x => Task.FromResult(AxisResult.AxisResult.Ok(x + 1)), (x, y) => x * y);
         Assert.Equal(6, r.Value);
     }
 
@@ -497,7 +499,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple2_MapAsync_Sync()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2)));
         var r = await t.MapAsync((a, b) => a + b);
         Assert.Equal(3, r.Value);
     }
@@ -505,7 +507,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple2_MapAsync_Async()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2)));
         var r = await t.MapAsync((a, b) => Task.FromResult(a + b));
         Assert.Equal(3, r.Value);
     }
@@ -513,7 +515,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple2_ZipAsync_Sync()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2)));
         var r = await t.ZipAsync((a, b) => a + b);
         Assert.Equal((1, 2, 3), r.Value);
     }
@@ -521,7 +523,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple2_ZipAsync_Async()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2)));
         var r = await t.ZipAsync((a, b) => Task.FromResult(a + b));
         Assert.Equal((1, 2, 3), r.Value);
     }
@@ -529,23 +531,23 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple2_ZipAsync_Result_Sync()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2)));
-        var r = await t.ZipAsync((a, b) => AxisResult.Ok(a + b));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2)));
+        var r = await t.ZipAsync((a, b) => AxisResult.AxisResult.Ok(a + b));
         Assert.Equal((1, 2, 3), r.Value);
     }
 
     [Fact]
     public async Task T_Tuple2_ZipAsync_Result_Async()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2)));
-        var r = await t.ZipAsync((a, b) => Task.FromResult(AxisResult.Ok(a + b)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2)));
+        var r = await t.ZipAsync((a, b) => Task.FromResult(AxisResult.AxisResult.Ok(a + b)));
         Assert.Equal((1, 2, 3), r.Value);
     }
 
     [Fact]
     public async Task T_Tuple2_ZipAsync_Sync_Failure()
     {
-        var t = Task.FromResult(AxisResult.Error<(int, int)>(E1));
+        var t = Task.FromResult(AxisResult.AxisResult.Error<(int, int)>(E1));
         var r = await t.ZipAsync((a, b) => a + b);
         Assert.True(r.IsFailure);
     }
@@ -553,7 +555,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple2_ZipAsync_Async_Failure()
     {
-        var t = Task.FromResult(AxisResult.Error<(int, int)>(E1));
+        var t = Task.FromResult(AxisResult.AxisResult.Error<(int, int)>(E1));
         var r = await t.ZipAsync((a, b) => Task.FromResult(a + b));
         Assert.True(r.IsFailure);
     }
@@ -561,32 +563,32 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple2_ZipAsync_ResultSync_Failure_Source()
     {
-        var t = Task.FromResult(AxisResult.Error<(int, int)>(E1));
-        var r = await t.ZipAsync((a, b) => AxisResult.Ok(a + b));
+        var t = Task.FromResult(AxisResult.AxisResult.Error<(int, int)>(E1));
+        var r = await t.ZipAsync((a, b) => AxisResult.AxisResult.Ok(a + b));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task T_Tuple2_ZipAsync_ResultSync_Failure_Mapper()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2)));
-        var r = await t.ZipAsync((_, _) => AxisResult.Error<int>(E2));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2)));
+        var r = await t.ZipAsync((_, _) => AxisResult.AxisResult.Error<int>(E2));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task T_Tuple2_ZipAsync_ResultAsync_Failure_Source()
     {
-        var t = Task.FromResult(AxisResult.Error<(int, int)>(E1));
-        var r = await t.ZipAsync((a, b) => Task.FromResult(AxisResult.Ok(a + b)));
+        var t = Task.FromResult(AxisResult.AxisResult.Error<(int, int)>(E1));
+        var r = await t.ZipAsync((a, b) => Task.FromResult(AxisResult.AxisResult.Ok(a + b)));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task T_Tuple2_ZipAsync_ResultAsync_Failure_Mapper()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2)));
-        var r = await t.ZipAsync((_, _) => Task.FromResult(AxisResult.Error<int>(E2)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2)));
+        var r = await t.ZipAsync((_, _) => Task.FromResult(AxisResult.AxisResult.Error<int>(E2)));
         Assert.True(r.IsFailure);
     }
 
@@ -597,7 +599,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple3_MapAsync_Sync()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3)));
         var r = await t.MapAsync((a, b, c) => a + b + c);
         Assert.Equal(6, r.Value);
     }
@@ -605,7 +607,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple3_MapAsync_Async()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3)));
         var r = await t.MapAsync((a, b, c) => Task.FromResult(a + b + c));
         Assert.Equal(6, r.Value);
     }
@@ -613,7 +615,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple3_ZipAsync_Sync()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3)));
         var r = await t.ZipAsync((a, b, c) => a + b + c);
         Assert.Equal((1, 2, 3, 6), r.Value);
     }
@@ -621,7 +623,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple3_ZipAsync_Async()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3)));
         var r = await t.ZipAsync((a, b, c) => Task.FromResult(a + b + c));
         Assert.Equal((1, 2, 3, 6), r.Value);
     }
@@ -629,23 +631,23 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple3_ZipAsync_Result_Sync()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3)));
-        var r = await t.ZipAsync((a, b, c) => AxisResult.Ok(a + b + c));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var r = await t.ZipAsync((a, b, c) => AxisResult.AxisResult.Ok(a + b + c));
         Assert.Equal((1, 2, 3, 6), r.Value);
     }
 
     [Fact]
     public async Task T_Tuple3_ZipAsync_Result_Async()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3)));
-        var r = await t.ZipAsync((a, b, c) => Task.FromResult(AxisResult.Ok(a + b + c)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var r = await t.ZipAsync((a, b, c) => Task.FromResult(AxisResult.AxisResult.Ok(a + b + c)));
         Assert.Equal((1, 2, 3, 6), r.Value);
     }
 
     [Fact]
     public async Task T_Tuple3_ZipAsync_Sync_Failure()
     {
-        var t = Task.FromResult(AxisResult.Error<(int, int, int)>(E1));
+        var t = Task.FromResult(AxisResult.AxisResult.Error<(int, int, int)>(E1));
         var r = await t.ZipAsync((a, b, c) => a + b + c);
         Assert.True(r.IsFailure);
     }
@@ -653,7 +655,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple3_ZipAsync_Async_Failure()
     {
-        var t = Task.FromResult(AxisResult.Error<(int, int, int)>(E1));
+        var t = Task.FromResult(AxisResult.AxisResult.Error<(int, int, int)>(E1));
         var r = await t.ZipAsync((a, b, c) => Task.FromResult(a + b + c));
         Assert.True(r.IsFailure);
     }
@@ -661,32 +663,32 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple3_ZipAsync_ResultSync_Failure_Source()
     {
-        var t = Task.FromResult(AxisResult.Error<(int, int, int)>(E1));
-        var r = await t.ZipAsync((a, b, c) => AxisResult.Ok(a + b + c));
+        var t = Task.FromResult(AxisResult.AxisResult.Error<(int, int, int)>(E1));
+        var r = await t.ZipAsync((a, b, c) => AxisResult.AxisResult.Ok(a + b + c));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task T_Tuple3_ZipAsync_ResultSync_Failure_Mapper()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3)));
-        var r = await t.ZipAsync((_, _, _) => AxisResult.Error<int>(E2));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var r = await t.ZipAsync((_, _, _) => AxisResult.AxisResult.Error<int>(E2));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task T_Tuple3_ZipAsync_ResultAsync_Failure_Source()
     {
-        var t = Task.FromResult(AxisResult.Error<(int, int, int)>(E1));
-        var r = await t.ZipAsync((a, b, c) => Task.FromResult(AxisResult.Ok(a + b + c)));
+        var t = Task.FromResult(AxisResult.AxisResult.Error<(int, int, int)>(E1));
+        var r = await t.ZipAsync((a, b, c) => Task.FromResult(AxisResult.AxisResult.Ok(a + b + c)));
         Assert.True(r.IsFailure);
     }
 
     [Fact]
     public async Task T_Tuple3_ZipAsync_ResultAsync_Failure_Mapper()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3)));
-        var r = await t.ZipAsync((_, _, _) => Task.FromResult(AxisResult.Error<int>(E2)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3)));
+        var r = await t.ZipAsync((_, _, _) => Task.FromResult(AxisResult.AxisResult.Error<int>(E2)));
         Assert.True(r.IsFailure);
     }
 
@@ -697,7 +699,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple4_MapAsync_Sync()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3, 4)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3, 4)));
         var r = await t.MapAsync((a, b, c, d) => a + b + c + d);
         Assert.Equal(10, r.Value);
     }
@@ -705,7 +707,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_Tuple4_MapAsync_Async()
     {
-        var t = Task.FromResult(AxisResult.Ok((1, 2, 3, 4)));
+        var t = Task.FromResult(AxisResult.AxisResult.Ok((1, 2, 3, 4)));
         var r = await t.MapAsync((a, b, c, d) => Task.FromResult(a + b + c + d));
         Assert.Equal(10, r.Value);
     }
@@ -793,7 +795,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_ValuePreserving_Success_ReturnsOriginalValue()
     {
-        var r = await TOkAsync(42).ThenAsync(_ => Task.FromResult(AxisResult.Ok()));
+        var r = await TOkAsync(42).ThenAsync(_ => Task.FromResult(AxisResult.AxisResult.Ok()));
         Assert.True(r.IsSuccess);
         Assert.Equal(42, r.Value);
     }
@@ -801,7 +803,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_ValuePreserving_InnerFailure_PropagatesErrors()
     {
-        var r = await TOkAsync(42).ThenAsync(_ => Task.FromResult(AxisResult.Error(E1)));
+        var r = await TOkAsync(42).ThenAsync(_ => Task.FromResult(AxisResult.AxisResult.Error(E1)));
         Assert.True(r.IsFailure);
         Assert.Contains(r.Errors, e => e.Code == "E1");
     }
@@ -810,7 +812,7 @@ public class AxisResultExtensionsTaskTests
     public async Task T_ThenAsync_ValuePreserving_OuterFailure_SkipsInner()
     {
         var called = false;
-        var r = await TErrAsync<int>(E1).ThenAsync(_ => { called = true; return Task.FromResult(AxisResult.Ok()); });
+        var r = await TErrAsync<int>(E1).ThenAsync(_ => { called = true; return Task.FromResult(AxisResult.AxisResult.Ok()); });
         Assert.False(called);
         Assert.True(r.IsFailure);
     }

@@ -1,4 +1,4 @@
-using AxisTrix;
+using AxisResult;
 using IdentityTrix.Contracts.Authentication.v1;
 using IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 using IdentityTrix.UnitTests.Mocks;

@@ -1,4 +1,4 @@
-using AxisTrix;
+using AxisResult;
 using AxisTrix.CQRS.Queries;
 using DataPrivacyTrix.Contracts.Emails.v1.GetByEmailAddress;
 using DataPrivacyTrix.Ports.Emails;

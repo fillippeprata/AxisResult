@@ -1,3 +1,4 @@
+using AxisResult;
 using AxisTrix.Logging;
 using Npgsql;
 
@@ -10,14 +11,14 @@ public abstract class PostgresRepositoryBase(
 {
     protected CancellationToken CancellationToken => mediator.CancellationToken;
 
-    protected async Task<AxisResult> ExecuteAsync(string sql, Action<NpgsqlParameterCollection> addParams, string? duplicateKeyCode = "")
+    protected async Task<AxisResult.AxisResult> ExecuteAsync(string sql, Action<NpgsqlParameterCollection> addParams, string? duplicateKeyCode = "")
     {
         try
         {
             await using var command = await uow.NewCommandAsync(sql);
             addParams(command.Parameters);
             await command.ExecuteNonQueryAsync(CancellationToken);
-            return AxisResult.Ok();
+            return AxisResult.AxisResult.Ok();
         }
         catch (Exception ex)
         {
@@ -42,7 +43,7 @@ public abstract class PostgresRepositoryBase(
             await using var reader = await command.ExecuteReaderAsync(CancellationToken);
             if (!await reader.ReadAsync(CancellationToken))
                 return AxisError.NotFound(notFoundCode);
-            return AxisResult.Ok(map(reader));
+            return AxisResult.AxisResult.Ok(map(reader));
         }
         catch (Exception ex)
         {
@@ -64,7 +65,7 @@ public abstract class PostgresRepositoryBase(
             var list = new List<T>();
             while (await reader.ReadAsync(CancellationToken))
                 list.Add(map(reader));
-            return AxisResult.Ok<IEnumerable<T>>(list);
+            return AxisResult.AxisResult.Ok<IEnumerable<T>>(list);
         }
         catch (Exception ex)
         {

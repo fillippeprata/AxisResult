@@ -1,3 +1,4 @@
+using AxisResult;
 using AxisTrix.CQRS.Commands;
 using AxisTrix.CQRS.Queries;
 
@@ -5,7 +6,7 @@ namespace AxisTrix.CQRS.Handlers;
 
 public interface IAxisMediatorHandler
 {
-    Task<AxisResult> ExecuteAsync<TCommand>(TCommand command) where TCommand : IAxisCommand;
+    Task<AxisResult.AxisResult> ExecuteAsync<TCommand>(TCommand command) where TCommand : IAxisCommand;
 
     Task<AxisResult<TResponse>> ExecuteAsync<TCommand, TResponse>(TCommand command)
         where TCommand : IAxisCommand<TResponse>

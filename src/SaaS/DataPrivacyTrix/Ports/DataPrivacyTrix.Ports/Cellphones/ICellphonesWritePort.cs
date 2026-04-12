@@ -1,9 +1,8 @@
-﻿using AxisTrix;
-using DataPrivacyTrix.SharedKernel.Cellphones;
+﻿using DataPrivacyTrix.SharedKernel.Cellphones;
 
 namespace DataPrivacyTrix.Ports.Cellphones;
 
 public interface ICellphonesWritePort
 {
-    Task<AxisResult> CreateAsync(ICellphoneEntityProperties properties);
+    Task<AxisResult.AxisResult> CreateAsync(ICellphoneEntityProperties properties);
 }

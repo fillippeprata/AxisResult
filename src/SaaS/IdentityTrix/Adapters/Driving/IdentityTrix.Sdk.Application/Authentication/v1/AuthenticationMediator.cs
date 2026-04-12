@@ -6,6 +6,6 @@ namespace IdentityTrix.Sdk.Application.Authentication.v1;
 
 internal class AuthenticationMediator(IAxisMediator mediator) : IAuthenticationMediator
 {
-    public Task<AxisResult> AuthenticateAsync(AuthenticateExternalApiCommand command)
+    public Task<AxisResult.AxisResult> AuthenticateAsync(AuthenticateExternalApiCommand command)
         => mediator.Cqrs.ExecuteAsync(command);
 }

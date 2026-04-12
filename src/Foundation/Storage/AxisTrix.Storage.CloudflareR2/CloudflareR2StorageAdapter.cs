@@ -1,14 +1,15 @@
 using System.Net;
 using Amazon.S3;
 using Amazon.S3.Model;
+using AxisResult;
 using AxisTrix.Accessor;
 
 namespace AxisTrix.Storage.CloudflareR2;
 
 public class CloudflareR2StorageAdapter(IAxisMediatorAccessor accessor, IAmazonS3 s3Client, CloudflareR2Settings settings) : IAxisStorage
 {
-    public Task<AxisResult> UploadAsync(string key, Stream content, string contentType)
-        => AxisResult.TryAsync(async () =>
+    public Task<AxisResult.AxisResult> UploadAsync(string key, Stream content, string contentType)
+        => AxisResult.AxisResult.TryAsync(async () =>
         {
             var ct = accessor.AxisMediator!.CancellationToken;
             ct.ThrowIfCancellationRequested();
@@ -22,7 +23,7 @@ public class CloudflareR2StorageAdapter(IAxisMediatorAccessor accessor, IAmazonS
         });
 
     public Task<AxisResult<Stream>> DownloadAsync(string key)
-        => AxisResult.TryAsync(async () =>
+        => AxisResult.AxisResult.TryAsync(async () =>
         {
             var ct = accessor.AxisMediator!.CancellationToken;
             ct.ThrowIfCancellationRequested();
@@ -34,8 +35,8 @@ public class CloudflareR2StorageAdapter(IAxisMediatorAccessor accessor, IAmazonS
             return response.ResponseStream;
         });
 
-    public Task<AxisResult> DeleteAsync(string key)
-        => AxisResult.TryAsync(async () =>
+    public Task<AxisResult.AxisResult> DeleteAsync(string key)
+        => AxisResult.AxisResult.TryAsync(async () =>
         {
             var ct = accessor.AxisMediator!.CancellationToken;
             ct.ThrowIfCancellationRequested();
@@ -50,7 +51,7 @@ public class CloudflareR2StorageAdapter(IAxisMediatorAccessor accessor, IAmazonS
     {
         var ct = accessor.AxisMediator!.CancellationToken;
         ct.ThrowIfCancellationRequested();
-        return AxisResult.TryAsync(async () =>
+        return AxisResult.AxisResult.TryAsync(async () =>
         {
             try
             {
@@ -69,7 +70,7 @@ public class CloudflareR2StorageAdapter(IAxisMediatorAccessor accessor, IAmazonS
     }
 
     public Task<AxisResult<string>> GetPresignedUrlAsync(string key, TimeSpan expiration)
-        => AxisResult.TryAsync(() =>
+        => AxisResult.AxisResult.TryAsync(() =>
         {
             var ct = accessor.AxisMediator!.CancellationToken;
             ct.ThrowIfCancellationRequested();

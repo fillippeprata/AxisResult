@@ -1,4 +1,4 @@
-﻿using AxisTrix;
+﻿using AxisResult;
 using DataPrivacyTrix.SharedKernel.Emails;
 using EmailId = DataPrivacyTrix.SharedKernel.Emails.EmailId;
 

@@ -1,4 +1,5 @@
-﻿using AxisTrix.Logging;
+﻿using AxisResult;
+using AxisTrix.Logging;
 using AxisTrix.Telemetry;
 using Npgsql;
 
@@ -22,7 +23,7 @@ public class PostgresUnitOfWork(
         return new(sql, _connection, _transaction);
     }
 
-    public async Task<AxisResult> StartAsync()
+    public async Task<AxisResult.AxisResult> StartAsync()
     {
         var ct = mediator.CancellationToken;
         using var span = telemetry.StartSpan("db.postgres.connect", AxisSpanKind.Client);
@@ -33,7 +34,7 @@ public class PostgresUnitOfWork(
             _connection ??= await dataSource.OpenConnectionAsync(ct);
             _transaction = await _connection.BeginTransactionAsync(ct);
             span.SetStatus(AxisSpanStatus.Ok);
-            return AxisResult.Ok();
+            return AxisResult.AxisResult.Ok();
         }
         catch (Exception ex)
         {
@@ -43,7 +44,7 @@ public class PostgresUnitOfWork(
         }
     }
 
-    public async Task<AxisResult> SaveChangesAsync()
+    public async Task<AxisResult.AxisResult> SaveChangesAsync()
     {
         if (_transaction == null)
             return AxisError.InternalServerError("POSTGRES_TRANSACTION_NOT_STARTED");
@@ -56,7 +57,7 @@ public class PostgresUnitOfWork(
             await _transaction.CommitAsync(mediator.CancellationToken);
             _transaction = null;
             span.SetStatus(AxisSpanStatus.Ok);
-            return AxisResult.Ok();
+            return AxisResult.AxisResult.Ok();
         }
         catch (Exception ex)
         {
@@ -66,7 +67,7 @@ public class PostgresUnitOfWork(
         }
     }
 
-    public async Task<AxisResult> RollbackAsync()
+    public async Task<AxisResult.AxisResult> RollbackAsync()
     {
         using var span = telemetry.StartSpan("db.postgres.rollback", AxisSpanKind.Client);
         span.SetTag("db.system", "postgresql");
@@ -75,7 +76,7 @@ public class PostgresUnitOfWork(
         {
             if (_transaction != null) await _transaction.RollbackAsync(mediator.CancellationToken);
             span.SetStatus(AxisSpanStatus.Ok);
-            return AxisResult.Ok();
+            return AxisResult.AxisResult.Ok();
         }
         catch (Exception ex)
         {

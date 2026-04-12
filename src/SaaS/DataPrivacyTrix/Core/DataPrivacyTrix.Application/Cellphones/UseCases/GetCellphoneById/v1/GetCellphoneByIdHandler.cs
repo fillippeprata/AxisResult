@@ -1,4 +1,4 @@
-using AxisTrix;
+using AxisResult;
 using AxisTrix.CQRS.Queries;
 using DataPrivacyTrix.Contracts.Cellphones.v1.GetCellphoneById;
 using DataPrivacyTrix.Ports.Cellphones;

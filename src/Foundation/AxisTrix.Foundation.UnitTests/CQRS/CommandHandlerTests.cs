@@ -1,4 +1,5 @@
-﻿using AxisTrix.CQRS.Commands;
+﻿using AxisResult;
+using AxisTrix.CQRS.Commands;
 using AxisTrix.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Sdk;

@@ -26,7 +26,7 @@ internal class AxisLogger<T>(IAxisMediator mediator, TimeProvider timeProvider, 
     public void LogCritical(string message, params (string Key, object? Value)[] properties)
         => Write(LogLevel.Critical, null, message, properties);
 
-    public void LogResult(string tag, AxisResult result)
+    public void LogResult(string tag, AxisResult.AxisResult result)
     {
         var level = result.IsSuccess ? LogLevel.Information : LogLevel.Error;
 

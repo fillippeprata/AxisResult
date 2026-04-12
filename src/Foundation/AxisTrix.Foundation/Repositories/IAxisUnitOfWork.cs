@@ -1,16 +1,18 @@
+using AxisResult;
+
 namespace AxisTrix.Repositories;
 
 public interface IAxisUnitOfWork : IDisposable, IAsyncDisposable
 {
-    Task<AxisResult> StartAsync();
-    Task<AxisResult> SaveChangesAsync();
-    Task<AxisResult> RollbackAsync();
+    Task<AxisResult.AxisResult> StartAsync();
+    Task<AxisResult.AxisResult> SaveChangesAsync();
+    Task<AxisResult.AxisResult> RollbackAsync();
 
     /// <summary>
     /// Executes <paramref name="work"/> inside a transaction, commits on success and
     /// rolls back on failure or exception. Exceptions are re-thrown after rollback.
     /// </summary>
-    async Task<AxisResult> InTransactionAsync(Func<Task<AxisResult>> work)
+    async Task<AxisResult.AxisResult> InTransactionAsync(Func<Task<AxisResult.AxisResult>> work)
     {
         var start = await StartAsync();
         if (start.IsFailure) return start;

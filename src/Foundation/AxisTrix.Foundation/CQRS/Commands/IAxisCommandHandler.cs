@@ -1,8 +1,10 @@
+using AxisResult;
+
 namespace AxisTrix.CQRS.Commands;
 
 public interface IAxisCommandHandler<in TCommand> where TCommand : IAxisCommand
 {
-    Task<AxisResult> HandleAsync(TCommand command);
+    Task<AxisResult.AxisResult> HandleAsync(TCommand command);
 }
 
 public interface IAxisCommandHandler<in TCommand, TResponse>

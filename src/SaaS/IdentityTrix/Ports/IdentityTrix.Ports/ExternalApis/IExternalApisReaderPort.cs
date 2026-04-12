@@ -1,4 +1,4 @@
-﻿using AxisTrix;
+﻿using AxisResult;
 using IdentityTrix.SharedKernel.ExternalApis;
 
 namespace IdentityTrix.Ports.ExternalApis;

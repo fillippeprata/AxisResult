@@ -6,5 +6,5 @@ namespace AxisTrix.Bus;
 /// </summary>
 public interface IAxisBus
 {
-    Task<AxisResult> PublishAsync<TEvent>(TEvent @event, params string[] topics) where TEvent : IAxisEvent;
+    Task<AxisResult.AxisResult> PublishAsync<TEvent>(TEvent @event, params string[] topics) where TEvent : IAxisEvent;
 }

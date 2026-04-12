@@ -240,7 +240,7 @@ public class MemoryCacheAdapterTests : IDisposable
         var result = await MemoryAdapter().GetOrCreateAsync(key, () =>
         {
             factoryCalled = true;
-            return Task.FromResult(AxisResult.Ok("new-value"));
+            return Task.FromResult(AxisResult.AxisResult.Ok("new-value"));
         });
 
         // Assert
@@ -261,7 +261,7 @@ public class MemoryCacheAdapterTests : IDisposable
         var result = await MemoryAdapter().GetOrCreateAsync(key, () =>
         {
             factoryCalled = true;
-            return Task.FromResult(AxisResult.Ok(value));
+            return Task.FromResult(AxisResult.AxisResult.Ok(value));
         });
 
         // Assert
@@ -280,7 +280,7 @@ public class MemoryCacheAdapterTests : IDisposable
         var expiration = TimeSpan.FromMinutes(10);
 
         // Act
-        var result = await MemoryAdapter().GetOrCreateAsync(key, () => Task.FromResult(AxisResult.Ok(value)), expiration);
+        var result = await MemoryAdapter().GetOrCreateAsync(key, () => Task.FromResult(AxisResult.AxisResult.Ok(value)), expiration);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -294,7 +294,7 @@ public class MemoryCacheAdapterTests : IDisposable
         var memoryAdapter = await CanceledTokenAsync();
 
         // Act
-        var result = await memoryAdapter.GetOrCreateAsync("any", () => Task.FromResult(AxisResult.Ok("val")));
+        var result = await memoryAdapter.GetOrCreateAsync("any", () => Task.FromResult(AxisResult.AxisResult.Ok("val")));
 
         // Assert
         Assert.True(result.IsFailure);
