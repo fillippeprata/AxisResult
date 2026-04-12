@@ -51,8 +51,14 @@ coveragereport/
 coverage*.json
 coverage*.xml
 coverage*.info
-coverage-report-detail/
-coverage-report/
+coverage*.cobertura.xml
+coverage*.opencover.xml
+[Cc]overage[Rr]eport*/
+[Cc]overage-[Rr]eport*/
+coverage/
+.coverage/
+lcov.info
+*.lcov
 
 # MSBuild
 *.binlog

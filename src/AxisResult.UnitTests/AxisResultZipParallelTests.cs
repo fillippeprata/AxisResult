@@ -109,6 +109,56 @@ public class AxisResultZipParallelTests
         Assert.Contains(R1, result.Errors);
     }
 
+    [Fact]
+    public async Task ZipParallelAsync_ValueTask_With_CancellationToken_Forwards_Token()
+    {
+        CancellationToken observed = default;
+        using var cts = new CancellationTokenSource();
+
+        var result = await AxisResult.Ok(1).AsValueTaskAsync()
+            .ZipParallelAsync(ct =>
+            {
+                observed = ct;
+                return new ValueTask<AxisResult<string>>(AxisResult.Ok("vt"));
+            }, cts.Token);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal((1, "vt"), result.Value);
+        Assert.Equal(cts.Token, observed);
+    }
+
+    [Fact]
+    public async Task ZipParallelAsync_ValueTask_With_CancellationToken_Left_Failure_Propagates()
+    {
+        var result = await AxisResult.Error<int>(L1).AsValueTaskAsync()
+            .ZipParallelAsync(ct =>
+                new ValueTask<AxisResult<string>>(AxisResult.Ok("r")), default);
+        Assert.True(result.IsFailure);
+        Assert.Single(result.Errors);
+        Assert.Equal(L1, result.Errors[0]);
+    }
+
+    [Fact]
+    public async Task ZipParallelAsync_ValueTask_With_CancellationToken_Right_Failure_Propagates()
+    {
+        var result = await AxisResult.Ok(1).AsValueTaskAsync()
+            .ZipParallelAsync(ct =>
+                new ValueTask<AxisResult<string>>(AxisResult.Error<string>(R1)), default);
+        Assert.True(result.IsFailure);
+        Assert.Single(result.Errors);
+        Assert.Equal(R1, result.Errors[0]);
+    }
+
+    [Fact]
+    public async Task ZipParallelAsync_ValueTask_With_CancellationToken_Both_Failures_Accumulate()
+    {
+        var result = await AxisResult.Error<int>(L1).AsValueTaskAsync()
+            .ZipParallelAsync(ct =>
+                new ValueTask<AxisResult<string>>(AxisResult.Error<string>(R1)), default);
+        Assert.True(result.IsFailure);
+        Assert.Equal(2, result.Errors.Count);
+    }
+
     #endregion
 
     private static async Task<AxisResult<T>> DelayThenOk<T>(int ms, T value)
