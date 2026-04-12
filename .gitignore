@@ -1,0 +1,119 @@
+## .NET / C# project — Visual Studio + JetBrains Rider
+
+# IDE
+.vs/
+.idea/
+.vscode/
+
+# Claude Code
+.claude/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.DotSettings.user
+*.env
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+artifacts-*/
+[Aa]rtifacts/
+**/[Bb]in/
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+coveragereport/
+coverage*.json
+coverage*.xml
+coverage*.info
+coverage*.cobertura.xml
+coverage*.opencover.xml
+[Cc]overage[Rr]eport*/
+[Cc]overage-[Rr]eport*/
+coverage/
+.coverage/
+lcov.info
+*.lcov
+
+# MSBuild
+*.binlog
+MSBuild_Logs/
+[Bb]uild[Ll]og.*
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Code coverage tools
+*.dotCover
+.axoCover/*
+!.axoCover/settings.json
+
+# NCrunch
+_NCrunch_*
+.NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# Misc build artifacts
+*.cache
+!?*.[Cc]ache/
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.pdb
+*.ilk
+*.obj
+
+# Publish output
+publish/
+*.pubxml
+*.publishproj
+
+# Mono
+mono_crash.*
+
+# Backup files
+Backup*/
+_UpgradeReport_Files/
+UpgradeLog*.XML
+UpgradeLog*.htm
+MigrationBackup/
+
+# OS files
+~$*
+*~
+
+# Benchmark
+BenchmarkDotNet.Artifacts/
+
+# Fody
+FodyWeavers.xsd

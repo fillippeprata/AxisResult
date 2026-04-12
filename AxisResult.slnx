@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/AxisResult.UnitTests/AxisResult.UnitTests.csproj" />
+    <Project Path="src/AxisResult/AxisResult.csproj" />
+  </Folder>
+</Solution>
