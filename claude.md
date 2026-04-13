@@ -70,14 +70,14 @@ If the architecture is not microservices-based, there will be no integration wit
 
 The Foundation layer is split into independent modules:
 
-| Module | Project | Purpose |
-|--------|---------|---------|
-| **Results** | `AxisTrix.Results` | `AxisResult`, `AxisError`, `AxisErrorType` — can be referenced directly by Domain projects without depending on the full Foundation |
+| Module | Project / Package | Purpose |
+|--------|-------------------|---------|
+| **Results** | `AxisResult` (NuGet: https://www.nuget.org/packages/AxisResult) | `AxisResult`, `AxisError`, `AxisErrorType` — external NuGet package. Domain projects that only need `AxisResult` (e.g., for entity rules) should reference this package directly instead of the full Foundation |
 | **Types** | `AxisTrix.Types` | Shared types (`CountryId`, `PersonData`) — namespaced under `AxisTrix.Types.Localization`, `AxisTrix.Types.Persons` |
-| **Foundation** | `AxisTrix.Foundation` | CQRS, Validation, Pipelines, Logging, Telemetry — references Results + Types |
+| **Foundation** | `AxisTrix.Foundation` | CQRS, Validation, Pipelines, Logging, Telemetry — references the `AxisResult` NuGet package + Types |
 | **SourceGen** | `AxisTrix.SourceGen` | `[ValueObject]` source generator |
 
-Domain projects that only need `AxisResult` (e.g., for entity rules) should reference `AxisTrix.Results` directly instead of the full Foundation.
+> **AxisResult is no longer an in-repo project.** It has been extracted to the public NuGet package [`AxisResult`](https://www.nuget.org/packages/AxisResult). Add it via `<PackageReference Include="AxisResult" />` (version managed in `Directory.Packages.props`). Never recreate a local `AxisTrix.Results` / `AxisResult` project inside this repo.
 
 ---
 

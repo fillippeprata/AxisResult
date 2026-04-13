@@ -1,12 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <InternalsVisibleTo Include="DataPrivacyTrix.Application" />
+    <InternalsVisibleTo Include="DataPrivacyTrix.Application"/>
   </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\..\..\Foundation\Results\AxisResult\AxisResult.csproj" />
-      <ProjectReference Include="..\DataPrivacyTrix.SharedKernel\DataPrivacyTrix.SharedKernel.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AxisResult"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataPrivacyTrix.SharedKernel\DataPrivacyTrix.SharedKernel.csproj"/>
+  </ItemGroup>
 
 </Project>

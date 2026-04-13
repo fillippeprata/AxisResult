@@ -17,6 +17,7 @@ internal class AddExternalApiHandler(
         var hashedSecret = ExternalApiSecret.Hash(plainSecret);
 
         return factory.CreateAsync(new() { ApiName = cmd.ApiName!, HashedSecret = hashedSecret })
+            //todo: padrão para conferir se api name já existe para o tenant em questão
             .ThenAsync(_ => uowProvider.UnitOfWork.SaveChangesAsync())
             .MapAsync<IExternalApiAggregateApplication, AddExternalApiResponse>(
                 app => new AddExternalApiResponse
