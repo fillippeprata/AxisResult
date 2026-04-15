@@ -40,7 +40,7 @@ jobs:
 
       - name: Test (safety net)
         run: >
-          dotnet test src/AxisResult.UnitTests/AxisResult.UnitTests.csproj
+          dotnet test src/AxisUnitTests/AxisUnitTests.csproj
           -c Release
           --no-restore
 
