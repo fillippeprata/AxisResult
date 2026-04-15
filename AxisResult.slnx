@@ -5,7 +5,7 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/AxisResult.UnitTests/AxisResult.UnitTests.csproj" />
     <Project Path="src/AxisResult/AxisResult.csproj" />
+    <Project Path="src/AxisUnitTests/AxisUnitTests.csproj" />
   </Folder>
 </Solution>

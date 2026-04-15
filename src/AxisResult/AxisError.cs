@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace AxisResult;
+namespace Axis;
 
 [DebuggerDisplay("{Type,nq} {Code,nq}")]
 public record AxisError

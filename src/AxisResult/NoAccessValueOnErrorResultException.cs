@@ -1,4 +1,4 @@
-namespace AxisResult;
+namespace Axis;
 
 public sealed class NoAccessValueOnErrorResultException(IReadOnlyList<AxisError> errors) : InvalidOperationException(BuildMessage(errors))
 {

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace AxisResult;
+namespace Axis;
 
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public abstract partial class AxisResult(List<AxisError>? initErrors = null)

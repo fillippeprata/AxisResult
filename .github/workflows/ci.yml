@@ -32,7 +32,7 @@ jobs:
 
       - name: Test with coverage
         run: >
-          dotnet test src/AxisResult.UnitTests/AxisResult.UnitTests.csproj
+          dotnet test src/AxisUnitTests/AxisUnitTests.csproj
           -c Release
           --no-build
           --collect:"XPlat Code Coverage"

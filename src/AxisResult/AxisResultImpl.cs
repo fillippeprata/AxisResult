@@ -1,4 +1,4 @@
-namespace AxisResult;
+namespace Axis;
 
 internal sealed class AxisResultImpl(List<AxisError>? errors = null) : AxisResult(errors);
 

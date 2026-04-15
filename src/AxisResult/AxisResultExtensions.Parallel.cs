@@ -1,4 +1,4 @@
-namespace AxisResult;
+namespace Axis;
 
 // Parallel composition: run an independent operation concurrently with the
 // upstream pipeline and zip the results into a tuple. Unlike the regular
