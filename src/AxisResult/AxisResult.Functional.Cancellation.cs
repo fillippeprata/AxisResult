@@ -1,4 +1,4 @@
-namespace AxisResult;
+namespace Axis;
 
 // CancellationToken-aware overloads for the generic AxisResult<TValue> pipeline.
 // These are additive overloads: the existing CT-less signatures are preserved

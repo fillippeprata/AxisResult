@@ -1,4 +1,4 @@
-namespace AxisResult;
+namespace Axis;
 
 public abstract partial class AxisResult
 {

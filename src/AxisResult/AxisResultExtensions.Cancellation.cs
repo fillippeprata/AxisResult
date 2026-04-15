@@ -1,4 +1,4 @@
-namespace AxisResult;
+namespace Axis;
 
 // Extensions on Task<AxisResult<TValue>> and ValueTask<AxisResult<TValue>> that
 // accept CancellationToken-aware delegates. These are the primary surface users

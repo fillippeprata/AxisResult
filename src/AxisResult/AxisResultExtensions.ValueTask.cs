@@ -1,4 +1,4 @@
-namespace AxisResult;
+namespace Axis;
 
 public static class AxisResultValueTaskExtensions
 {

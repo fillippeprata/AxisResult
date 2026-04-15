@@ -1,4 +1,6 @@
-namespace AxisResult.UnitTests;
+using Axis;
+
+namespace AxisUnitTests;
 
 public class AxisResultExtensionsValueTaskTests
 {
