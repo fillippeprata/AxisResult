@@ -29,9 +29,10 @@ internal class ExternalApiAggregateApplicationFactory(
         => readerPort.GetByIdAsync(id)
             .MapAsync(NewInstance);
 
-    //todo: Verificar se api name já existe. Usar mesmo padrão de DataPrivacyTrix.Cellphones
     public Task<AxisResult<IExternalApiAggregateApplication>> CreateAsync(IExternalApiAggregateApplicationFactory.NewArgs args)
-        => AxisResult.Ok<IExternalApiEntityProperties>(new ExternalApiEntity(ExternalApiId.New, args.HashedSecret, args.ApiName))
-            .TapAsync(writePort.CreateAsync)
-            .MapAsync(NewInstance);
+        => readerPort.GetByNameAsync(args.ApiName)
+            .RequireNotFoundAsync(AxisError.ValidationRule("EXTERNAL_API_NAME_ALREADY_EXISTS"))
+            .WithValueAsync(new ExternalApiEntity(ExternalApiId.New, args.HashedSecret, args.ApiName))
+            .MapAsync(NewInstance)
+            .ThenAsync(writePort.CreateAsync);
 }

@@ -3,7 +3,7 @@ using DataPrivacyTrix.Contracts.Emails.v1.GetByEmailAddress;
 
 namespace DataPrivacyTrix.Application.Emails.UseCases.GetByEmailAddress.v1;
 
-public class GetByEmailAddressValidator : AxisValidatorBase<GetByEmailAddressQuery>
+internal class GetByEmailAddressValidator : AxisValidatorBase<GetByEmailAddressQuery>
 {
     public GetByEmailAddressValidator()
     {

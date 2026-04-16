@@ -4,7 +4,7 @@ namespace IdentityTrix.Driven.Repositories.Postgres.ExternalApis.Scripts;
 
 public static class ExternalApisDbInit
 {
-    public const string Schema = "IDENTITYTRIX_EXTERNAL_APIS";
+    public const string Schema = "IDENTITY_TRIX_EXTERNAL_APIS";
 
     public const string SeedAdminExternalApiId = "00000000-0000-7000-8000-000000000001";
     public const string SeedAdminApiName = "admin-external-api";

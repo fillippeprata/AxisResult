@@ -8,4 +8,8 @@
       <ProjectReference Include="..\IdentityTrix.SharedKernel\IdentityTrix.SharedKernel.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="AxisResult" />
+    </ItemGroup>
+
 </Project>

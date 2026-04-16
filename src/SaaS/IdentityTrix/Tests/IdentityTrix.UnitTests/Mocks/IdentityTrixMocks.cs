@@ -17,6 +17,9 @@ internal record IdentityTrixMocks
         mocks.UowProvider.Setup(x => x.UnitOfWork.SaveChangesAsync())
             .ReturnsAsync(AxisResult.Ok());
 
+        mocks.ExternalApiReader.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
+            .ReturnsAsync(AxisResult.Error<IExternalApiEntityProperties>(AxisError.NotFound("EXTERNAL_API_NOT_FOUND")));
+
         mocks.ExternalApiWriter.Setup(x => x.CreateAsync(It.IsAny<IExternalApiEntityProperties>()))
             .ReturnsAsync(AxisResult.Ok());
 

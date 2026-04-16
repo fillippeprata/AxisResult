@@ -35,6 +35,13 @@ internal class ExternalApisRepository(
             ExternalApiDbEntity.FromReader,
             "EXTERNAL_API_NOT_FOUND");
 
+    public Task<AxisResult<IExternalApiEntityProperties>> GetByNameAsync(string apiName)
+        => GetAsync<IExternalApiEntityProperties>(
+            $"{Select} FROM {ExternalApisTable.Table} WHERE {ExternalApisTable.Name} = @name",
+            p => p.AddWithValue("name", apiName),
+            ExternalApiDbEntity.FromReader,
+            "EXTERNAL_API_NOT_FOUND");
+
     public Task<AxisResult> UpdateSecretAsync(ExternalApiId id, string hashedSecret)
         => ExecuteAsync(
             $"UPDATE {ExternalApisTable.Table} SET {ExternalApisTable.Secret} = @secret WHERE {ExternalApisTable.ExternalApiId} = @id",

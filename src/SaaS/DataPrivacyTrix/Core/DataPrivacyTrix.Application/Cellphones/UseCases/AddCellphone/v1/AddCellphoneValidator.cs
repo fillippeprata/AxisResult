@@ -5,7 +5,7 @@ using CountryId = Axis.Localization.CountryId;
 
 namespace DataPrivacyTrix.Application.Cellphones.UseCases.AddCellphone.v1;
 
-public class AddCellphoneValidator : AxisValidatorBase<AddCellphoneCommand>
+internal class AddCellphoneValidator : AxisValidatorBase<AddCellphoneCommand>
 {
     public AddCellphoneValidator()
     {

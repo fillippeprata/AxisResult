@@ -3,7 +3,7 @@ using DataPrivacyTrix.Contracts.Emails.v1.AddEmail;
 
 namespace DataPrivacyTrix.Application.Emails.UseCases.AddEmail.v1;
 
-public class AddEmailValidator : AxisValidatorBase<AddEmailCommand>
+internal class AddEmailValidator : AxisValidatorBase<AddEmailCommand>
 {
     public AddEmailValidator()
     {

@@ -20,9 +20,5 @@ internal class ExternalApiAggregateApplication(
         => writePort.UpdateSecretAsync(ExternalApiId, hashedSecret);
 
     public AxisResult VerifySecret(string plainSecret)
-    {
-        if (ValidateSecret(plainSecret))
-            return AxisResult.Ok();
-        return AxisError.Unauthorized("INVALID_EXTERNAL_API_ID_OR_SECRET");
-    }
+        => ValidateSecret(plainSecret);
 }
