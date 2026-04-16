@@ -36,8 +36,8 @@
 {Domain}/
 └── {SubDomain}/
     ├── Contracts/{SubDomain}.Contracts/
-    │   ├── {BC}/{Feature}/{UseCase}/v1/I{Feature}Mediator       # Interface for SDK Implementation
-    │   └── {BC}/{Feature}/{UseCase}/v1/                         # If the feature has the same name as the BC (CRUDs), there is no feature folder
+    │   ├── {BC}/v1/{Feature}/{UseCase}/I{Feature}Mediator       # Interface for SDK Implementation
+    │   └── {BC}/v1/{UseCase}/                                   # If the feature has the same name as the BC (CRUDs), there is no feature folder
     ├── Core/
     │   ├── {SubDomain}.SharedKernel/                            # Entity interfaces, Value Objects, ApplicationConfig
     │   ├── {SubDomain}.Domain/                                  # Entities (Properties + Rules, partial classes)
@@ -47,16 +47,16 @@
     ├── Ports/{SubDomain}.Ports/                                 # Reader/Writer port interfaces, IUnitOfWorkProvider
     ├── Adapters/
     │   ├── Driven/
-    │   │   ├── Repositories/{SubDomain}.Repository.[Technology]/   # Postgres | MongoDb | etc.
-    │   │   ├── Producers/{SubDomain}.Producers.[Technology]/       # Kafka | RabbitMq | etc.
-    │   │   ├── Consumers/{SubDomain}.Consumers.[Technology]/       # Kafka | RabbitMq | etc.
+    │   │   ├── Repositories/{SubDomain}.Driven.Repositories.[Technology]/  # Postgres | MongoDb | etc.
+    │   │   ├── Producers/{SubDomain}.Driven.Producers.[Technology]/        # Kafka | RabbitMq | etc.
+    │   │   ├── Consumers/{SubDomain}.Driven.Consumers.[Technology]/        # Kafka | RabbitMq | etc.
     │   │   └── Others/
     │   └── Driving/
-    │       ├── SDK/{SubDomain}.SDK.Application/                    # SDK for Dependency Injection
-    │       ├── SDK/{SubDomain}.SDK.HttpClient/                     # SDK for HTTP Communication
-    │       ├── SDK/{SubDomain}.SDK.GrpcClient/                     # SDK for gRPC Communication
-    │       ├── {SubDomain}.WebApi/                                 # Web Api for microservices
-    │       └── {SubDomain}.Grpc/                                   # gRPC for microservices
+    │       ├── {SubDomain}.Sdk.Application/                     # SDK for Dependency Injection
+    │       ├── {SubDomain}.Sdk.HttpClient/                      # SDK for HTTP Communication
+    │       ├── {SubDomain}.Sdk.GrpcClient/                      # SDK for gRPC Communication
+    │       ├── {SubDomain}.WebApi/                               # Web Api for microservices
+    │       └── {SubDomain}.Grpc/                                 # gRPC for microservices
     └── Tests/
         ├── {SubDomain}.UnitTests/
         └── {SubDomain}.IntegrationTests/
@@ -64,7 +64,7 @@
 
 If the architecture is not microservices-based, there will be no integration with Web API or gRPC. The monolith will use the SDK.Application to execute the use cases.
 
-**Project naming**: `{SubDomain}.{Layer}` — e.g., `IdentityTrix.Application`, `IdentityTrix.Repository.Postgres`
+**Project naming**: `{SubDomain}.{Layer}` — e.g., `IdentityTrix.Application`, `IdentityTrix.Driven.Repositories.Postgres`, `IdentityTrix.Sdk.Application`. Driven/Driving adapters include the adapter direction prefix in the project name.
 
 ### Foundation Modules
 
@@ -368,7 +368,7 @@ Root entities: `{Aggregate}/Root/`. Non-root: `{Aggregate}/Entities/`.
 - `GetByIdAsync()` → reader port + `.MapAsync()` to wrap in Application, optionally + `.ActionAsync()` for domain validation
 - `CreateAsync()` → use `.RequireNotFoundAsync()` for duplicate detection, then `.ThenAsync(writePort.CreateAsync)`
 - When the entity has domain validation rules, use `.ActionAsync(app => app.IsValidAsync())` after `.MapAsync(NewInstance)` to validate before returning
-- `NewInstance(I{Entity}EntityProperties properties)` — **private static** helper that constructs the Application by passing `properties` directly to the AggregateApplication constructor (never wrap in `new {Entity}Entity(properties)` first — the AggregateApplication's base call handles the rehydration)
+- `NewInstance(I{Entity}EntityProperties properties)` — **private** helper that constructs the Application by passing `properties` directly to the AggregateApplication constructor (never wrap in `new {Entity}Entity(properties)` first — the AggregateApplication's base call handles the rehydration). Use `private static` when the AggregateApplication does not need injected dependencies; use `private` (non-static) when the factory needs to pass ports or services to the Application constructor
 
 **AggregateApplication** (`I{Name}AggregateApplication : I{Entity}EntityProperties`):
 - `internal class {Name}AggregateApplication(I{Entity}EntityProperties properties, ...) : {Entity}(properties), I{Name}AggregateApplication`
@@ -413,11 +413,11 @@ Interface and implementation live in the **same `.cs` file** for both Factory an
 
 ## Database Migrations
 
-**`DatabaseScripts`** — `public static class` with `const string Schema` and `internal static readonly (string Version, string Script)[] Migrations`.
+**`{Aggregate}DbInit`** — `public static class` per aggregate (e.g., `ExternalApisDbInit`) with `const string Schema` and `internal static readonly (string Version, string Script)[] Migrations`. Each aggregate owns its schema and migrations, enabling future extraction to microservices.
 
-**Table DDL** — each Table class defines `const string V1` (and `V2`, `V3` for incremental changes).
+**Table DDL** — each Table class defines `const string V1` (and `V2`, `V3` for incremental changes). References `{Aggregate}DbInit.Schema` for the schema prefix.
 
-**Migration runner** — `{BC}Migrations.InitializePostgresAsync(string connectionString)`:
+**Migration runner** — `{Aggregate}Migrations` (internal) applies migrations per aggregate. A public facade `{SubDomain}Migrations.InitializePostgresAsync(string connectionString)` orchestrates all aggregate migrations:
 - Creates schema + `SCHEMA_MIGRATIONS` table (`VERSION VARCHAR(50) PK`, `APPLIED_AT TIMESTAMPTZ`)
 - Applies migrations idempotently in a transaction
 
@@ -425,13 +425,13 @@ Interface and implementation live in the **same `.cs` file** for both Factory an
 
 ## SDK / Driving Adapters
 
-- Public interface: `I{Name}Mediator` in `{Subdomain}.SDK`
-- Internal DI implementation: `{Name}Mediator` in `{Subdomain}.SDK.Application`
+- Public interface: `I{Name}Mediator` in `{Subdomain}.Contracts`
+- Internal DI implementation: `{Name}Mediator` in `{Subdomain}.Sdk.Application`
 - Primary constructor: `IAxisMediator mediator`
 - Commands: `mediator.Cqrs.ExecuteAsync<TCommand, TResponse>(command)`
 - Queries: `mediator.Cqrs.QueryAsync<TQuery, TResponse>(query)`
 - SDK is a thin wrapper — zero logic, only delegates to CQRS pipeline
-- SDK.Application DI calls `Add{Subdomain}Application()` — it is the entry point that wires everything
+- Sdk.Application DI calls `Add{Subdomain}Application()` — it is the entry point that wires everything
 
 ---
 
@@ -538,8 +538,8 @@ Simple shared records (e.g., `Device(string Name, string Key)`) go in `SharedKer
 
 ## Contract Versioning
 
-- Contracts: `Contracts/{BC}/{Feature}/{Action}/v1/`
-- Handlers mirror: `Application/{BC}/UseCases/{Action}/v1/`
+- Contracts: `Contracts/{BC}/v1/{Action}/` (or `Contracts/{BC}/v1/{Feature}/{Action}/` when the feature differs from the BC)
+- Handlers mirror: `Application/{BC}/UseCases/v1/{Action}/`
 - Namespace follows folder. The Contracts **project** name depends on whether the BC is still part of the monolith or has been promoted to its own microservice:
   - **Default (monolith)**: a single Contracts project per subdomain — `{SubDomain}.Contracts` — holding every BC. Namespace: `{SubDomain}.Contracts.{BC}.{Feature}.{Action}.v1` (e.g., `IdentityTrix.Contracts.Persons.Cellphones.AddCellphone.v1`).
   - **BC promoted to microservice**: that BC gets its own Contracts project — `{SubDomain}.{BC}.Contracts`. Namespace: `{SubDomain}.{BC}.Contracts.{Feature}.{Action}.v1` (e.g., `IdentityTrix.Persons.Contracts.Cellphones.AddCellphone.v1`).
@@ -563,7 +563,7 @@ NEVER use test packages except these:
 
 ### Command
 
-**Contract** (`{BC}.Contracts/{Feature}/{Action}/v1/`):
+**Contract** (`{BC}.Contracts/{Feature}/v1/{Action}/`):
 ```csharp
 public record AddCellphoneToPersonCommand : IAxisCommand<AddCellphoneToPersonResponse>
 {
@@ -578,7 +578,7 @@ public record AddCellphoneToPersonResponse : IAxisCommandResponse
 }
 ```
 
-**Handler** (`{BC}.Application/{Feature}/UseCases/{Action}/v1/`):
+**Handler** (`{BC}.Application/{Feature}/UseCases/v1/{Action}/`):
 ```csharp
 internal class AddCellphoneToPersonHandler(
     IPersonAggregateApplicationFactory personApplicationFactory,
@@ -710,17 +710,17 @@ Use `protected` when the rule needs to be exposed through the AggregateApplicati
 ```csharp
 internal static class ExternalApisTable
 {
-    public const string Table = $"{DatabaseScripts.Schema}.EXTERNAL_APIS";
+    public const string Table = $"{ExternalApisDbInit.Schema}.EXTERNAL_APIS";
     public const string ExternalApiId = "EXTERNAL_API_ID";
     public const string Name = "NAME";
-    public const string Secret = "SECRET";
+    public const string Secret = "HASHED_SECRET";
 
     public const string V1 = $"""
         CREATE TABLE IF NOT EXISTS {Table}
         (
-            {ExternalApiId} UUID PRIMARY KEY,
-            {Name} VARCHAR(250) NOT NULL,
-            {Secret} VARCHAR(500) NOT NULL
+            {ExternalApiId} VARCHAR(250) PRIMARY KEY,
+            {Name} VARCHAR(250) NOT NULL UNIQUE,
+            {Secret} VARCHAR(512) NOT NULL
         );
     """;
 }
@@ -778,21 +778,29 @@ internal class ExternalApisRepository(
 }
 ```
 
-**DatabaseScripts + Migrations**:
+**DbInit + Migrations** (per aggregate):
 ```csharp
-public static class DatabaseScripts
+// {Aggregate}DbInit.cs — owns schema and migration definitions for this aggregate
+public static class ExternalApisDbInit
 {
-    public const string Schema = "IDENTITY_TRIX_PERSONS";
+    public const string Schema = "IDENTITY_TRIX_EXTERNAL_APIS";
+
     internal static readonly (string Version, string Script)[] Migrations =
     [
-        ("V1", PersonsTable.V1 + PersonCellphonesTable.V1),
-        ("V2", "ALTER TABLE ..."),
+        ("V1", ExternalApisTable.V1),
+        ("V2", V2),
     ];
+
+    private static string V2 => $"""
+        INSERT INTO {ExternalApisTable.Table} (...)
+        SELECT ... WHERE NOT EXISTS (...);
+        """;
 }
 
-public static class IdentityTrixPersonsMigrations
+// {Aggregate}Migrations.cs — internal runner for this aggregate
+internal static class ExternalApisMigrations
 {
-    private const string MigrationsTable = $"{DatabaseScripts.Schema}.SCHEMA_MIGRATIONS";
+    private const string MigrationsTable = $"{ExternalApisDbInit.Schema}.SCHEMA_MIGRATIONS";
 
     public static async Task InitializePostgresAsync(string connectionString)
     {
@@ -800,6 +808,13 @@ public static class IdentityTrixPersonsMigrations
         await conn.OpenAsync();
         // create schema + migrations table, then apply each version idempotently in a transaction
     }
+}
+
+// {SubDomain}Migrations.cs — public facade that orchestrates all aggregate migrations
+public static class IdentityTrixMigrations
+{
+    public static Task InitializePostgresAsync(string connectionString)
+        => ExternalApisMigrations.InitializePostgresAsync(connectionString);
 }
 ```
 
@@ -831,7 +846,7 @@ internal class PersonAggregateApplicationFactory(
     IPersonEmailsWriter emailsWriter
 ) : IPersonAggregateApplicationFactory
 {
-    private static IPersonAggregateApplication NewInstance(IPersonEntityProperties p)
+    private IPersonAggregateApplication NewInstance(IPersonEntityProperties p)
         => new PersonAggregateApplication(p, cellphonesWriter, emailsWriter);
 
     public Task<AxisResult<IPersonAggregateApplication>> GetByIdAsync(PersonId personId)
@@ -913,7 +928,7 @@ internal class CellphoneAggregateApplication(
 
 ### SDK
 
-**Interface** (`{BC}.SDK/{Feature}/v1/`):
+**Interface** (`{BC}.Contracts/{Feature}/v1/`):
 ```csharp
 public interface IPersonsMediator
 {
@@ -922,7 +937,7 @@ public interface IPersonsMediator
 }
 ```
 
-**Implementation** (`{BC}.SDK.Application/{Feature}/v1/`):
+**Implementation** (`{BC}.Sdk.Application/{Feature}/v1/`):
 ```csharp
 internal class PersonsMediator(IAxisMediator mediator) : IPersonsMediator
 {
@@ -934,7 +949,7 @@ internal class PersonsMediator(IAxisMediator mediator) : IPersonsMediator
 }
 ```
 
-**DI** (`{BC}.SDK.Application/DependencyInjection.cs`):
+**DI** (`{BC}.Sdk.Application/DependencyInjection.cs`):
 ```csharp
 public static class DependencyInjection
 {
@@ -1033,7 +1048,7 @@ public static class DependencyInjection
             .InitAxisTrixAdd()
             .AddMemoryCacheTrix()
             .AddDataPrivacyTrixPostgres(connectionString)
-            .AddDataPrivacyTrixSDKApplication()
+            .AddDataPrivacyTrixSdkApplication()
             .AddIdentityTrixPersonsPostgres(connectionString)
             .AddIdentityTrixPersonsSdkApplication()
             .EndAxisTrixAdd_Mock()
@@ -1059,7 +1074,7 @@ public static class DependencyInjection
 ## DI Composition Example
 
 ```
-SDK.Application (entry point)
+Sdk.Application (entry point)
 ├── AddIdentityTrixPersonsSdkApplication()
 │   ├── IPersonsMediator → PersonsMediator (Scoped)
 │   └── AddPersonsApplication()
@@ -1067,7 +1082,7 @@ SDK.Application (entry point)
 │       │   └── IPersonAggregateApplicationFactory → PersonAggregateApplicationFactory (Scoped)
 │       └── AddCqrsMediator() — discovers handlers + validators
 
-Repository.Postgres
+Driven.Repositories.Postgres
 └── AddIdentityTrixPersonsPostgres(connectionString)
     ├── AddPostgresUnitOfWork(appKey, connectionString)
     ├── IUnitOfWorkProvider → UnitOfWorkProvider (Scoped)
@@ -1076,7 +1091,7 @@ Repository.Postgres
         └── IPersonsWritePort → PersonsRepository (Scoped)
 ```
 
-**Cross-subdomain**: Authentication → Persons (via `IdentityTrix.Persons.SDK`). One-way dependency — Persons does NOT reference Authentication.
+**Cross-subdomain**: Authentication → Persons (via `IdentityTrix.Persons.Sdk`). One-way dependency — Persons does NOT reference Authentication.
 
 ---
 
