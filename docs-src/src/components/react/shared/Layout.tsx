@@ -39,7 +39,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                         </a>
                         <div className="flex items-center gap-4">
                             <a
-                                href="https://github.com/axisresult/axisresult"
+                                href="https://github.com/fillippeprata/axisresult"
                                 className="text-slate-400 hover:text-blue-400 transition"
                                 title="GitHub"
                             >
@@ -96,7 +96,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <div className="flex flex-col md:flex-row justify-between items-center text-slate-400 text-sm gap-4">
                         <p>&copy; 2026 AxisResult. Zero-dependency Result monad for C#.</p>
                         <div className="flex gap-6">
-                            <a href="https://github.com/axisresult/axisresult" className="hover:text-slate-200 transition">
+                            <a href="https://github.com/fillippeprata/axisresult" className="hover:text-slate-200 transition">
                                 GitHub Repository
                             </a>
                             <a href="https://www.nuget.org/packages/AxisResult" className="hover:text-slate-200 transition">

@@ -212,7 +212,7 @@ var result = await risky.Operation()
                         </li>
                         <li className="flex gap-3">
                             <span className="text-blue-400">→</span>
-                            <span>Explore advanced patterns in the <a href="https://github.com/axisresult/axisresult" className="text-blue-400 hover:text-blue-300">GitHub repository</a></span>
+                            <span>Explore advanced patterns in the <a href="https://github.com/fillippeprata/axisresult" className="text-blue-400 hover:text-blue-300">GitHub repository</a></span>
                         </li>
                     </ul>
                 </section>

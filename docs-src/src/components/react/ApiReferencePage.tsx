@@ -181,7 +181,7 @@ public AxisError Error { get; }  // Throws if IsSuccess`}</code></pre>
                         For comprehensive documentation, method signatures, and advanced patterns:
                     </p>
                     <div className="flex gap-4">
-                        <a href="https://github.com/axisresult/axisresult" className="text-blue-400 hover:text-blue-300 font-medium">
+                        <a href="https://github.com/fillippeprata/axisresult" className="text-blue-400 hover:text-blue-300 font-medium">
                             → GitHub Repository
                         </a>
                         <a href="https://www.nuget.org/packages/AxisResult" className="text-blue-400 hover:text-blue-300 font-medium">
