@@ -1,5 +1,5 @@
-using AxisResult;
-using AxisTrix.CQRS.Commands;
+using Axis;
+using AxisMediator.Contracts.CQRS.Commands;
 using DataPrivacyTrix.Contracts.Cellphones.v1.AddCellphone;
 using DataPrivacyTrix.Ports;
 

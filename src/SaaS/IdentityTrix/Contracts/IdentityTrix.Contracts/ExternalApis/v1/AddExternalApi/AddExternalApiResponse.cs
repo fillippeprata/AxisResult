@@ -1,4 +1,4 @@
-using AxisTrix.CQRS.Commands;
+using AxisMediator.Contracts.CQRS.Commands;
 
 namespace IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 

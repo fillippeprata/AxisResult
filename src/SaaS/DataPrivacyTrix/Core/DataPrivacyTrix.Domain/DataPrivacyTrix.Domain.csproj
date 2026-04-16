@@ -9,7 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Axis\AxisValidator\Localization\AxisValidator.Brazil\AxisValidator.Brazil.csproj" />
     <ProjectReference Include="..\DataPrivacyTrix.SharedKernel\DataPrivacyTrix.SharedKernel.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Cellphones\Validation\" />
   </ItemGroup>
 
 </Project>

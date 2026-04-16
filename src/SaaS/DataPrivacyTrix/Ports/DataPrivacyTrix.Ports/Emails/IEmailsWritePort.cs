@@ -1,8 +1,9 @@
-﻿using DataPrivacyTrix.SharedKernel.Emails;
+﻿using Axis;
+using DataPrivacyTrix.SharedKernel.Emails;
 
 namespace DataPrivacyTrix.Ports.Emails;
 
 public interface IEmailsWritePort
 {
-    Task<AxisResult.AxisResult> CreateAsync(IEmailEntityProperties properties);
+    Task<AxisResult> CreateAsync(IEmailEntityProperties properties);
 }

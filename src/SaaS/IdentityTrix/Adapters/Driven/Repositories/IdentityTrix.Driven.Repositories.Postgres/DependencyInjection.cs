@@ -1,5 +1,5 @@
-﻿using AxisTrix.DependencyInjection;
-using AxisTrix.Repository.Postgres;
+﻿using AxisRepository.Postgres;
+using AxisTrix.DependencyInjection;
 using IdentityTrix.Driven.Repositories.Postgres.ExternalApis;
 using IdentityTrix.Driven.Repositories.Postgres.UnitOfWork;
 using IdentityTrix.Ports;

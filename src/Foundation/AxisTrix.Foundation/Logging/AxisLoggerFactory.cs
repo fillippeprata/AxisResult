@@ -1,4 +1,4 @@
-using AxisTrix.Accessor;
+using AxisMediator.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

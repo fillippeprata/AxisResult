@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Axis</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AxisResult" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AxisLogger\AxisLogger\AxisLogger.csproj" />
+  </ItemGroup>
+
+</Project>

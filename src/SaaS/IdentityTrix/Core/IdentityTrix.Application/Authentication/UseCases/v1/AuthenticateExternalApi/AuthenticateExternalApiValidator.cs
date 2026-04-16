@@ -1,4 +1,4 @@
-using AxisTrix.Validation;
+using AxisValidator.FluentValidation;
 using IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 using IdentityTrix.SharedKernel.ExternalApis;
 

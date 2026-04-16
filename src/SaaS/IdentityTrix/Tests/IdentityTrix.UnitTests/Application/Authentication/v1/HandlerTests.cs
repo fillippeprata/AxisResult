@@ -1,4 +1,4 @@
-using AxisResult;
+using Axis;
 using IdentityTrix.Contracts.Authentication.v1;
 using IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 using IdentityTrix.SharedKernel.ExternalApis;
@@ -23,7 +23,7 @@ public class HandlerTests
 
         var mocks = IdentityTrixMocks.CreateSuccessfulMocks();
         mocks.ExternalApiReader.Setup(x => x.GetByIdAsync(externalApiId))
-            .ReturnsAsync(AxisResult.AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, hashedSecret, "test-api")));
+            .ReturnsAsync(AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, hashedSecret, "test-api")));
 
         var services = new ServiceCollection();
         services.AddMocks(mocks);
@@ -49,7 +49,7 @@ public class HandlerTests
 
         var mocks = IdentityTrixMocks.CreateSuccessfulMocks();
         mocks.ExternalApiReader.Setup(x => x.GetByIdAsync(externalApiId))
-            .ReturnsAsync(AxisResult.AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, storedSecret, "test-api")));
+            .ReturnsAsync(AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, storedSecret, "test-api")));
 
         var services = new ServiceCollection();
         services.AddMocks(mocks);

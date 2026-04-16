@@ -1,18 +1,16 @@
-﻿using AxisTrix.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace AxisTrix.Logging;
 
 internal static class DependencyInjection
 {
-    extension(ServiceCollectionBuilder builder)
+    extension(IServiceCollection services)
     {
-        public ServiceCollectionBuilder AddAxisLogger()
+        public IServiceCollection AddAxisLoggerFactore()
         {
-            builder.Services.AddSingleton(AxisLoggerFactory.Create);
-            builder.Services.AddLogging();
-            builder.Services.AddScoped(typeof(IAxisLogger<>), typeof(AxisLogger<>));
-            return builder;
+            services.AddSingleton(AxisLoggerFactory.Create);
+            services.AddLogging();
+            return services;
         }
     }
 }

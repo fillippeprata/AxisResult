@@ -1,6 +1,7 @@
 using System.Reflection;
-using AxisTrix.CQRS;
+using AxisMediator.CQRS;
 using AxisTrix.DependencyInjection;
+using AxisValidator.FluentValidation;
 using IdentityTrix.Application.Authentication;
 using IdentityTrix.Application.ExternalApis;
 
@@ -10,9 +11,15 @@ internal static class DependencyInjection
 {
     public static ServiceCollectionBuilder AddIdentityTrixApplication(this ServiceCollectionBuilder builder)
     {
+        var assembly = Assembly.GetExecutingAssembly();
+
+        builder.Services
+            .AddCqrsMediator(assembly)
+            .AddAxisValidator(assembly);
+
         return builder
             .AddAuthenticationModule()
-            .AddExternalApisModule()
-            .AddCqrsMediator(Assembly.GetExecutingAssembly());
+            .AddExternalApisModule();
+
     }
 }

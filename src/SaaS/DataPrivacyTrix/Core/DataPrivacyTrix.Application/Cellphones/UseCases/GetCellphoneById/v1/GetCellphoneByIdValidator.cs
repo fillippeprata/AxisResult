@@ -1,4 +1,4 @@
-using AxisTrix.Validation;
+using AxisValidator.FluentValidation;
 using DataPrivacyTrix.Contracts.Cellphones.v1.GetCellphoneById;
 using DataPrivacyTrix.SharedKernel.Cellphones;
 

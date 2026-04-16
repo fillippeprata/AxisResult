@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>AxisMediator</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AxisLogger\AxisLogger\AxisLogger.csproj" />
+    <ProjectReference Include="..\AxisMediator.Contracts\AxisMediator.Contracts.csproj" />
+  </ItemGroup>
+</Project>

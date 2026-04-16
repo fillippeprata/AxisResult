@@ -1,16 +1,22 @@
 using System.Reflection;
-using AxisTrix.CQRS;
+using AxisMediator.CQRS;
 using AxisTrix.DependencyInjection;
+using AxisValidator.FluentValidation;
 using DataPrivacyTrix.Application.Cellphones;
 
 namespace DataPrivacyTrix.Application;
 
 internal static class DependencyInjection
 {
-    public static ServiceCollectionBuilder AddIdentityTrixApplication(this ServiceCollectionBuilder builder)
+    public static ServiceCollectionBuilder AddDataPrivacyTrixApplication(this ServiceCollectionBuilder builder)
     {
+        var assembly = Assembly.GetExecutingAssembly();
+
+        builder.Services
+            .AddCqrsMediator(assembly)
+            .AddAxisValidator(assembly);
+
         return builder
-            .AddCellphonesModule()
-            .AddCqrsMediator(Assembly.GetExecutingAssembly());
+            .AddCellphonesModule();
     }
 }

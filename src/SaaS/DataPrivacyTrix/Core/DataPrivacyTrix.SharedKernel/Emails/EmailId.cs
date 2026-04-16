@@ -1,4 +1,4 @@
-using AxisTrix.SourceGen;
+using AxisTypes.SourceGenerator;
 
 namespace DataPrivacyTrix.SharedKernel.Emails;
 

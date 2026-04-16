@@ -1,4 +1,4 @@
-﻿using AxisResult;
+﻿using Axis;
 using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
 using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;

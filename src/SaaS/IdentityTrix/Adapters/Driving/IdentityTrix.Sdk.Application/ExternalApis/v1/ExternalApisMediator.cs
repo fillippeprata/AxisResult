@@ -1,5 +1,5 @@
-﻿using AxisResult;
-using AxisTrix;
+﻿using Axis;
+using AxisMediator.Contracts;
 using IdentityTrix.Contracts.ExternalApis.v1;
 using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;

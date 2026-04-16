@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Axis\AxisValidator\Adapters\FluentValidation\AxisValidator.FluentValidation\AxisValidator.FluentValidation.csproj" />
       <ProjectReference Include="..\..\Contracts\DataPrivacyTrix.Contracts\DataPrivacyTrix.Contracts.csproj" />
       <ProjectReference Include="..\..\Ports\DataPrivacyTrix.Ports\DataPrivacyTrix.Ports.csproj" />
       <ProjectReference Include="..\DataPrivacyTrix.Domain\DataPrivacyTrix.Domain.csproj" />

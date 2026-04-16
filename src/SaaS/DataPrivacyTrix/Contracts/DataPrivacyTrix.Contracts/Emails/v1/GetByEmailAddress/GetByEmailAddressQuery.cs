@@ -1,4 +1,4 @@
-using AxisTrix.CQRS.Queries;
+using AxisMediator.Contracts.CQRS.Queries;
 
 namespace DataPrivacyTrix.Contracts.Emails.v1.GetByEmailAddress;
 

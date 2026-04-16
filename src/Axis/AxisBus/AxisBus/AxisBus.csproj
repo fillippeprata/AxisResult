@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Axis</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AxisResult"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AxisMediator\AxisMediator\AxisMediator.csproj" />
+  </ItemGroup>
+
+</Project>

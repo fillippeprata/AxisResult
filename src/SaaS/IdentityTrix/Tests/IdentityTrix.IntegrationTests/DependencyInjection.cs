@@ -1,5 +1,5 @@
-﻿using AxisTrix.Accessor;
-using AxisTrix.Caching.Memory;
+﻿using AxisMediator.Contracts;
+using AxisMemoryCache;
 using AxisTrix.DependencyInjection;
 using IdentityTrix.Driven.Repositories.Postgres;
 using IdentityTrix.Sdk.Application;
@@ -12,8 +12,8 @@ public static class DependencyInjection
     public static IServiceProvider ServiceProviderWithPostgres(string connectionString)
     {
         var serviceProvider = new ServiceCollection()
-            .InitAxisTrixAdd()
             .AddAxisMemoryCache()
+            .InitAxisTrixAdd()
             .AddIdentityTrixPostgres(connectionString)
             .AddIdentityTrixSdkApplication()
             .EndAxisTrixAdd()

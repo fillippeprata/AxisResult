@@ -1,7 +1,6 @@
-using AxisResult;
-using AxisTrix;
-using AxisTrix.Logging;
-using AxisTrix.Repository.Postgres;
+using Axis;
+using AxisMediator.Contracts;
+using AxisRepository.Postgres;
 using IdentityTrix.Driven.Repositories.Postgres.ExternalApis.Scripts;
 using IdentityTrix.Ports.ExternalApis;
 using IdentityTrix.SharedKernel;
@@ -18,7 +17,7 @@ internal class ExternalApisRepository(
 {
     private const string Select = $"SELECT {ExternalApisTable.ExternalApiId}, {ExternalApisTable.Name}, {ExternalApisTable.Secret}";
 
-    public Task<AxisResult.AxisResult> CreateAsync(IExternalApiEntityProperties properties)
+    public Task<AxisResult> CreateAsync(IExternalApiEntityProperties properties)
         => ExecuteAsync(
             $"INSERT INTO {ExternalApisTable.Table} ({ExternalApisTable.ExternalApiId}, {ExternalApisTable.Name}, {ExternalApisTable.Secret}) VALUES (@id, @name, @secret)",
             p =>
@@ -36,7 +35,7 @@ internal class ExternalApisRepository(
             ExternalApiDbEntity.FromReader,
             "EXTERNAL_API_NOT_FOUND");
 
-    public Task<AxisResult.AxisResult> UpdateSecretAsync(ExternalApiId id, string hashedSecret)
+    public Task<AxisResult> UpdateSecretAsync(ExternalApiId id, string hashedSecret)
         => ExecuteAsync(
             $"UPDATE {ExternalApisTable.Table} SET {ExternalApisTable.Secret} = @secret WHERE {ExternalApisTable.ExternalApiId} = @id",
             p =>

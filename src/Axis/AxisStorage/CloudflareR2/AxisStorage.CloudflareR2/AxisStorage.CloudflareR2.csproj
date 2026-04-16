@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <PackageReference Include="AWSSDK.S3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="AxisStorage.CloudflareR2.UnitTests" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\AxisStorage\AxisStorage.csproj" />
+    </ItemGroup>
+
+</Project>

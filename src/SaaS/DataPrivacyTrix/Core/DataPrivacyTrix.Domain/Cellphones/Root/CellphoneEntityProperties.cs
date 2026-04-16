@@ -1,5 +1,5 @@
 using DataPrivacyTrix.SharedKernel.Cellphones;
-using CountryId = AxisTrix.Types.Localization.CountryId;
+using CountryId = Axis.Localization.CountryId;
 
 namespace DataPrivacyTrix.Domain.Cellphones.Root;
 

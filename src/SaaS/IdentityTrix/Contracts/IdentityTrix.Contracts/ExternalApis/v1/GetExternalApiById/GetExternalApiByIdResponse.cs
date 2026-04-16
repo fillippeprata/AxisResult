@@ -1,4 +1,4 @@
-using AxisTrix.CQRS.Queries;
+using AxisMediator.Contracts.CQRS.Queries;
 
 namespace IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 

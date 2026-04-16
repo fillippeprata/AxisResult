@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+      <PackageReference Include="Npgsql" />
+      <PackageReference Include="Npgsql.DependencyInjection" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Axis\AxisRepository\AxisRepository\AxisRepository.csproj" />
+      <ProjectReference Include="..\..\..\..\Axis\AxisTelemetry\AxisTelemetry\AxisTelemetry.csproj" />
+    </ItemGroup>
+
+</Project>
+

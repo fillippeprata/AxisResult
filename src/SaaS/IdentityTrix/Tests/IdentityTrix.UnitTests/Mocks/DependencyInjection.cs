@@ -1,4 +1,4 @@
-using AxisTrix.Accessor;
+using AxisMediator.Contracts;
 using AxisTrix.DependencyInjection;
 using IdentityTrix.Sdk.Application;
 using Microsoft.Extensions.DependencyInjection;

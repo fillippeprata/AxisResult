@@ -9,34 +9,73 @@
     <File Path="Directory.Packages.props" />
   </Folder>
   <Folder Name="/src/" />
-  <Folder Name="/src/Foundation/">
-    <Project Path="src/Foundation/AxisTrix.Foundation.UnitTests/AxisTrix.Foundation.UnitTests.csproj" />
+  <Folder Name="/src/Axis/" />
+  <Folder Name="/src/Axis/AxisBus/">
+    <Project Path="src/Axis/AxisBus/AxisBus/AxisBus.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisBus/MemoryBus/">
+    <Project Path="src/Axis/AxisBus/MemoryBus/AxisMemoryBus.UnitTests/AxisMemoryBus.UnitTests.csproj" />
+    <Project Path="src/Axis/AxisBus/MemoryBus/AxisMemoryBus/AxisMemoryBus.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisCache/">
+    <Project Path="src/Axis/AxisCache/AxisCache/AxisCache.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisCache/MemoryCache/">
+    <Project Path="src/Axis/AxisCache/MemoryCache/AxisMemoryCache.UnitTests/AxisMemoryCache.UnitTests.csproj" />
+    <Project Path="src/Axis/AxisCache/MemoryCache/AxisMemoryCache/AxisMemoryCache.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisEmail/">
+    <Project Path="src/Axis/AxisEmail/AxisEmail/AxisEmail.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisEmail/MimeKit/">
+    <Project Path="src/Axis/AxisEmail/MimeKit/AxisEmail.MimeKit.UnitTests/AxisEmail.MimeKit.UnitTests.csproj" />
+    <Project Path="src/Axis/AxisEmail/MimeKit/AxisEmail.MimeKit/AxisEmail.MimeKit.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisLogger/">
+    <Project Path="src/Axis/AxisLogger/AxisLogger/AxisLogger.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisMediator/">
+    <Project Path="src/Axis/AxisMediator/AxisMediator.Contracts/AxisMediator.Contracts.csproj" />
+    <Project Path="src/Axis/AxisMediator/AxisMediator.CQRS/AxisMediator.CQRS.csproj" />
+    <Project Path="src/Axis/AxisMediator/AxisMediator.UnitTests/AxisMediator.UnitTests.csproj" />
+    <Project Path="src/Axis/AxisMediator/AxisMediator/AxisMediator.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisRepository/">
+    <Project Path="src/Axis/AxisRepository/AxisRepository/AxisRepository.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisRepository/Postgres/">
+    <Project Path="src/Axis/AxisRepository/Postgres/AxisRepository.Postgres/AxisRepository.Postgres.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisStorage/">
+    <Project Path="src/Axis/AxisStorage/AxisStorage/AxisStorage.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisStorage/CloudflareR2/">
+    <Project Path="src/Axis/AxisStorage/CloudflareR2/AxisStorage.CloudflareR2.IntegrationTests/AxisStorage.CloudflareR2.IntegrationTests.csproj" />
+    <Project Path="src/Axis/AxisStorage/CloudflareR2/AxisStorage.CloudflareR2.UnitTests/AxisStorage.CloudflareR2.UnitTests.csproj" />
+    <Project Path="src/Axis/AxisStorage/CloudflareR2/AxisStorage.CloudflareR2/AxisStorage.CloudflareR2.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisTelemetry/">
+    <Project Path="src/Axis/AxisTelemetry/AxisTelemetry.UnitTests/AxisTelemetry.UnitTests.csproj" />
+    <Project Path="src/Axis/AxisTelemetry/AxisTelemetry/AxisTelemetry.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisTypes/">
+    <Project Path="src/Axis/AxisTypes/AxisTypes.SourceGenerator/AxisTypes.SourceGenerator.csproj" />
+    <Project Path="src/Axis/AxisTypes/AxisTypes.UnitTests/AxisTypes.UnitTests.csproj" />
+    <Project Path="src/Axis/AxisTypes/AxisTypes/AxisTypes.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisValidator/">
+    <Project Path="src/Axis/AxisValidator/AxisValidator/AxisValidator.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisValidator/Adapters/" />
+  <Folder Name="/src/Axis/AxisValidator/Adapters/FluentValidation/">
+    <Project Path="src/Axis/AxisValidator/Adapters/FluentValidation/AxisValidator.FluentValidation.UnitTests/AxisValidator.FluentValidation.UnitTests.csproj" />
+    <Project Path="src/Axis/AxisValidator/Adapters/FluentValidation/AxisValidator.FluentValidation/AxisValidator.FluentValidation.csproj" />
+  </Folder>
+  <Folder Name="/src/Axis/AxisValidator/Localization/">
+    <Project Path="src/Axis/AxisValidator/Localization/AxisValidator.Brazil/AxisValidator.Brazil.csproj" />
+  </Folder>
+  <Folder Name="/src/Bootstrap/">
     <Project Path="src/Foundation/AxisTrix.Foundation/AxisTrix.Foundation.csproj" />
-  </Folder>
-  <Folder Name="/src/Foundation/Bus/">
-    <Project Path="src/Foundation/Bus/AxisTrix.Bus.Memory/AxisTrix.Bus.Memory.csproj" />
-    <Project Path="src/Foundation/Bus/AxisTrix.Bus.UnitTests/AxisTrix.Bus.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/src/Foundation/Caching/">
-    <Project Path="src/Foundation/Caching/AxisTrix.Caching.Memory/AxisTrix.Caching.Memory.csproj" />
-    <Project Path="src/Foundation/Caching/AxisTrix.Caching.UnitTests/AxisTrix.Caching.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/src/Foundation/Email/">
-    <Project Path="src/Foundation/Email/AxisTrix.Email.MimeKit/AxisTrix.Email.MimeKit.csproj" />
-  </Folder>
-  <Folder Name="/src/Foundation/Repository/">
-    <Project Path="src/Foundation/Repository/AxisTrix.Repository.Postgres/AxisTrix.Repository.Postgres.csproj" />
-  </Folder>
-  <Folder Name="/src/Foundation/SourceGen/">
-    <Project Path="src/Foundation/SourceGen/AxisTrix.SourceGen/AxisTrix.SourceGen.csproj" />
-  </Folder>
-  <Folder Name="/src/Foundation/Storage/">
-    <Project Path="src/Foundation/Storage/AxisTrix.Storage.CloudflareR2.IntegrationTests/AxisTrix.Storage.CloudflareR2.IntegrationTests.csproj" />
-    <Project Path="src/Foundation/Storage/AxisTrix.Storage.CloudflareR2.UnitTests/AxisTrix.Storage.CloudflareR2.UnitTests.csproj" />
-    <Project Path="src/Foundation/Storage/AxisTrix.Storage.CloudflareR2/AxisTrix.Storage.CloudflareR2.csproj" />
-  </Folder>
-  <Folder Name="/src/Foundation/Types/">
-    <Project Path="src/Foundation/Types/AxisTrix.Types/AxisTrix.Types.csproj" />
   </Folder>
   <Folder Name="/src/SaaS/" />
   <Folder Name="/src/SaaS/DataPrivacyTrix/" />

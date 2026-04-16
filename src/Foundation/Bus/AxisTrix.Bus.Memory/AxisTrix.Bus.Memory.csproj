@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
-    </ItemGroup>
-
-</Project>

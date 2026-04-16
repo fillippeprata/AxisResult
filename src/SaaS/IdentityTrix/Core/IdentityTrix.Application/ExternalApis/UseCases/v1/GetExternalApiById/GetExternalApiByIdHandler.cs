@@ -1,5 +1,5 @@
-using AxisResult;
-using AxisTrix.CQRS.Queries;
+using Axis;
+using AxisMediator.Contracts.CQRS.Queries;
 using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 using IdentityTrix.Ports.ExternalApis;
 using IdentityTrix.SharedKernel.ExternalApis;

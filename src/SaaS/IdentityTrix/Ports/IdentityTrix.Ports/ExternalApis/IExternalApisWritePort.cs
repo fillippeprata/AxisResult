@@ -1,9 +1,10 @@
-﻿using IdentityTrix.SharedKernel.ExternalApis;
+﻿using Axis;
+using IdentityTrix.SharedKernel.ExternalApis;
 
 namespace IdentityTrix.Ports.ExternalApis;
 
 public interface IExternalApisWritePort
 {
-    Task<AxisResult.AxisResult> CreateAsync(IExternalApiEntityProperties properties);
-    Task<AxisResult.AxisResult> UpdateSecretAsync(ExternalApiId id, string hashedSecret);
+    Task<AxisResult> CreateAsync(IExternalApiEntityProperties properties);
+    Task<AxisResult> UpdateSecretAsync(ExternalApiId id, string hashedSecret);
 }

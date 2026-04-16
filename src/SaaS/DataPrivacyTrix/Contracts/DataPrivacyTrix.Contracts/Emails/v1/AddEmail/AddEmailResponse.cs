@@ -1,4 +1,4 @@
-using AxisTrix.CQRS.Commands;
+using AxisMediator.Contracts.CQRS.Commands;
 
 namespace DataPrivacyTrix.Contracts.Emails.v1.AddEmail;
 

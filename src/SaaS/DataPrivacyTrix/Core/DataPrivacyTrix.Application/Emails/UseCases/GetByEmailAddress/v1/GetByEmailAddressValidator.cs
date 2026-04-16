@@ -1,4 +1,4 @@
-using AxisTrix.Validation;
+using AxisValidator.FluentValidation;
 using DataPrivacyTrix.Contracts.Emails.v1.GetByEmailAddress;
 
 namespace DataPrivacyTrix.Application.Emails.UseCases.GetByEmailAddress.v1;

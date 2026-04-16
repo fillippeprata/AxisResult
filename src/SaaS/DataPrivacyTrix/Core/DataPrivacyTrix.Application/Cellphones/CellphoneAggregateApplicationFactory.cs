@@ -1,8 +1,8 @@
-using AxisResult;
+using Axis;
 using DataPrivacyTrix.Domain.Cellphones.Root;
 using DataPrivacyTrix.Ports.Cellphones;
 using DataPrivacyTrix.SharedKernel.Cellphones;
-using CountryId = AxisTrix.Types.Localization.CountryId;
+using CountryId = Axis.Localization.CountryId;
 
 namespace DataPrivacyTrix.Application.Cellphones;
 

@@ -1,5 +1,5 @@
-using AxisResult;
-using AxisTrix.CQRS.Commands;
+using Axis;
+using AxisMediator.Contracts.CQRS.Commands;
 using IdentityTrix.Application.Authentication.Services;
 using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
 using IdentityTrix.Ports;

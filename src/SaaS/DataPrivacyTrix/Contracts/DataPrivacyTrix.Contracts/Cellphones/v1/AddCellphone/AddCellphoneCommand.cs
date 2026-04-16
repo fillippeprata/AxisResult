@@ -1,4 +1,4 @@
-using AxisTrix.CQRS.Commands;
+using AxisMediator.Contracts.CQRS.Commands;
 
 namespace DataPrivacyTrix.Contracts.Cellphones.v1.AddCellphone;
 
