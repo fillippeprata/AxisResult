@@ -1,9 +1,9 @@
 ﻿using Axis;
+using Microsoft.Extensions.DependencyInjection;
 using TenantTrix.Contracts.ExternalApis.v1;
 using TenantTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using TenantTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
 using TenantTrix.Contracts.ExternalApis.v1.GetExternalApiById;
-using Microsoft.Extensions.DependencyInjection;
 using TenantTrix.IntegrationTests.Postgres;
 using TenantTrix.SharedKernel.ExternalApis;
 

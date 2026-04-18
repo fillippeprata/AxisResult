@@ -1,6 +1,6 @@
 using AxisMediator.Contracts.CQRS.Commands;
 
-namespace TenantTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
+namespace TenantTrix.Contracts.ExternalApis.v1.AuthenticateExternalApi;
 
 public record AuthenticateExternalApiCommand : IAxisCommand
 {

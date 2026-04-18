@@ -1,8 +1,8 @@
 ﻿using AxisMediator.Contracts;
 using AxisMemoryCache;
 using AxisTrix.DependencyInjection;
-using TenantTrix.Driven.Repositories.Postgres;
 using Microsoft.Extensions.DependencyInjection;
+using TenantTrix.Driven.Repositories.Postgres;
 using TenantTrix.Sdk.Application;
 
 namespace TenantTrix.IntegrationTests;

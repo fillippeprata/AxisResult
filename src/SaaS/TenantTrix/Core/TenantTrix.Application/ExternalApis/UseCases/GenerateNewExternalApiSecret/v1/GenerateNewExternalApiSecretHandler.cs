@@ -1,7 +1,7 @@
 using Axis;
 using AxisMediator.Contracts.CQRS.Commands;
+using TenantTrix.Application.ExternalApis.Services;
 using TenantTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
-using TenantTrix.Application.Authentication.Services;
 using TenantTrix.Ports;
 using TenantTrix.SharedKernel.ExternalApis;
 using ExternalApiId = TenantTrix.SharedKernel.ExternalApis.ExternalApiId;

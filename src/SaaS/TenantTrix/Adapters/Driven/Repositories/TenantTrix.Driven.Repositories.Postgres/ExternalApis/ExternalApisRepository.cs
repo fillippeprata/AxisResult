@@ -1,8 +1,8 @@
 using Axis;
 using AxisMediator.Contracts;
 using AxisRepository.Postgres;
-using TenantTrix.Driven.Repositories.Postgres.ExternalApis.Scripts;
 using Microsoft.Extensions.DependencyInjection;
+using TenantTrix.Driven.Repositories.Postgres.ExternalApis.Scripts;
 using TenantTrix.Ports.ExternalApis;
 using TenantTrix.SharedKernel;
 using TenantTrix.SharedKernel.ExternalApis;

@@ -1,8 +1,8 @@
 ﻿using AxisRepository.Postgres;
 using AxisTrix.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using TenantTrix.Driven.Repositories.Postgres.ExternalApis;
 using TenantTrix.Driven.Repositories.Postgres.UnitOfWork;
-using Microsoft.Extensions.DependencyInjection;
 using TenantTrix.Ports;
 using TenantTrix.SharedKernel;
 

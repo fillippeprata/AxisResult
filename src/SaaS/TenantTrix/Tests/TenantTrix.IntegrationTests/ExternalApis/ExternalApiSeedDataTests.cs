@@ -1,7 +1,7 @@
+using Microsoft.Extensions.DependencyInjection;
 using TenantTrix.Contracts.ExternalApis.v1;
 using TenantTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 using TenantTrix.Driven.Repositories.Postgres.ExternalApis.Scripts;
-using Microsoft.Extensions.DependencyInjection;
 using TenantTrix.IntegrationTests.Postgres;
 using TenantTrix.SharedKernel.ExternalApis;
 

@@ -1,9 +1,9 @@
 using Axis;
 using AxisMediator.Contracts.CQRS.Commands;
-using TenantTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
-using TenantTrix.Application.Authentication.Services;
+using TenantTrix.Application.ExternalApis.Services;
+using TenantTrix.Contracts.ExternalApis.v1.AuthenticateExternalApi;
 
-namespace TenantTrix.Application.Authentication.UseCases.AuthenticateExternalApi.v1;
+namespace TenantTrix.Application.ExternalApis.UseCases.AuthenticateExternalApi.v1;
 
 internal class AuthenticateExternalApiHandler(
     ICachedExternalApiSecretResolver cachedSecretResolver

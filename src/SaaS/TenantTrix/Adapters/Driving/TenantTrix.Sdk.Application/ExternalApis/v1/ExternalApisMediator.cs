@@ -2,6 +2,7 @@
 using AxisMediator.Contracts;
 using TenantTrix.Contracts.ExternalApis.v1;
 using TenantTrix.Contracts.ExternalApis.v1.AddExternalApi;
+using TenantTrix.Contracts.ExternalApis.v1.AuthenticateExternalApi;
 using TenantTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
 using TenantTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 
@@ -9,6 +10,8 @@ namespace TenantTrix.Sdk.Application.ExternalApis.v1;
 
 internal class ExternalApisMediator(IAxisMediator mediator) : IExternalApisMediator
 {
+    public Task<AxisResult> AuthenticateAsync(AuthenticateExternalApiCommand command)
+        => mediator.Cqrs.ExecuteAsync(command);
     public Task<AxisResult<AddExternalApiResponse>> AddAsync(AddExternalApiCommand command)
         => mediator.Cqrs.ExecuteAsync<AddExternalApiCommand, AddExternalApiResponse>(command);
 

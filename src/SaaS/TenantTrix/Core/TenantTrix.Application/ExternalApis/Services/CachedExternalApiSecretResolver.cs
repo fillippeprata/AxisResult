@@ -1,8 +1,7 @@
 using Axis;
-using TenantTrix.Application.ExternalApis;
 using ExternalApiId = TenantTrix.SharedKernel.ExternalApis.ExternalApiId;
 
-namespace TenantTrix.Application.Authentication.Services;
+namespace TenantTrix.Application.ExternalApis.Services;
 
 internal interface ICachedExternalApiSecretResolver
 {

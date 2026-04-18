@@ -1,8 +1,8 @@
 using AxisValidator.FluentValidation;
-using TenantTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
+using TenantTrix.Contracts.ExternalApis.v1.AuthenticateExternalApi;
 using ExternalApiId = TenantTrix.SharedKernel.ExternalApis.ExternalApiId;
 
-namespace TenantTrix.Application.Authentication.UseCases.AuthenticateExternalApi.v1;
+namespace TenantTrix.Application.ExternalApis.UseCases.AuthenticateExternalApi.v1;
 
 internal class AuthenticateExternalApiValidator : AxisValidatorBase<AuthenticateExternalApiCommand>
 {

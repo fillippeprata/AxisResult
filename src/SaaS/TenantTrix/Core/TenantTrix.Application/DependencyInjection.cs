@@ -2,7 +2,6 @@ using System.Reflection;
 using AxisMediator.CQRS;
 using AxisTrix.DependencyInjection;
 using AxisValidator.FluentValidation;
-using TenantTrix.Application.Authentication;
 using TenantTrix.Application.ExternalApis;
 
 namespace TenantTrix.Application;
@@ -18,7 +17,6 @@ internal static class DependencyInjection
             .AddAxisValidator(assembly);
 
         return builder
-            .AddAuthenticationModule()
             .AddExternalApisModule();
 
     }
