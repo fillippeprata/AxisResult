@@ -3,6 +3,7 @@
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path=".mcp.json" />
+    <File Path="AxisResult.md" />
     <File Path="claude.md" />
     <File Path="Dependencies.drawio" />
     <File Path="Directory.Build.props" />
