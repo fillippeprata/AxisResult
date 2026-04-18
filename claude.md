@@ -307,7 +307,6 @@ The Foundation layer is split into independent modules:
 | `RequiredEmail` | `(expression, errorCode)` | Not-null + email format |
 | `RequiredGuid7` | `(expression, errorCode)` | Not-null + valid UUID v7 |
 | `RequiredTryParse` | `(expression, errorCode, Func<object?, bool> parse)` | Not-null + custom parse predicate (e.g., Value Object `TryParse`) |
-| `DocumentId` | `(expression, Func<T, string?> countrySelector, errorCode)` | Not-null + document validation by country resolved dynamically from another property (e.g., CPF for Brazil) |
 | `DependentRules` | `<TProperty1, TProperty2>(expression1, errorCode1, expression2, errorCode2, Func<TProperty1, TProperty2, AxisResult> dependentRules)` | Validates two properties are not null, then runs a cross-field validation function returning `AxisResult` |
 
 #### Dependent Rules Pattern
