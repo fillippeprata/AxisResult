@@ -12,6 +12,7 @@
 - **Before committing**: Flag any non-American English or non-compliant code you find—notify the developer once the processing is complete.
 - **Controllers require E2E tests**: When creating or modifying a WebApi Controller, always create/update corresponding E2E integration tests using TestContainers. Create a logical sequence of tests and use the results to ensure the "happy path" and other important paths.
 - **No undocumented implementations**: If something has no scaffold or documentation, ask the developer before implementing.
+- **Skip task tracking for linear mechanical changes**: For isolated, single-vertical modifications that follow a known checklist (e.g., adding/removing a property on an aggregate, renaming a use case), do NOT use TaskCreate. The overhead of tracking exceeds the benefit. Use TaskCreate only when work has true branches, parallel paths, or discovery steps that may reveal new subtasks.
 
 ---
 
@@ -415,3 +416,33 @@ When scaffolding something new:
 1. Glob for a sibling use case of the same kind (command vs query, with/without domain validation).
 2. Read it end-to-end (Contract → Handler → Validator → Factory → Application → Entity → Port → Repository → SDK).
 3. Mirror file structure, naming, access modifiers, and composition style.
+
+---
+
+## Playbook: Adding a property to an aggregate
+
+When adding a new property (primitive or Value Object) to an existing aggregate, touch these files in order. Read sibling examples only if unsure about a specific pattern — the list itself is authoritative.
+
+1. **SharedKernel interface** — `I{Entity}EntityProperties.cs`: add the getter.
+2. **Domain entity** — `{Entity}EntityProperties.cs`: add ctor parameter, backing property, and propagate in the rehydration ctor `this(properties.X, ...)`.
+3. **AggregateApplicationFactory** — `{Name}AggregateApplicationFactory.cs`: add to `NewArgs` record; pass to `new {Entity}Entity(...)` in `CreateAsync`.
+4. **Command / Query** — `{UseCase}Command.cs` / `{UseCase}Query.cs`: add as nullable primitive (`string?`, `int?`) when exposed externally.
+5. **Validator** — `{UseCase}Validator.cs`: add the matching validation rule (`RequiredGuid7`, `RequiredWithMaxLength`, `RequiredTryParse`, etc.) with an UPPER_SNAKE_CASE error code.
+6. **Handler** — `{UseCase}Handler.cs`: forward the command property into the factory's `NewArgs`; include the property in the Response mapping if the Response exposes it.
+7. **Response** — `{UseCase}Response.cs`: add `required` property if the caller needs to read it back.
+8. **Repository + DbEntity + Table** — in the Postgres adapter:
+   - `{Entity}DbEntity.cs`: add to record signature, update `FromReader` ordinal.
+   - `{Entities}Table.cs`: add column constant; update `V1` DDL (no new migration version needed — see note below).
+   - `{Entities}Repository.cs`: update `Select` constant, `INSERT` column list + `AddWithValue`.
+   - `{Aggregate}DbInit.cs`: update seed `INSERT` statements (V2) if the column is `NOT NULL` and seeds exist.
+9. **Tests** — update every `Mock{Entity}Properties` implementing `I{Entity}EntityProperties` (search the whole test project), plus any command/query construction in unit + integration tests. Add an `Assert.NotEmpty`/`Assert.Equal` for the new property.
+
+**Migrations note (while local-only)**: the codebase has not shipped to any shared environment yet. Edit `V1` / seed scripts directly instead of creating incremental `V2`/`V3` migrations. When the first shared environment is introduced, update this section to require incremental versioning.
+
+**Parallelize reads**: when starting the playbook, read all 9 touchpoints in a single batched tool call rather than sequentially.
+
+**Finish with build + tests**:
+```bash
+dotnet build AxisTrix.slnx --nologo -v minimal
+dotnet test AxisTrix.slnx --nologo --no-build -v minimal
+```

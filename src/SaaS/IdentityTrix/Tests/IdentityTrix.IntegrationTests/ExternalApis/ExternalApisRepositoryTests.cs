@@ -1,4 +1,5 @@
-﻿using IdentityTrix.Contracts.ExternalApis.v1;
+﻿using Axis;
+using IdentityTrix.Contracts.ExternalApis.v1;
 using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
 using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
@@ -31,12 +32,13 @@ public class ExternalApisRepositoryTests(PostgresFixture fixture) : DatabaseTest
         using( var scope = serviceProvider.CreateScope())
         {
 
-            var cmd = new AddExternalApiCommand() { ApiName = "test-api-name" };
+            var cmd = new AddExternalApiCommand() { ApiName = "test-api-name", TenantId = TenantId.New.ToString() };
             var response = await Mediator(scope).AddAsync(cmd);
 
             Assert.True(response.IsSuccess);
             Assert.NotEmpty(response.Value.Name);
             Assert.NotEmpty(response.Value.Secret);
+            Assert.NotEmpty(response.Value.TenantId);
             apiId = response.Value.ExternalApiId;
         }
 

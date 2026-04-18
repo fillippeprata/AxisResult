@@ -27,7 +27,7 @@ public class HandlerTests
         #endregion
 
         var mediator = Mediator(scope);
-        var command = new AddExternalApiCommand { ApiName = "test-api-name" };
+        var command = new AddExternalApiCommand { ApiName = "test-api-name", TenantId = TenantId.New.ToString() };
 
         //Act
         var result = await mediator.AddAsync(command);
@@ -36,6 +36,7 @@ public class HandlerTests
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Secret);
         Assert.NotEmpty(result.Value.Name);
+        Assert.NotEmpty(result.Value.TenantId);
         mocks.ExternalApiWriter.Verify(x => x.CreateAsync(It.IsAny<IExternalApiEntityProperties>()), Times.Once);
     }
 
@@ -44,6 +45,7 @@ public class HandlerTests
     {
         //Arrange
         var externalApiId = ExternalApiId.New;
+        var tenantId = TenantId.New;
         const string testName = "api-name-abc";
         const string testSecret = "api-secret-123";
 
@@ -51,7 +53,7 @@ public class HandlerTests
 
         var mocks = IdentityTrixMocks.CreateSuccessfulMocks();
         mocks.ExternalApiReader.Setup(x => x.GetByIdAsync(externalApiId))
-            .ReturnsAsync(AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, testSecret, testName)));
+            .ReturnsAsync(AxisResult.Ok<IExternalApiEntityProperties>(new MockExternalApiProperties(externalApiId, testSecret, testName, tenantId)));
 
         var services = new ServiceCollection();
         services.AddMocks(mocks);
@@ -69,12 +71,14 @@ public class HandlerTests
         Assert.True(result.IsSuccess);
         Assert.Equal(externalApiId.ToString(), result.Value.ExternalApiId);
         Assert.Equal(testName, result.Value.Name);
+        Assert.Equal(tenantId.ToString(), result.Value.TenantId);
     }
 
-    private class MockExternalApiProperties(ExternalApiId externalApiId, string secret, string name) : IExternalApiEntityProperties
+    private class MockExternalApiProperties(ExternalApiId externalApiId, string secret, string name, TenantId tenantId) : IExternalApiEntityProperties
     {
         public ExternalApiId ExternalApiId { get; } = externalApiId;
         public string HashedSecret { get; } = secret;
         public string ApiName { get; } = name;
+        public TenantId TenantId { get; } = tenantId;
     }
 }

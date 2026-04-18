@@ -16,14 +16,15 @@ internal class AddExternalApiHandler(
         var plainSecret = ExternalApiSecret.Generate();
         var hashedSecret = ExternalApiSecret.Hash(plainSecret);
 
-        return factory.CreateAsync(new() { ApiName = cmd.ApiName!, HashedSecret = hashedSecret })
+        return factory.CreateAsync(new() { ApiName = cmd.ApiName!, HashedSecret = hashedSecret, TenantId = cmd.TenantId! })
             .ThenAsync(_ => uowProvider.UnitOfWork.SaveChangesAsync())
             .MapAsync<IExternalApiAggregateApplication, AddExternalApiResponse>(
                 app => new AddExternalApiResponse
                 {
                     ExternalApiId = app.ExternalApiId,
                     Name = app.ApiName,
-                    Secret = plainSecret
+                    Secret = plainSecret,
+                    TenantId = app.TenantId
                 });
     }
 }

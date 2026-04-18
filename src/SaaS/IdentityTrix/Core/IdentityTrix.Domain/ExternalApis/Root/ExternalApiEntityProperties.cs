@@ -1,3 +1,4 @@
+using Axis;
 using IdentityTrix.SharedKernel.ExternalApis;
 
 namespace IdentityTrix.Domain.ExternalApis.Root;
@@ -5,7 +6,8 @@ namespace IdentityTrix.Domain.ExternalApis.Root;
 internal partial class ExternalApiEntity(
     ExternalApiId externalApiId,
     string hashedSecret,
-    string apiName)
+    string apiName,
+    TenantId tenantId)
     : IExternalApiEntityProperties
 {
     #region Properties
@@ -13,11 +15,13 @@ internal partial class ExternalApiEntity(
     public ExternalApiId ExternalApiId { get; } = externalApiId;
     public string HashedSecret { get; } = hashedSecret;
     public string ApiName { get; } = apiName;
+    public TenantId TenantId { get; } = tenantId;
 
     internal ExternalApiEntity(IExternalApiEntityProperties properties) : this(
         properties.ExternalApiId,
         properties.HashedSecret,
-        properties.ApiName
+        properties.ApiName,
+        properties.TenantId
     ) {}
 
     #endregion

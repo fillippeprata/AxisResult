@@ -15,16 +15,17 @@ internal class ExternalApisRepository(
     [FromKeyedServices(ApplicationConfig.AppKey)] IPostgresUnitOfWork uow
 ) : PostgresRepositoryBase(mediator, logger, uow), IExternalApisReaderPort, IExternalApisWritePort
 {
-    private const string Select = $"SELECT {ExternalApisTable.ExternalApiId}, {ExternalApisTable.Name}, {ExternalApisTable.Secret}";
+    private const string Select = $"SELECT {ExternalApisTable.ExternalApiId}, {ExternalApisTable.Name}, {ExternalApisTable.Secret}, {ExternalApisTable.TenantId}";
 
     public Task<AxisResult> CreateAsync(IExternalApiEntityProperties properties)
         => ExecuteAsync(
-            $"INSERT INTO {ExternalApisTable.Table} ({ExternalApisTable.ExternalApiId}, {ExternalApisTable.Name}, {ExternalApisTable.Secret}) VALUES (@id, @name, @secret)",
+            $"INSERT INTO {ExternalApisTable.Table} ({ExternalApisTable.ExternalApiId}, {ExternalApisTable.Name}, {ExternalApisTable.Secret}, {ExternalApisTable.TenantId}) VALUES (@id, @name, @secret, @tenantId)",
             p =>
             {
                 p.AddWithValue("id", Guid.Parse(properties.ExternalApiId.ToString()));
                 p.AddWithValue("name", properties.ApiName);
                 p.AddWithValue("secret", properties.HashedSecret);
+                p.AddWithValue("tenantId", properties.TenantId.ToString());
             },
             duplicateKeyCode: "EXTERNAL_API_ALREADY_EXISTS");
 

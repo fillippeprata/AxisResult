@@ -16,6 +16,7 @@ internal class GetExternalApiByIdHandler(
                 entity => new GetExternalApiByIdResponse
                 {
                     ExternalApiId = entity.ExternalApiId,
-                    Name = entity.ApiName
+                    Name = entity.ApiName,
+                    TenantId = entity.TenantId
                 });
 }

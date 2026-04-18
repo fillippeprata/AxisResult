@@ -14,6 +14,7 @@ internal interface IExternalApiAggregateApplicationFactory
     {
         public required string ApiName { get; init; }
         public required string HashedSecret { get; init; }
+        public required TenantId TenantId { get; init; }
     }
 }
 
@@ -32,7 +33,7 @@ internal class ExternalApiAggregateApplicationFactory(
     public Task<AxisResult<IExternalApiAggregateApplication>> CreateAsync(IExternalApiAggregateApplicationFactory.NewArgs args)
         => readerPort.GetByNameAsync(args.ApiName)
             .RequireNotFoundAsync(AxisError.ValidationRule("EXTERNAL_API_NAME_ALREADY_EXISTS"))
-            .WithValueAsync(new ExternalApiEntity(ExternalApiId.New, args.HashedSecret, args.ApiName))
+            .WithValueAsync(new ExternalApiEntity(ExternalApiId.New, args.HashedSecret, args.ApiName, args.TenantId))
             .MapAsync(NewInstance)
             .ThenAsync(writePort.CreateAsync);
 }

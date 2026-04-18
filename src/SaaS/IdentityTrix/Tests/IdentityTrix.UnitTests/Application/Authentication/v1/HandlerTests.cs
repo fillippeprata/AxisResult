@@ -96,5 +96,6 @@ public class HandlerTests
         public ExternalApiId ExternalApiId { get; } = externalApiId;
         public string HashedSecret { get; } = hashedSecret;
         public string ApiName { get; } = apiName;
+        public TenantId TenantId { get; } = TenantId.New;
     }
 }
