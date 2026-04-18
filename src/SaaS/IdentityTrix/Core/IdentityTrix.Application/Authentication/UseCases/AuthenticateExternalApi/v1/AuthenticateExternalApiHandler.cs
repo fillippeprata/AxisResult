@@ -3,7 +3,7 @@ using AxisMediator.Contracts.CQRS.Commands;
 using IdentityTrix.Application.Authentication.Services;
 using IdentityTrix.Contracts.Authentication.v1.AuthenticateExternalApi;
 
-namespace IdentityTrix.Application.Authentication.UseCases.v1.AuthenticateExternalApi;
+namespace IdentityTrix.Application.Authentication.UseCases.AuthenticateExternalApi.v1;
 
 internal class AuthenticateExternalApiHandler(
     ICachedExternalApiSecretResolver cachedSecretResolver

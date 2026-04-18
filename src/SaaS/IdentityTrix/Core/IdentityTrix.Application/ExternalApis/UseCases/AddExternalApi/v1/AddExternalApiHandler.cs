@@ -4,7 +4,7 @@ using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using IdentityTrix.Ports;
 using IdentityTrix.SharedKernel.ExternalApis;
 
-namespace IdentityTrix.Application.ExternalApis.UseCases.v1.AddExternalApi;
+namespace IdentityTrix.Application.ExternalApis.UseCases.AddExternalApi.v1;
 
 internal class AddExternalApiHandler(
     IUnitOfWorkProvider uowProvider,

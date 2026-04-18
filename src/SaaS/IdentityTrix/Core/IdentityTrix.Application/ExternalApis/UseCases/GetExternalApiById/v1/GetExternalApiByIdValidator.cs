@@ -2,7 +2,7 @@
 using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 using IdentityTrix.SharedKernel.ExternalApis;
 
-namespace IdentityTrix.Application.ExternalApis.UseCases.v1.GetExternalApiById;
+namespace IdentityTrix.Application.ExternalApis.UseCases.GetExternalApiById.v1;
 
 internal class GetExternalApiByIdValidator : AxisValidatorBase<GetExternalApiByIdQuery>
 {

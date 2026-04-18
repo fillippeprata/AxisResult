@@ -43,7 +43,7 @@
     │   ├── {SubDomain}.Domain/                                  # Entities (Properties + Rules, partial classes)
     │   └── {SubDomain}.Application/                             # Handlers, Validators, Factories, AggregateApplications
     │       ├── {BC}/                                            # DependencyInjection, AggregateApplicationFactory, AggregateApplications
-    │       └── {BC}/UseCases/v1/{SameContractStructure}/        # Handlers and Validators
+    │       └── {BC}/UseCases/{SameContractStructure}/v1/        # Handlers and Validators
     ├── Ports/{SubDomain}.Ports/                                 # Reader/Writer port interfaces, IUnitOfWorkProvider
     ├── Adapters/
     │   ├── Driven/
@@ -374,7 +374,7 @@ Simple shared records (e.g., `Device(string Name, string Key)`) go in `SharedKer
 ## Contract Versioning
 
 - Contracts: `Contracts/{BC}/v1/{Action}/` (or `Contracts/{BC}/v1/{Feature}/{Action}/` when the feature differs from the BC)
-- Handlers mirror: `Application/{BC}/UseCases/v1/{Action}/`
+- Handlers mirror: `Application/{BC}/UseCases/{Action}/v1/`
 - Namespace follows folder. The Contracts **project** name depends on whether the BC is still part of the monolith or has been promoted to its own microservice:
   - **Default (monolith)**: a single Contracts project per subdomain — `{SubDomain}.Contracts` — holding every BC. Namespace: `{SubDomain}.Contracts.{BC}.{Feature}.{Action}.v1` (e.g., `IdentityTrix.Contracts.Persons.Cellphones.AddCellphone.v1`).
   - **BC promoted to microservice**: that BC gets its own Contracts project — `{SubDomain}.{BC}.Contracts`. Namespace: `{SubDomain}.{BC}.Contracts.{Feature}.{Action}.v1` (e.g., `IdentityTrix.Persons.Contracts.Cellphones.AddCellphone.v1`).
@@ -400,8 +400,8 @@ For up-to-date scaffolds, read a sibling example first and match the exact patte
 
 | What | Where |
 |------|-------|
-| Command + Handler + Validator | `src/SaaS/IdentityTrix/Core/IdentityTrix.Application/ExternalApis/UseCases/v1/AddExternalApi/` |
-| Query + Handler | `src/SaaS/IdentityTrix/Core/IdentityTrix.Application/ExternalApis/UseCases/v1/GetExternalApiById/` |
+| Command + Handler + Validator | `src/SaaS/IdentityTrix/Core/IdentityTrix.Application/ExternalApis/UseCases/AddExternalApi/v1/` |
+| Query + Handler | `src/SaaS/IdentityTrix/Core/IdentityTrix.Application/ExternalApis/UseCases/GetExternalApiById/v1/` |
 | Entity (Properties + Rules) | `src/SaaS/IdentityTrix/Core/IdentityTrix.Domain/ExternalApis/Root/` |
 | AggregateApplicationFactory + AggregateApplication | `src/SaaS/IdentityTrix/Core/IdentityTrix.Application/ExternalApis/` |
 | Repository + DbEntity + Table | `src/SaaS/IdentityTrix/Adapters/Driven/Repositories/IdentityTrix.Driven.Repositories.Postgres/ExternalApis/` |

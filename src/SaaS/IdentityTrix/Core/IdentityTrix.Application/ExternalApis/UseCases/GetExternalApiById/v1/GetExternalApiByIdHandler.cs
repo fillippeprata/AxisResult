@@ -4,7 +4,7 @@ using IdentityTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 using IdentityTrix.Ports.ExternalApis;
 using IdentityTrix.SharedKernel.ExternalApis;
 
-namespace IdentityTrix.Application.ExternalApis.UseCases.v1.GetExternalApiById;
+namespace IdentityTrix.Application.ExternalApis.UseCases.GetExternalApiById.v1;
 
 internal class GetExternalApiByIdHandler(
     IExternalApisReaderPort readerPort

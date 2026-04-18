@@ -5,7 +5,7 @@ using IdentityTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
 using IdentityTrix.Ports;
 using IdentityTrix.SharedKernel.ExternalApis;
 
-namespace IdentityTrix.Application.ExternalApis.UseCases.v1.GenerateNewExternalApiSecret;
+namespace IdentityTrix.Application.ExternalApis.UseCases.GenerateNewExternalApiSecret.v1;
 
 internal class GenerateNewExternalApiSecretHandler(
     IUnitOfWorkProvider uowProvider,

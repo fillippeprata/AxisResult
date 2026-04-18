@@ -1,7 +1,7 @@
 ﻿using AxisValidator.FluentValidation;
 using IdentityTrix.Contracts.ExternalApis.v1.AddExternalApi;
 
-namespace IdentityTrix.Application.ExternalApis.UseCases.v1.AddExternalApi;
+namespace IdentityTrix.Application.ExternalApis.UseCases.AddExternalApi.v1;
 
 internal class AddExternalApiValidator : AxisValidatorBase<AddExternalApiCommand>
 {
