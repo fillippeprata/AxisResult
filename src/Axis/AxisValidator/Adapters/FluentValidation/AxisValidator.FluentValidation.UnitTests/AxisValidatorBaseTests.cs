@@ -199,4 +199,85 @@ public class AxisValidatorBaseTests
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.ErrorCode == "GUID7_NULL_OR_NOT_VALID");
     }
+
+    // ── RequiredSlug ───────────────────────────────────────────────────────
+
+    private class SlugValidator : AxisValidatorBase<TestCommand>
+    {
+        public SlugValidator()
+        {
+            RequiredSlug(x => x.Name, "NAME_INVALID", 10);
+        }
+    }
+
+    [Theory]
+    [InlineData("acme")]
+    [InlineData("acme-corp")]
+    [InlineData("acme_corp")]
+    [InlineData("Acme-Cp-1")]
+    [InlineData("ABC123")]
+    [InlineData("a")]
+    public void RequiredSlug_ValidSlug_Passes(string name)
+    {
+        var validator = new SlugValidator();
+        var result = validator.Validate(new TestCommand { Name = name });
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void RequiredSlug_NullName_FailsWithErrorCode()
+    {
+        var validator = new SlugValidator();
+        var result = validator.Validate(new TestCommand { Name = null });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "NAME_INVALID");
+    }
+
+    [Fact]
+    public void RequiredSlug_EmptyName_FailsWithErrorCode()
+    {
+        var validator = new SlugValidator();
+        var result = validator.Validate(new TestCommand { Name = "" });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "NAME_INVALID");
+    }
+
+    [Theory]
+    [InlineData("   ")]
+    [InlineData("acme corp")]
+    [InlineData("acme\tcorp")]
+    [InlineData(" acme")]
+    [InlineData("acme ")]
+    public void RequiredSlug_WhitespaceInName_FailsWithErrorCode(string name)
+    {
+        var validator = new SlugValidator();
+        var result = validator.Validate(new TestCommand { Name = name });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "NAME_INVALID");
+    }
+
+    [Theory]
+    [InlineData("acme@corp")]
+    [InlineData("acme!")]
+    [InlineData("acme.corp")]
+    [InlineData("acme#1")]
+    [InlineData("acme/corp")]
+    [InlineData("acme\\corp")]
+    [InlineData("ação")]
+    public void RequiredSlug_SpecialCharactersInName_FailsWithErrorCode(string name)
+    {
+        var validator = new SlugValidator();
+        var result = validator.Validate(new TestCommand { Name = name });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "NAME_INVALID");
+    }
+
+    [Fact]
+    public void RequiredSlug_NameTooLong_FailsWithErrorCode()
+    {
+        var validator = new SlugValidator();
+        var result = validator.Validate(new TestCommand { Name = new string('a', 11) });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "NAME_INVALID");
+    }
 }

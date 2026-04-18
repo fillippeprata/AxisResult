@@ -159,7 +159,7 @@ public class EditExternalApiHandlerTests
 
         //Assert
         Assert.True(result.IsFailure);
-        Assert.Contains(result.Errors, x => x is { Code: "EXTERNAL_API_NAME_NULL_OR_TOO_LONG", Type: AxisErrorType.ValidationRule });
+        Assert.Contains(result.Errors, x => x is { Code: "EXTERNAL_API_NAME_INVALID", Type: AxisErrorType.ValidationRule });
     }
 
     [Fact]
@@ -175,7 +175,39 @@ public class EditExternalApiHandlerTests
 
         //Assert
         Assert.True(result.IsFailure);
-        Assert.Contains(result.Errors, x => x is { Code: "EXTERNAL_API_NAME_NULL_OR_TOO_LONG", Type: AxisErrorType.ValidationRule });
+        Assert.Contains(result.Errors, x => x is { Code: "EXTERNAL_API_NAME_INVALID", Type: AxisErrorType.ValidationRule });
+    }
+
+    [Fact]
+    public async Task EditShouldReturnValidationErrorWhenApiNameContainsSpaceAsync()
+    {
+        //Arrange
+        using var scope = TenantTrixMocks.GetServiceProvider().CreateScope();
+        var mediator = Mediator(scope);
+        var command = new EditExternalApiCommand { ExternalApiId = Guid.CreateVersion7().ToString(), ApiName = "some name" };
+
+        //Act
+        var result = await mediator.EditAsync(command);
+
+        //Assert
+        Assert.True(result.IsFailure);
+        Assert.Contains(result.Errors, x => x is { Code: "EXTERNAL_API_NAME_INVALID", Type: AxisErrorType.ValidationRule });
+    }
+
+    [Fact]
+    public async Task EditShouldReturnValidationErrorWhenApiNameContainsSpecialCharactersAsync()
+    {
+        //Arrange
+        using var scope = TenantTrixMocks.GetServiceProvider().CreateScope();
+        var mediator = Mediator(scope);
+        var command = new EditExternalApiCommand { ExternalApiId = Guid.CreateVersion7().ToString(), ApiName = "api@name!" };
+
+        //Act
+        var result = await mediator.EditAsync(command);
+
+        //Assert
+        Assert.True(result.IsFailure);
+        Assert.Contains(result.Errors, x => x is { Code: "EXTERNAL_API_NAME_INVALID", Type: AxisErrorType.ValidationRule });
     }
 
     private class MockExternalApiProperties(ExternalApiId externalApiId, string secret, string name, TenantId tenantId) : IExternalApiEntityProperties

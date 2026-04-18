@@ -28,7 +28,7 @@ internal class ExternalApisRepository(
                 p.AddWithValue("secret", properties.HashedSecret);
                 p.AddWithValue("tenantId", properties.TenantId.ToString());
             },
-            duplicateKeyCode: "EXTERNAL_API_ALREADY_EXISTS");
+            duplicateKeyCode: "EXTERNAL_API_NAME_ALREADY_EXISTS");
 
     public Task<AxisResult<IExternalApiEntityProperties>> GetByIdAsync(ExternalApiId id)
         => GetAsync<IExternalApiEntityProperties>(

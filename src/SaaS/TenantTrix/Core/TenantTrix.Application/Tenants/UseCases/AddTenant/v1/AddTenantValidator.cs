@@ -7,6 +7,6 @@ internal class AddTenantValidator : AxisValidatorBase<AddTenantCommand>
 {
     public AddTenantValidator()
     {
-        RequiredWithMaxLength(x => x.TenantName, "TENANT_NAME_NULL_OR_TOO_LONG");
+        RequiredSlug(x => x.TenantName, "TENANT_NAME_INVALID");
     }
 }

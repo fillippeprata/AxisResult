@@ -22,6 +22,8 @@ public interface IAxisValidatorBase<T>
 
     public void RequiredWithMaxLength(Expression<Func<T, string?>> expression, string errorCode, int? length = DefaultMaxLength);
 
+    public void RequiredSlug(Expression<Func<T, string?>> expression, string errorCode, int? length = DefaultMaxLength);
+
     public void RequiredEmail(Expression<Func<T, string?>> expression, string errorCode);
 
     public void RequiredTryParse(Expression<Func<T, string?>> expression, string errorCode, Func<object?, bool> parse);

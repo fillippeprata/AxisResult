@@ -25,7 +25,7 @@ public class ValidationTests
 
         //Assert
         Assert.True(result.IsFailure);
-        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_NULL_OR_TOO_LONG", Type: AxisErrorType.ValidationRule });
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class ValidationTests
 
         //Assert
         Assert.True(result.IsFailure);
-        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_NULL_OR_TOO_LONG", Type: AxisErrorType.ValidationRule });
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
     }
 
     [Fact]
@@ -57,7 +57,39 @@ public class ValidationTests
 
         //Assert
         Assert.True(result.IsFailure);
-        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_NULL_OR_TOO_LONG", Type: AxisErrorType.ValidationRule });
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
+    }
+
+    [Fact]
+    public async Task AddShouldReturnValidationErrorWhenTenantNameContainsSpaceAsync()
+    {
+        //Arrange
+        using var scope = TenantTrixMocks.GetServiceProvider().CreateScope();
+        var mediator = Mediator(scope);
+        var command = new AddTenantCommand { TenantName = "some name" };
+
+        //Act
+        var result = await mediator.AddAsync(command);
+
+        //Assert
+        Assert.True(result.IsFailure);
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
+    }
+
+    [Fact]
+    public async Task AddShouldReturnValidationErrorWhenTenantNameContainsSpecialCharactersAsync()
+    {
+        //Arrange
+        using var scope = TenantTrixMocks.GetServiceProvider().CreateScope();
+        var mediator = Mediator(scope);
+        var command = new AddTenantCommand { TenantName = "acme@corp!" };
+
+        //Act
+        var result = await mediator.AddAsync(command);
+
+        //Assert
+        Assert.True(result.IsFailure);
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
     }
 
     [Fact]
@@ -73,7 +105,7 @@ public class ValidationTests
 
         //Assert
         Assert.True(result.IsFailure);
-        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_NULL_OR_TOO_LONG", Type: AxisErrorType.ValidationRule });
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
     }
 
     [Fact]
@@ -121,7 +153,7 @@ public class ValidationTests
 
         //Assert
         Assert.True(result.IsFailure);
-        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_NULL_OR_TOO_LONG", Type: AxisErrorType.ValidationRule });
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
     }
 
     [Fact]
@@ -137,7 +169,39 @@ public class ValidationTests
 
         //Assert
         Assert.True(result.IsFailure);
-        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_NULL_OR_TOO_LONG", Type: AxisErrorType.ValidationRule });
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
+    }
+
+    [Fact]
+    public async Task EditShouldReturnValidationErrorWhenTenantNameContainsSpaceAsync()
+    {
+        //Arrange
+        using var scope = TenantTrixMocks.GetServiceProvider().CreateScope();
+        var mediator = Mediator(scope);
+        var command = new EditTenantCommand { TenantId = Guid.CreateVersion7().ToString(), TenantName = "bad name" };
+
+        //Act
+        var result = await mediator.EditAsync(command);
+
+        //Assert
+        Assert.True(result.IsFailure);
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
+    }
+
+    [Fact]
+    public async Task EditShouldReturnValidationErrorWhenTenantNameContainsSpecialCharactersAsync()
+    {
+        //Arrange
+        using var scope = TenantTrixMocks.GetServiceProvider().CreateScope();
+        var mediator = Mediator(scope);
+        var command = new EditTenantCommand { TenantId = Guid.CreateVersion7().ToString(), TenantName = "acme#corp" };
+
+        //Act
+        var result = await mediator.EditAsync(command);
+
+        //Assert
+        Assert.True(result.IsFailure);
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
     }
 
     [Fact]
@@ -153,6 +217,6 @@ public class ValidationTests
 
         //Assert
         Assert.True(result.IsFailure);
-        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_NULL_OR_TOO_LONG", Type: AxisErrorType.ValidationRule });
+        Assert.Contains(result.Errors, x => x is { Code: "TENANT_NAME_INVALID", Type: AxisErrorType.ValidationRule });
     }
 }

@@ -7,7 +7,7 @@ internal class AddExternalApiValidator : AxisValidatorBase<AddExternalApiCommand
 {
     public AddExternalApiValidator()
     {
-        RequiredWithMaxLength(x => x.ApiName, "EXTERNAL_API_NAME_NULL_OR_TOO_LONG");
+        RequiredSlug(x => x.ApiName, "EXTERNAL_API_NAME_INVALID");
         RequiredGuid7(x => x.TenantId, "EXTERNAL_API_TENANT_ID_NULL_OR_NOT_GUID_7");
     }
 }

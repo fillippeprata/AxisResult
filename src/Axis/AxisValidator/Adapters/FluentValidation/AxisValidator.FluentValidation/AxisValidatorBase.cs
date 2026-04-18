@@ -77,6 +77,22 @@ public class AxisValidatorBase<T> : AbstractValidator<T>, IAxisValidatorBase<T>
             .Must((_, propertyValue) => propertyValue != null && propertyValue.ToString().Length <= length).WithErrorCode(errorCode);
     }
 
+    public void RequiredSlug(Expression<Func<T, string?>> expression, string errorCode, int? length = DefaultMaxLength)
+    {
+        PrivateNotNullOrEmpty(expression, errorCode)
+            .Must((_, propertyValue) => propertyValue != null
+                                        && propertyValue.Length <= length
+                                        && propertyValue.All(IsValidSlugChar))
+            .WithErrorCode(errorCode);
+    }
+
+    private static bool IsValidSlugChar(char c)
+        => c is (>= 'a' and <= 'z')
+              or (>= 'A' and <= 'Z')
+              or (>= '0' and <= '9')
+              or '-'
+              or '_';
+
     public  void RequiredEmail(Expression<Func<T, string?>> expression, string errorCode)
     {
         PrivateNotNullOrEmpty(expression, errorCode)

@@ -25,7 +25,7 @@ internal class TenantsRepository(
                 p.AddWithValue("id", properties.TenantId.ToString());
                 p.AddWithValue("name", properties.TenantName);
             },
-            duplicateKeyCode: "TENANT_ALREADY_EXISTS");
+            duplicateKeyCode: "TENANT_NAME_ALREADY_EXISTS");
 
     public Task<AxisResult<ITenantEntityProperties>> GetByIdAsync(TenantId id)
         => GetAsync<ITenantEntityProperties>(
