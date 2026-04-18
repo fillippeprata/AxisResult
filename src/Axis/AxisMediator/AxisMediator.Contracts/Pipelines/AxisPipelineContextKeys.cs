@@ -4,5 +4,5 @@ namespace AxisMediator.Contracts.Pipelines;
 public static class AxisPipelineContextKeys
 {
     /// <summary>The active <c>IAxisSpan</c> for the current request, set by TelemetryBehavior.</summary>
-    public const string Span = "axistrix.pipeline.span";
+    public const string Span = "axis.pipeline.span";
 }

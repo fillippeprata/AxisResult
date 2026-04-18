@@ -22,7 +22,7 @@ public class TelemetryBehavior<TRequest>(
         span.SetTag(TelemetryTagNames.TraceId, mediator.TraceId)
             .SetTag(TelemetryTagNames.JourneyId, mediator.JourneyId)
             .SetTag(TelemetryTagNames.RequestType, "command")
-            .SetTag(TelemetryTagNames.PersonId, mediator.UserPersonData?.PersonId)
+            .SetTag(TelemetryTagNames.AxisIdentity, mediator.AuthenticatedUser?.AxisIdentity)
             .SetTag(TelemetryTagNames.RequestName, requestName);
 
         var sw = Stopwatch.StartNew();
@@ -42,7 +42,7 @@ public class TelemetryBehavior<TRequest>(
         {
             sw.Stop();
             span.RecordException(ex);
-            metrics.IncrementCounter("axistrix.handler.exceptions",
+            metrics.IncrementCounter("axis.handler.exceptions",
                 tags: [new(TelemetryTagNames.RequestName, requestName), new(TelemetryTagNames.ExceptionType, ex.GetType().Name)]);
             throw;
         }
@@ -53,11 +53,11 @@ public class TelemetryBehavior<TRequest>(
         span.SetTag(TelemetryTagNames.ResultSuccess, success)
             .SetStatus(success ? AxisSpanStatus.Ok : AxisSpanStatus.Error);
 
-        metrics.RecordHistogram("axistrix.handler.duration_ms", durationMs,
+        metrics.RecordHistogram("axis.handler.duration_ms", durationMs,
             new(TelemetryTagNames.RequestName, requestName),
             new(TelemetryTagNames.ResultSuccess, success));
 
-        metrics.IncrementCounter("axistrix.handler.invocations",
+        metrics.IncrementCounter("axis.handler.invocations",
             tags: [new(TelemetryTagNames.RequestName, requestName), new(TelemetryTagNames.ResultSuccess, success)]);
     }
 }
@@ -79,7 +79,7 @@ public class TelemetryBehavior<TRequest, TResponse>(
         span.SetTag(TelemetryTagNames.TraceId, mediator.TraceId)
             .SetTag(TelemetryTagNames.JourneyId, mediator.JourneyId)
             .SetTag(TelemetryTagNames.RequestType, request is IAxisQuery ? "query" : "command")
-            .SetTag(TelemetryTagNames.PersonId, mediator.UserPersonData?.PersonId)
+            .SetTag(TelemetryTagNames.AxisIdentity, mediator.AuthenticatedUser?.AxisIdentity)
             .SetTag(TelemetryTagNames.RequestName, requestName);
 
         var sw = Stopwatch.StartNew();
@@ -99,7 +99,7 @@ public class TelemetryBehavior<TRequest, TResponse>(
         {
             sw.Stop();
             span.RecordException(ex);
-            metrics.IncrementCounter("axistrix.handler.exceptions",
+            metrics.IncrementCounter("axis.handler.exceptions",
                 tags: [new(TelemetryTagNames.RequestName, requestName), new(TelemetryTagNames.ExceptionType, ex.GetType().Name)]);
             throw;
         }
@@ -110,11 +110,11 @@ public class TelemetryBehavior<TRequest, TResponse>(
         span.SetTag(TelemetryTagNames.ResultSuccess, success)
             .SetStatus(success ? AxisSpanStatus.Ok : AxisSpanStatus.Error);
 
-        metrics.RecordHistogram("axistrix.handler.duration_ms", durationMs,
+        metrics.RecordHistogram("axis.handler.duration_ms", durationMs,
             new(TelemetryTagNames.RequestName, requestName),
             new(TelemetryTagNames.ResultSuccess, success));
 
-        metrics.IncrementCounter("axistrix.handler.invocations",
+        metrics.IncrementCounter("axis.handler.invocations",
             tags: [new(TelemetryTagNames.RequestName, requestName), new(TelemetryTagNames.ResultSuccess, success)]);
     }
 }

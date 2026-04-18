@@ -2,6 +2,7 @@
 using AxisTrix.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using TenantTrix.Driven.Repositories.Postgres.ExternalApis;
+using TenantTrix.Driven.Repositories.Postgres.Tenants;
 using TenantTrix.Driven.Repositories.Postgres.UnitOfWork;
 using TenantTrix.Ports;
 using TenantTrix.SharedKernel;
@@ -21,6 +22,7 @@ public static class DependencyInjection
 
         //Repositories
         return builder
-            .AddExternalApiRepository();
+            .AddExternalApiRepository()
+            .AddTenantRepository();
     }
 }

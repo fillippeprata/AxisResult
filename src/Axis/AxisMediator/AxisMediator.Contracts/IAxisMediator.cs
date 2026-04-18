@@ -11,7 +11,7 @@ public interface IAxisMediator
     string? OriginId { get; }
     string? JourneyId { get; }
 
-    PersonData? UserPersonData { get; }
+    PersonData? AuthenticatedUser { get; }
     Task<AxisResult<PersonData>> GetPersonFromCacheAsync(string id);
     IAxisMediatorHandler Cqrs { get; }
 }

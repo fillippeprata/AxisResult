@@ -3,6 +3,7 @@ using AxisMediator.Contracts;
 using TenantTrix.Contracts.ExternalApis.v1;
 using TenantTrix.Contracts.ExternalApis.v1.AddExternalApi;
 using TenantTrix.Contracts.ExternalApis.v1.AuthenticateExternalApi;
+using TenantTrix.Contracts.ExternalApis.v1.EditExternalApi;
 using TenantTrix.Contracts.ExternalApis.v1.GenerateNewExternalApiSecret;
 using TenantTrix.Contracts.ExternalApis.v1.GetExternalApiById;
 
@@ -14,6 +15,9 @@ internal class ExternalApisMediator(IAxisMediator mediator) : IExternalApisMedia
         => mediator.Cqrs.ExecuteAsync(command);
     public Task<AxisResult<AddExternalApiResponse>> AddAsync(AddExternalApiCommand command)
         => mediator.Cqrs.ExecuteAsync<AddExternalApiCommand, AddExternalApiResponse>(command);
+
+    public Task<AxisResult<EditExternalApiResponse>> EditAsync(EditExternalApiCommand command)
+        => mediator.Cqrs.ExecuteAsync<EditExternalApiCommand, EditExternalApiResponse>(command);
 
     public Task<AxisResult<GetExternalApiByIdResponse>> GetByIdAsync(GetExternalApiByIdQuery query)
         => mediator.Cqrs.QueryAsync<GetExternalApiByIdQuery, GetExternalApiByIdResponse>(query);

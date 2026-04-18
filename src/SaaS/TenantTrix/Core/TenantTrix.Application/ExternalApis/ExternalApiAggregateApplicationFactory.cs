@@ -25,7 +25,7 @@ internal class ExternalApiAggregateApplicationFactory(
 ) : IExternalApiAggregateApplicationFactory
 {
     private IExternalApiAggregateApplication NewInstance(IExternalApiEntityProperties properties)
-        => new ExternalApiAggregateApplication(properties, writePort);
+        => new ExternalApiAggregateApplication(properties, readerPort, writePort);
 
     public Task<AxisResult<IExternalApiAggregateApplication>> GetByIdAsync(ExternalApiId id)
         => readerPort.GetByIdAsync(id)

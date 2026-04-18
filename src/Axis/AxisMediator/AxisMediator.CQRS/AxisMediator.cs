@@ -12,7 +12,7 @@ internal class AxisMediator : IAxisMediator, IDisposable
     public string? OriginId { get; }
     public string? JourneyId { get; }
     public CancellationToken CancellationToken { get; }
-    public PersonData? UserPersonData { get; }
+    public PersonData? AuthenticatedUser { get; }
 
     public AxisMediator(
         IAxisMediatorHandler cqrs,
@@ -27,7 +27,7 @@ internal class AxisMediator : IAxisMediator, IDisposable
         OriginId = contextAccessor.OriginId;
         JourneyId = contextAccessor.JourneyId;
         CancellationToken = contextAccessor.CancellationToken;
-        UserPersonData = contextAccessor.PersonId is { } personId
+        AuthenticatedUser = contextAccessor.PersonId is { } personId
             ? new PersonData(personId, "Mock User", "mock", "pt-br")
             : null;
     }

@@ -33,7 +33,7 @@ internal static class DependencyInjection
                 .BuildServiceProvider();
             var contextAccessor = serviceProvider.GetRequiredService<IAxisMediatorContextAccessor>();
             contextAccessor.OriginId =  $"ExternalApiTrix-{Guid.NewGuid():N}";
-            contextAccessor.PersonId = Guid.CreateVersion7().ToString();
+            contextAccessor.PersonId = $"1|{Guid.CreateVersion7()}";
 
             return serviceProvider;
         }

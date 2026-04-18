@@ -52,4 +52,14 @@ internal class ExternalApisRepository(
                 p.AddWithValue("id", id.ToString());
                 p.AddWithValue("secret", hashedSecret);
             });
+
+    public Task<AxisResult> UpdateNameAsync(ExternalApiId id, string apiName)
+        => ExecuteAsync(
+            $"UPDATE {ExternalApisTable.Table} SET {ExternalApisTable.Name} = @name WHERE {ExternalApisTable.ExternalApiId} = @id",
+            p =>
+            {
+                p.AddWithValue("id", id.ToString());
+                p.AddWithValue("name", apiName);
+            },
+            duplicateKeyCode: "EXTERNAL_API_NAME_ALREADY_EXISTS");
 }

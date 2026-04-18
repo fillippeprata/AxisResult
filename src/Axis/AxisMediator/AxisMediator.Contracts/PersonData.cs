@@ -1,3 +1,5 @@
-﻿namespace AxisMediator.Contracts;
+﻿using Axis;
 
-public readonly record struct PersonData(string PersonId, string DisplayName, string PictureProxyUrl, string LanguageId);
+namespace AxisMediator.Contracts;
+
+public readonly record struct PersonData(AxisIdentity AxisIdentity, string DisplayName, string PictureProxyUrl, string LanguageId);
