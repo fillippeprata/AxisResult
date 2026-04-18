@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AxisResult" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AxisMediator.CQRS\AxisMediator.CQRS.csproj" />
   </ItemGroup>
 

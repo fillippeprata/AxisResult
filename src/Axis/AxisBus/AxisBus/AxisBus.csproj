@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AxisMediator\AxisMediator\AxisMediator.csproj" />
+    <ProjectReference Include="..\..\AxisLogger\AxisLogger\AxisLogger.csproj" />
   </ItemGroup>
 
 </Project>

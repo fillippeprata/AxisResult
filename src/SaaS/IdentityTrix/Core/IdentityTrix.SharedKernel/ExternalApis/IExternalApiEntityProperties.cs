@@ -1,4 +1,6 @@
-﻿namespace IdentityTrix.SharedKernel.ExternalApis;
+﻿using Axis;
+
+namespace IdentityTrix.SharedKernel.ExternalApis;
 
 public interface IExternalApiEntityProperties
 {

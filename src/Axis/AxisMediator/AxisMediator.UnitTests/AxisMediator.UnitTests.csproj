@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AxisValidator\Adapters\FluentValidation\AxisValidator.FluentValidation\AxisValidator.FluentValidation.csproj" />
-    <ProjectReference Include="..\AxisMediator.CQRS\AxisMediator.CQRS.csproj" />
+    <ProjectReference Include="..\AxisMediator\AxisMediator.csproj" />
   </ItemGroup>
 
 </Project>
