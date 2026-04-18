@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="TenantTrix.Sdk.Application"/>
+    <InternalsVisibleTo Include="TenantTrix.UnitTests"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Axis\AxisCache\AxisCache\AxisCache.csproj" />
+    <ProjectReference Include="..\..\..\..\Axis\AxisValidator\Adapters\FluentValidation\AxisValidator.FluentValidation\AxisValidator.FluentValidation.csproj" />
+    <ProjectReference Include="..\..\Contracts\TenantTrix.Contracts\TenantTrix.Contracts.csproj" />
+    <ProjectReference Include="..\..\Ports\TenantTrix.Ports\TenantTrix.Ports.csproj" />
+    <ProjectReference Include="..\TenantTrix.Domain\TenantTrix.Domain.csproj" />
+    <ProjectReference Include="..\TenantTrix.SharedKernel\TenantTrix.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

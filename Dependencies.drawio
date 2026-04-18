@@ -13,7 +13,7 @@
         <mxCell id="pdv3LKrTs3sWT_9-eNfA-3" parent="pdv3LKrTs3sWT_9-eNfA-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="TenantTrix" vertex="1">
           <mxGeometry height="30" width="140" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="pdv3LKrTs3sWT_9-eNfA-9" parent="pdv3LKrTs3sWT_9-eNfA-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="IdentityTrix" vertex="1">
+        <mxCell id="pdv3LKrTs3sWT_9-eNfA-9" parent="pdv3LKrTs3sWT_9-eNfA-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="TenantTrix" vertex="1">
           <mxGeometry height="30" width="140" y="90" as="geometry" />
         </mxCell>
         <mxCell id="pdv3LKrTs3sWT_9-eNfA-11" parent="pdv3LKrTs3sWT_9-eNfA-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="BookingTrix" vertex="1">

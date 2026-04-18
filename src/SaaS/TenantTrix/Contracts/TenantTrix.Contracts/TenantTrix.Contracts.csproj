@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+      <RootNamespace>TenantTrix.Contracts</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Foundation\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
+    </ItemGroup>
+
+</Project>

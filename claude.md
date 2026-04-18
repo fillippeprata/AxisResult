@@ -65,7 +65,7 @@
 
 If the architecture is not microservices-based, there will be no integration with Web API or gRPC. The monolith will use the SDK.Application to execute the use cases.
 
-**Project naming**: `{SubDomain}.{Layer}` — e.g., `IdentityTrix.Application`, `IdentityTrix.Driven.Repositories.Postgres`, `IdentityTrix.Sdk.Application`. Driven/Driving adapters include the adapter direction prefix in the project name.
+**Project naming**: `{SubDomain}.{Layer}` — e.g., `TenantTrix.Application`, `TenantTrix.Driven.Repositories.Postgres`, `TenantTrix.Sdk.Application`. Driven/Driving adapters include the adapter direction prefix in the project name.
 
 **Foundation**: `AxisResult` is an external NuGet package (see [`AxisResult.md`](AxisResult.md) — never recreate locally). `AxisTrix.Types`, `AxisTrix.Foundation`, and `AxisTrix.SourceGen` (`[ValueObject]` generator) are local foundation projects.
 
@@ -90,7 +90,7 @@ If the architecture is not microservices-based, there will be no integration wit
 | Factory Interface | `I{Aggregate}AggregateApplicationFactory` | `IPersonAggregateApplicationFactory` |
 | Application Interface | `I{Aggregate}AggregateApplication` | `IPersonAggregateApplication` |
 | SDK Interface | `I{Feature}Mediator` | `IPersonsMediator` |
-| ApplicationConfig key | PascalCase, no dots | `AppKey = "IdentityTrix"` |
+| ApplicationConfig key | PascalCase, no dots | `AppKey = "TenantTrix"` |
 | Error Code | UPPER_SNAKE_CASE | `PERSON_NOT_ACTIVE`, `AUTH_CODE_NOT_VALID` |
 | DB Schema | UPPER_SNAKE_CASE | `IDENTITY_TRIX_PERSONS` |
 | DB Table | `{SCHEMA}.{NAME}` UPPER_SNAKE_CASE | `IDENTITY_TRIX_PERSONS.PERSONS` |
@@ -377,8 +377,8 @@ Simple shared records (e.g., `Device(string Name, string Key)`) go in `SharedKer
 - Contracts: `Contracts/{BC}/v1/{Action}/` (or `Contracts/{BC}/v1/{Feature}/{Action}/` when the feature differs from the BC)
 - Handlers mirror: `Application/{BC}/UseCases/{Action}/v1/`
 - Namespace follows folder. The Contracts **project** name depends on whether the BC is still part of the monolith or has been promoted to its own microservice:
-  - **Default (monolith)**: a single Contracts project per subdomain — `{SubDomain}.Contracts` — holding every BC. Namespace: `{SubDomain}.Contracts.{BC}.{Feature}.{Action}.v1` (e.g., `IdentityTrix.Contracts.Persons.Cellphones.AddCellphone.v1`).
-  - **BC promoted to microservice**: that BC gets its own Contracts project — `{SubDomain}.{BC}.Contracts`. Namespace: `{SubDomain}.{BC}.Contracts.{Feature}.{Action}.v1` (e.g., `IdentityTrix.Persons.Contracts.Cellphones.AddCellphone.v1`).
+  - **Default (monolith)**: a single Contracts project per subdomain — `{SubDomain}.Contracts` — holding every BC. Namespace: `{SubDomain}.Contracts.{BC}.{Feature}.{Action}.v1` (e.g., `TenantTrix.Contracts.Persons.Cellphones.AddCellphone.v1`).
+  - **BC promoted to microservice**: that BC gets its own Contracts project — `{SubDomain}.{BC}.Contracts`. Namespace: `{SubDomain}.{BC}.Contracts.{Feature}.{Action}.v1` (e.g., `TenantTrix.Persons.Contracts.Cellphones.AddCellphone.v1`).
 - Similar commands can share a base validator; shared internal DTOs go in `SharedData/` and end with `Data`
 
 ---
@@ -401,16 +401,16 @@ For up-to-date scaffolds, read a sibling example first and match the exact patte
 
 | What | Where |
 |------|-------|
-| Command + Handler + Validator | `src/SaaS/IdentityTrix/Core/IdentityTrix.Application/ExternalApis/UseCases/AddExternalApi/v1/` |
-| Query + Handler | `src/SaaS/IdentityTrix/Core/IdentityTrix.Application/ExternalApis/UseCases/GetExternalApiById/v1/` |
-| Entity (Properties + Rules) | `src/SaaS/IdentityTrix/Core/IdentityTrix.Domain/ExternalApis/Root/` |
-| AggregateApplicationFactory + AggregateApplication | `src/SaaS/IdentityTrix/Core/IdentityTrix.Application/ExternalApis/` |
-| Repository + DbEntity + Table | `src/SaaS/IdentityTrix/Adapters/Driven/Repositories/IdentityTrix.Driven.Repositories.Postgres/ExternalApis/` |
+| Command + Handler + Validator | `src/SaaS/TenantTrix/Core/TenantTrix.Application/ExternalApis/UseCases/AddExternalApi/v1/` |
+| Query + Handler | `src/SaaS/TenantTrix/Core/TenantTrix.Application/ExternalApis/UseCases/GetExternalApiById/v1/` |
+| Entity (Properties + Rules) | `src/SaaS/TenantTrix/Core/TenantTrix.Domain/ExternalApis/Root/` |
+| AggregateApplicationFactory + AggregateApplication | `src/SaaS/TenantTrix/Core/TenantTrix.Application/ExternalApis/` |
+| Repository + DbEntity + Table | `src/SaaS/TenantTrix/Adapters/Driven/Repositories/TenantTrix.Driven.Repositories.Postgres/ExternalApis/` |
 | DbInit + Migrations | same Postgres folder (`*DbInit.cs` / `*Migrations.cs`) |
-| SDK Mediator | `src/SaaS/IdentityTrix/Adapters/Driving/IdentityTrix.Sdk.Application/` |
+| SDK Mediator | `src/SaaS/TenantTrix/Adapters/Driving/TenantTrix.Sdk.Application/` |
 | Cross-field validation (`DependentRules`) | any `*Validator.cs` under `DataPrivacyTrix.Application/Cellphones/UseCases/` |
-| Unit tests | `IdentityTrix.UnitTests/` |
-| Integration tests (TestContainers) | `IdentityTrix.IntegrationTests/` |
+| Unit tests | `TenantTrix.UnitTests/` |
+| Integration tests (TestContainers) | `TenantTrix.IntegrationTests/` |
 
 When scaffolding something new:
 1. Glob for a sibling use case of the same kind (command vs query, with/without domain validation).

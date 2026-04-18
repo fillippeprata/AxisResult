@@ -1,0 +1,26 @@
+﻿using AxisMediator.Contracts;
+using AxisMemoryCache;
+using AxisTrix.DependencyInjection;
+using TenantTrix.Driven.Repositories.Postgres;
+using Microsoft.Extensions.DependencyInjection;
+using TenantTrix.Sdk.Application;
+
+namespace TenantTrix.IntegrationTests;
+
+public static class DependencyInjection
+{
+    public static IServiceProvider ServiceProviderWithPostgres(string connectionString)
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddAxisMemoryCache()
+            .InitAxisTrixAdd()
+            .AddTenantTrixPostgres(connectionString)
+            .AddTenantTrixSdkApplication()
+            .EndAxisTrixAdd()
+            .BuildServiceProvider();
+        var contextAccessor = serviceProvider.GetRequiredService<IAxisMediatorContextAccessor>();
+        contextAccessor.OriginId =  $"ExternalApiTrix-{Guid.NewGuid():N}";
+        contextAccessor.PersonId = Guid.CreateVersion7().ToString();
+        return serviceProvider;
+    }
+}

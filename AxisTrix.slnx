@@ -92,29 +92,29 @@
   <Folder Name="/src/SaaS/DataPrivacyTrix/Ports/">
     <Project Path="src/SaaS/DataPrivacyTrix/Ports/DataPrivacyTrix.Ports/DataPrivacyTrix.Ports.csproj" />
   </Folder>
-  <Folder Name="/src/SaaS/IdentityTrix/" />
-  <Folder Name="/src/SaaS/IdentityTrix/Adapters/" />
-  <Folder Name="/src/SaaS/IdentityTrix/Adapters/Driven/" />
-  <Folder Name="/src/SaaS/IdentityTrix/Adapters/Driven/Repositories/">
-    <Project Path="src/SaaS/IdentityTrix/Adapters/Driven/Repositories/IdentityTrix.Driven.Repositories.Postgres/IdentityTrix.Driven.Repositories.Postgres.csproj" />
+  <Folder Name="/src/SaaS/TenantTrix/" />
+  <Folder Name="/src/SaaS/TenantTrix/Adapters/" />
+  <Folder Name="/src/SaaS/TenantTrix/Adapters/Driven/" />
+  <Folder Name="/src/SaaS/TenantTrix/Adapters/Driven/Repositories/">
+    <Project Path="src/SaaS/TenantTrix/Adapters/Driven/Repositories/TenantTrix.Driven.Repositories.Postgres/TenantTrix.Driven.Repositories.Postgres.csproj" />
   </Folder>
-  <Folder Name="/src/SaaS/IdentityTrix/Adapters/Driving/">
-    <Project Path="src/SaaS/IdentityTrix/Adapters/Driving/IdentityTrix.Sdk.Application/IdentityTrix.Sdk.Application.csproj" />
+  <Folder Name="/src/SaaS/TenantTrix/Adapters/Driving/">
+    <Project Path="src/SaaS/TenantTrix/Adapters/Driving/TenantTrix.Sdk.Application/TenantTrix.Sdk.Application.csproj" />
   </Folder>
-  <Folder Name="/src/SaaS/IdentityTrix/Contracts/">
-    <Project Path="src/SaaS/IdentityTrix/Contracts/IdentityTrix.Contracts/IdentityTrix.Contracts.csproj" />
+  <Folder Name="/src/SaaS/TenantTrix/Contracts/">
+    <Project Path="src/SaaS/TenantTrix/Contracts/TenantTrix.Contracts/TenantTrix.Contracts.csproj" />
   </Folder>
-  <Folder Name="/src/SaaS/IdentityTrix/Core/">
-    <Project Path="src/SaaS/IdentityTrix/Core/IdentityTrix.Application/IdentityTrix.Application.csproj" />
-    <Project Path="src/SaaS/IdentityTrix/Core/IdentityTrix.Domain/IdentityTrix.Domain.csproj" />
-    <Project Path="src/SaaS/IdentityTrix/Core/IdentityTrix.SharedKernel/IdentityTrix.SharedKernel.csproj" />
+  <Folder Name="/src/SaaS/TenantTrix/Core/">
+    <Project Path="src/SaaS/TenantTrix/Core/TenantTrix.Application/TenantTrix.Application.csproj" />
+    <Project Path="src/SaaS/TenantTrix/Core/TenantTrix.Domain/TenantTrix.Domain.csproj" />
+    <Project Path="src/SaaS/TenantTrix/Core/TenantTrix.SharedKernel/TenantTrix.SharedKernel.csproj" />
   </Folder>
-  <Folder Name="/src/SaaS/IdentityTrix/Ports/">
-    <Project Path="src/SaaS/IdentityTrix/Ports/IdentityTrix.Ports/IdentityTrix.Ports.csproj" />
+  <Folder Name="/src/SaaS/TenantTrix/Ports/">
+    <Project Path="src/SaaS/TenantTrix/Ports/TenantTrix.Ports/TenantTrix.Ports.csproj" />
   </Folder>
-  <Folder Name="/src/SaaS/IdentityTrix/Tests/">
-    <Project Path="src/SaaS/IdentityTrix/Tests/IdentityTrix.IntegrationTests/IdentityTrix.IntegrationTests.csproj" />
-    <Project Path="src/SaaS/IdentityTrix/Tests/IdentityTrix.UnitTests/IdentityTrix.UnitTests.csproj" />
+  <Folder Name="/src/SaaS/TenantTrix/Tests/">
+    <Project Path="src/SaaS/TenantTrix/Tests/TenantTrix.IntegrationTests/TenantTrix.IntegrationTests.csproj" />
+    <Project Path="src/SaaS/TenantTrix/Tests/TenantTrix.UnitTests/TenantTrix.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/Server/" />
 </Solution>

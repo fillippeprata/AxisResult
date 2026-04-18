@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Contracts\TenantTrix.Contracts\TenantTrix.Contracts.csproj" />
+      <ProjectReference Include="..\..\..\Core\TenantTrix.Application\TenantTrix.Application.csproj" />
+    </ItemGroup>
+
+</Project>

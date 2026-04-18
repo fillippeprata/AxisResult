@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Foundation\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
+      <ProjectReference Include="..\..\Core\TenantTrix.SharedKernel\TenantTrix.SharedKernel.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+      <RootNamespace>TenantTrix.Driven.Repositories.Postgres</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\..\..\Axis\AxisRepository\Postgres\AxisRepository.Postgres\AxisRepository.Postgres.csproj" />
+      <ProjectReference Include="..\..\..\..\..\..\Foundation\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
+      <ProjectReference Include="..\..\..\..\Ports\TenantTrix.Ports\TenantTrix.Ports.csproj" />
+    </ItemGroup>
+
+</Project>

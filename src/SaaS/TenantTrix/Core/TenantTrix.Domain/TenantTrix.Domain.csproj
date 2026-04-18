@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <InternalsVisibleTo Include="TenantTrix.Application" />
+  </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TenantTrix.SharedKernel\TenantTrix.SharedKernel.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AxisResult" />
+    </ItemGroup>
+
+</Project>
