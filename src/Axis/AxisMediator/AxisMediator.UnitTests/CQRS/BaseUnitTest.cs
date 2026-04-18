@@ -2,7 +2,7 @@
 using Axis;
 using AxisMediator.Contracts;
 using AxisMediator.CQRS;
-using AxisValidator.FluentValidation;
+using AxisValidator;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AxisMediator.UnitTests.CQRS;

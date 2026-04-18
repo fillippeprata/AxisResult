@@ -1,10 +1,9 @@
 ﻿using System.Reflection;
-using Axis;
 using AxisMediator.Contracts.Pipelines;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AxisValidator.FluentValidation;
+namespace AxisValidator;
 
 public static class DependencyInjection
 {

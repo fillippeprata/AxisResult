@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using Axis;
 using FluentValidation;
 
-namespace AxisValidator.FluentValidation;
+namespace AxisValidator;
 
 public class AxisValidatorBase<T> : AbstractValidator<T>, IAxisValidatorBase<T>
 {
@@ -93,11 +93,12 @@ public class AxisValidatorBase<T> : AbstractValidator<T>, IAxisValidatorBase<T>
     private IRuleBuilderOptions<T, TProperty> PrivateNotNullOrEmpty<TProperty>(Expression<Func<T, TProperty?>> expression, string errorCode)
     {
         return RuleFor(expression)
-            .NotNull()
+            .NotNull().WithErrorCode(errorCode)
             .DependentRules(() =>
-                RuleFor(expression).Must(x => x != null
-                                              && !Equals(x, default(TProperty))
-                                              && (x is not string str || !string.IsNullOrWhiteSpace(str))))
-            .WithErrorCode(errorCode)!;
+                RuleFor(expression)
+                    .Must(x => x != null
+                               && !Equals(x, default(TProperty))
+                               && (x is not string str || !string.IsNullOrWhiteSpace(str)))
+                    .WithErrorCode(errorCode))!;
     }
 }

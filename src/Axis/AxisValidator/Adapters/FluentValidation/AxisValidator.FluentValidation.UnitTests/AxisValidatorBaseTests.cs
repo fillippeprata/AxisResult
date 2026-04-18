@@ -127,4 +127,76 @@ public class AxisValidatorBaseTests
         var result = validator.Validate(new TestCommand { Name = "John", Email = "test@test.com" });
         Assert.True(result.IsValid);
     }
+
+    // ── RequiredWithMaxLength ──────────────────────────────────────────────
+
+    private class MaxLengthValidator : AxisValidatorBase<TestCommand>
+    {
+        public MaxLengthValidator()
+        {
+            RequiredWithMaxLength(x => x.Name, "NAME_NULL_OR_TOO_LONG", 10);
+        }
+    }
+
+    [Fact]
+    public void RequiredWithMaxLength_ValidName_Passes()
+    {
+        var validator = new MaxLengthValidator();
+        var result = validator.Validate(new TestCommand { Name = "Short" });
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void RequiredWithMaxLength_NullName_FailsWithErrorCode()
+    {
+        var validator = new MaxLengthValidator();
+        var result = validator.Validate(new TestCommand { Name = null });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "NAME_NULL_OR_TOO_LONG");
+    }
+
+    [Fact]
+    public void RequiredWithMaxLength_EmptyName_FailsWithErrorCode()
+    {
+        var validator = new MaxLengthValidator();
+        var result = validator.Validate(new TestCommand { Name = "" });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "NAME_NULL_OR_TOO_LONG");
+    }
+
+    [Fact]
+    public void RequiredWithMaxLength_WhitespaceName_FailsWithErrorCode()
+    {
+        var validator = new MaxLengthValidator();
+        var result = validator.Validate(new TestCommand { Name = "   " });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "NAME_NULL_OR_TOO_LONG");
+    }
+
+    [Fact]
+    public void RequiredWithMaxLength_TooLongName_FailsWithErrorCode()
+    {
+        var validator = new MaxLengthValidator();
+        var result = validator.Validate(new TestCommand { Name = new string('a', 11) });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "NAME_NULL_OR_TOO_LONG");
+    }
+
+    [Fact]
+    public void RequiredEmail_EmptyEmail_FailsWithErrorCode()
+    {
+        var validator = new EmailValidator();
+        var result = validator.Validate(new TestCommand { Email = "" });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "EMAIL_NULL_OR_NOT_VALID");
+    }
+
+    [Fact]
+    public void RequiredGuid7_EmptyValue_FailsWithErrorCode()
+    {
+        var validator = new Guid7Validator();
+        var result = validator.Validate(new TestCommand { Guid7Id = "" });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorCode == "GUID7_NULL_OR_NOT_VALID");
+    }
 }

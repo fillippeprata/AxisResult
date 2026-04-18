@@ -1,4 +1,4 @@
-using AxisValidator.FluentValidation;
+using AxisValidator;
 using TenantTrix.Contracts.ExternalApis.v1.AuthenticateExternalApi;
 using ExternalApiId = TenantTrix.SharedKernel.ExternalApis.ExternalApiId;
 

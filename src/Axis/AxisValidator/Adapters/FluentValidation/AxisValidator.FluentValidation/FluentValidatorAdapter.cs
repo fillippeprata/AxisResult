@@ -2,7 +2,7 @@ using Axis;
 using AxisMediator.Contracts;
 using FluentValidation;
 
-namespace AxisValidator.FluentValidation;
+namespace AxisValidator;
 
 internal class FluentValidatorAdapter<T>(IAxisMediator mediator, IValidator<T> validator) : IAxisValidator<T>
 {

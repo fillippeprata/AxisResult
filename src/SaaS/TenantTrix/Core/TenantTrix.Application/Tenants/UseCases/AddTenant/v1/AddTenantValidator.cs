@@ -1,4 +1,4 @@
-using AxisValidator.FluentValidation;
+using AxisValidator;
 using TenantTrix.Contracts.Tenants.v1.AddTenant;
 
 namespace TenantTrix.Application.Tenants.UseCases.AddTenant.v1;

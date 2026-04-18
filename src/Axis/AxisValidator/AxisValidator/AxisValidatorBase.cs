@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
+using Axis;
 
-namespace Axis;
+namespace AxisValidator;
 
 public interface IAxisValidatorBase<T>
 {

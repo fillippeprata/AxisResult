@@ -1,4 +1,6 @@
-namespace Axis;
+using Axis;
+
+namespace AxisValidator;
 
 public interface IAxisValidator<in T>
 {

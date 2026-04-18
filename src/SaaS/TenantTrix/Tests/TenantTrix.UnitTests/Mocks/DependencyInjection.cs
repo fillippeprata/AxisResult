@@ -14,6 +14,8 @@ internal static class DependencyInjection
             services.AddSingleton(identityTrixMocks.UowProvider.Object);
             services.AddSingleton(identityTrixMocks.ExternalApiWriter.Object);
             services.AddSingleton(identityTrixMocks.ExternalApiReader.Object);
+            services.AddSingleton(identityTrixMocks.TenantWriter.Object);
+            services.AddSingleton(identityTrixMocks.TenantReader.Object);
             services.AddSingleton(identityTrixMocks.Cache.Object);
         }
 

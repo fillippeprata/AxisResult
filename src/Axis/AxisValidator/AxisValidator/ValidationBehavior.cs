@@ -1,8 +1,9 @@
+using Axis;
 using AxisMediator.Contracts.CQRS;
 using AxisMediator.Contracts.Pipelines;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Axis;
+namespace AxisValidator;
 
 public class ValidationBehavior<TRequest>(IServiceProvider serviceProvider)
     : IAxisPipelineBehavior<TRequest>

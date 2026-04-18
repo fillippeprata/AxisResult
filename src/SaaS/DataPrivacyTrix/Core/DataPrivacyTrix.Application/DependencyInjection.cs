@@ -1,7 +1,7 @@
 using System.Reflection;
 using AxisMediator.CQRS;
 using AxisTrix.DependencyInjection;
-using AxisValidator.FluentValidation;
+using AxisValidator;
 using DataPrivacyTrix.Application.Cellphones;
 
 namespace DataPrivacyTrix.Application;

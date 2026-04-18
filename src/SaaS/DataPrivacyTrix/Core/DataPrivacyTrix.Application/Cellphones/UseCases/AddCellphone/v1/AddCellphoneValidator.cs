@@ -1,5 +1,5 @@
+using AxisValidator;
 using AxisValidator.Brazil;
-using AxisValidator.FluentValidation;
 using DataPrivacyTrix.Contracts.Cellphones.v1.AddCellphone;
 using CountryId = Axis.Localization.CountryId;
 

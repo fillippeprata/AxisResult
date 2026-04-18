@@ -1,5 +1,6 @@
 using Axis;
 using AxisMediator.Contracts.CQRS;
+using AxisValidator;
 
 namespace AxisMediator.UnitTests.Pipelines;
 

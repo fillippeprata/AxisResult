@@ -1,4 +1,4 @@
-using AxisValidator.FluentValidation;
+using AxisValidator;
 using TenantTrix.Contracts.ExternalApis.v1.AddExternalApi;
 
 namespace TenantTrix.Application.ExternalApis.UseCases.AddExternalApi.v1;

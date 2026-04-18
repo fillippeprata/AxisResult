@@ -1,5 +1,5 @@
 using Axis;
-using AxisValidator.FluentValidation;
+using AxisValidator;
 using TenantTrix.Contracts.Tenants.v1.EditTenant;
 
 namespace TenantTrix.Application.Tenants.UseCases.EditTenant.v1;
