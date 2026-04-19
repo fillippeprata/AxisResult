@@ -7,4 +7,4 @@ internal interface IEmailAggregateApplication : IEmailEntityProperties;
 
 internal class EmailAggregateApplication(
     IEmailEntityProperties properties
-) : EmailEntityProperties(properties), IEmailAggregateApplication;
+) : EmailEntity(properties), IEmailAggregateApplication;

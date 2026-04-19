@@ -12,7 +12,7 @@ internal interface IEmailAggregateApplicationFactory
     Task<AxisResult<IEmailAggregateApplication>> GetByEmailAddressAsync(string emailAddress);
     Task<AxisResult<IEmailAggregateApplication>> CreateAsync(NewArgs args);
 
-    public record NewArgs
+    internal record NewArgs
     {
         public required string EmailAddress { get; init; }
     }
@@ -37,7 +37,7 @@ internal class EmailAggregateApplicationFactory(
     public Task<AxisResult<IEmailAggregateApplication>> CreateAsync(IEmailAggregateApplicationFactory.NewArgs args)
         => GetByEmailAddressAsync(args.EmailAddress)
             .RequireNotFoundAsync(AxisError.ValidationRule("EMAIL_ALREADY_EXISTS"))
-            .WithValueAsync(new EmailEntityProperties(EmailId.New, args.EmailAddress))
+            .WithValueAsync(new EmailEntity(EmailId.New, args.EmailAddress))
             .MapAsync(NewInstance)
             .ThenAsync(writePort.CreateAsync);
 }

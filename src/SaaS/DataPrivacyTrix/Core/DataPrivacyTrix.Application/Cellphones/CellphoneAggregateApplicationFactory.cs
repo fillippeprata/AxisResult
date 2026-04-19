@@ -11,7 +11,7 @@ internal interface ICellphoneAggregateApplicationFactory
     Task<AxisResult<ICellphoneAggregateApplication>> GetByIdAsync(CellphoneId id);
     Task<AxisResult<ICellphoneAggregateApplication>> CreateAsync(NewArgs args);
 
-    public record NewArgs
+    internal record NewArgs
     {
         public required CountryId CountryId { get; init; }
         public required string CellphoneNumber { get; init; }

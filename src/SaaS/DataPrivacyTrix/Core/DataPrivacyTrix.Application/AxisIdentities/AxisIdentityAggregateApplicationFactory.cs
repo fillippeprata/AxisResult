@@ -16,7 +16,7 @@ internal interface IAxisIdentityAggregateApplicationFactory
     Task<AxisResult<IAxisIdentityAggregateApplication>> GetByEmailIdAsync(EmailId emailId);
     Task<AxisResult<IAxisIdentityAggregateApplication>> CreateAsync(NewArgs args);
 
-    public record NewArgs
+    internal record NewArgs
     {
         public required bool IsIndividual { get; init; }
         public required string Document { get; init; }

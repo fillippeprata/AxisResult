@@ -10,7 +10,7 @@ internal interface ITenantAggregateApplicationFactory
     Task<AxisResult<ITenantAggregateApplication>> GetByIdAsync(TenantId id);
     Task<AxisResult<ITenantAggregateApplication>> CreateAsync(NewArgs args);
 
-    public record NewArgs
+    internal record NewArgs
     {
         public required string TenantName { get; init; }
     }

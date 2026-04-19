@@ -11,7 +11,7 @@ internal interface IExternalApiAggregateApplicationFactory
     Task<AxisResult<IExternalApiAggregateApplication>> GetByIdAsync(ExternalApiId id);
     Task<AxisResult<IExternalApiAggregateApplication>> CreateAsync(NewArgs args);
 
-    public record NewArgs
+    internal record NewArgs
     {
         public required string ApiName { get; init; }
         public required string HashedSecret { get; init; }
