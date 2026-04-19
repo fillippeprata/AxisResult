@@ -92,8 +92,8 @@ If the architecture is not microservices-based, there will be no integration wit
 | SDK Interface | `I{Feature}Mediator` | `IPersonsMediator` |
 | ApplicationConfig key | PascalCase, no dots | `AppKey = "TenantTrix"` |
 | Error Code | UPPER_SNAKE_CASE | `PERSON_NOT_ACTIVE`, `AUTH_CODE_NOT_VALID` |
-| DB Schema | UPPER_SNAKE_CASE | `IDENTITY_TRIX_PERSONS` |
-| DB Table | `{SCHEMA}.{NAME}` UPPER_SNAKE_CASE | `IDENTITY_TRIX_PERSONS.PERSONS` |
+| DB Schema | UPPER_SNAKE_CASE of the Bounded Context name (plural) — **no subdomain prefix** | `PERSONS`, `EXTERNAL_APIS`, `AXIS_IDENTITIES` |
+| DB Table | `{SCHEMA}.{NAME}` UPPER_SNAKE_CASE | `PERSONS.PERSONS`, `AXIS_IDENTITIES.AXIS_IDENTITY_CELLPHONES` |
 | DB Column | UPPER_SNAKE_CASE | `PERSON_ID`, `DISPLAY_NAME` |
 | Migration Version | `V1`, `V2`, ... | `("V1", V1)` |
 
@@ -235,7 +235,7 @@ Interface and implementation live in the **same `.cs` file** for both Factory an
 - Implement Reader AND Writer ports in the same class when both use the same database
 - Base class methods: `ExecuteAsync()`, `GetAsync<T>()`, `ListAsync<T>()`
 - Raw parameterized SQL with table constants; `SelectColumns` as `const string`
-- Each BC has its own schema (e.g., `IDENTITY_TRIX_PERSONS`)
+- Each BC has its own schema, named after the BC itself in UPPER_SNAKE_CASE (plural) with **no subdomain prefix** (e.g., `PERSONS`, `EXTERNAL_APIS`, `AXIS_IDENTITIES`). Defined as `const string Schema` in the aggregate's `{Aggregate}DbInit.cs`.
 
 **DbEntity** — `internal record : I{Entity}EntityProperties` with `static FromReader(NpgsqlDataReader)` for ordinal mapping.
 

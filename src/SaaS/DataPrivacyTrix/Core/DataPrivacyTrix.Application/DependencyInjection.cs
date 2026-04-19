@@ -2,9 +2,9 @@ using System.Reflection;
 using AxisMediator.CQRS;
 using AxisTrix.DependencyInjection;
 using AxisValidator;
+using DataPrivacyTrix.Application.AxisIdentities;
 using DataPrivacyTrix.Application.Cellphones;
 using DataPrivacyTrix.Application.Emails;
-using DataPrivacyTrix.Application.Registration;
 
 namespace DataPrivacyTrix.Application;
 

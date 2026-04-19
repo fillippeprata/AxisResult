@@ -1,11 +1,6 @@
 using Axis;
 using AxisMediator.Contracts;
 using DataPrivacyTrix.Contracts.Registration.v1;
-using DataPrivacyTrix.Contracts.Registration.v1.AddCellphoneToAxisIdentity;
-using DataPrivacyTrix.Contracts.Registration.v1.AddEmailToAxisIdentity;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityByCellphone;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityByEmail;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityById;
 using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByCellphone;
 using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByEmail;
 
@@ -18,19 +13,4 @@ internal class RegistrationMediator(IAxisMediator mediator) : IRegistrationMedia
 
     public Task<AxisResult<RegisterAxisIdentityByEmailResponse>> RegisterByEmailAsync(RegisterAxisIdentityByEmailCommand command)
         => mediator.Cqrs.ExecuteAsync<RegisterAxisIdentityByEmailCommand, RegisterAxisIdentityByEmailResponse>(command);
-
-    public Task<AxisResult> AddCellphoneAsync(AddCellphoneToAxisIdentityCommand command)
-        => mediator.Cqrs.ExecuteAsync(command);
-
-    public Task<AxisResult> AddEmailAsync(AddEmailToAxisIdentityCommand command)
-        => mediator.Cqrs.ExecuteAsync(command);
-
-    public Task<AxisResult<GetAxisIdentityByIdResponse>> GetByIdAsync(GetAxisIdentityByIdQuery query)
-        => mediator.Cqrs.QueryAsync<GetAxisIdentityByIdQuery, GetAxisIdentityByIdResponse>(query);
-
-    public Task<AxisResult<GetAxisIdentityByCellphoneResponse>> GetByCellphoneAsync(GetAxisIdentityByCellphoneQuery query)
-        => mediator.Cqrs.QueryAsync<GetAxisIdentityByCellphoneQuery, GetAxisIdentityByCellphoneResponse>(query);
-
-    public Task<AxisResult<GetAxisIdentityByEmailResponse>> GetByEmailAsync(GetAxisIdentityByEmailQuery query)
-        => mediator.Cqrs.QueryAsync<GetAxisIdentityByEmailQuery, GetAxisIdentityByEmailResponse>(query);
 }

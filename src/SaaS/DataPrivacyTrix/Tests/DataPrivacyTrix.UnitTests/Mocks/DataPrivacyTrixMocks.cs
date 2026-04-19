@@ -1,15 +1,17 @@
 using Axis;
+using Axis.Localization;
 using DataPrivacyTrix.Contracts.Cellphones.v1;
 using DataPrivacyTrix.Contracts.Emails.v1;
 using DataPrivacyTrix.Ports;
+using DataPrivacyTrix.Ports.AxisIdentities;
 using DataPrivacyTrix.Ports.Cellphones;
 using DataPrivacyTrix.Ports.Emails;
-using DataPrivacyTrix.Ports.Registration;
+using DataPrivacyTrix.SharedKernel.AxisIdentities;
 using DataPrivacyTrix.SharedKernel.Cellphones;
 using DataPrivacyTrix.SharedKernel.Emails;
-using DataPrivacyTrix.SharedKernel.Registration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using AxisIdentityId = DataPrivacyTrix.SharedKernel.AxisIdentities.AxisIdentityId;
 
 namespace DataPrivacyTrix.UnitTests.Mocks;
 
@@ -29,7 +31,7 @@ internal record DataPrivacyTrixMocks
         mocks.UowProvider.Setup(x => x.UnitOfWork.SaveChangesAsync())
             .ReturnsAsync(AxisResult.Ok());
 
-        mocks.AxisIdentitiesReader.Setup(x => x.GetByDocumentAsync(It.IsAny<Axis.Localization.CountryId>(), It.IsAny<string>()))
+        mocks.AxisIdentitiesReader.Setup(x => x.GetByDocumentAsync(It.IsAny<CountryId>(), It.IsAny<string>()))
             .ReturnsAsync(AxisResult.Error<IAxisIdentityEntityProperties>(AxisError.NotFound("AXIS_IDENTITY_NOT_FOUND")));
 
         mocks.AxisIdentitiesWriter.Setup(x => x.CreateAsync(It.IsAny<IAxisIdentityEntityProperties>()))

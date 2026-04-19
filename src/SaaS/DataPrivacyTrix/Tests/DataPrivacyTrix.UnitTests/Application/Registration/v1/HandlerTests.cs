@@ -1,22 +1,27 @@
 using Axis;
+using DataPrivacyTrix.Contracts.AxisIdentities;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.AddCellphoneToAxisIdentity;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityById;
 using DataPrivacyTrix.Contracts.Registration.v1;
-using DataPrivacyTrix.Contracts.Registration.v1.AddCellphoneToAxisIdentity;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityById;
 using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByCellphone;
 using DataPrivacyTrix.Contracts.Registration.v1.SharedData;
+using DataPrivacyTrix.SharedKernel.AxisIdentities;
 using DataPrivacyTrix.SharedKernel.Cellphones;
-using DataPrivacyTrix.SharedKernel.Registration;
 using DataPrivacyTrix.UnitTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using AxisIdentityId = DataPrivacyTrix.SharedKernel.AxisIdentities.AxisIdentityId;
 using CountryId = Axis.Localization.CountryId;
 
 namespace DataPrivacyTrix.UnitTests.Application.Registration.v1;
 
 public class HandlerTests
 {
-    private static IRegistrationMediator Mediator(IServiceScope scope)
+    private static IRegistrationMediator RegistrationMediator(IServiceScope scope)
         => scope.ServiceProvider.GetRequiredService<IRegistrationMediator>();
+
+    private static IAxisIdentitiesMediator AxisIdentitiesMediator(IServiceScope scope)
+        => scope.ServiceProvider.GetRequiredService<IAxisIdentitiesMediator>();
 
     [Fact]
     public async Task RegisterByCellphoneShouldSucceedForValidDataAsync()
@@ -31,7 +36,7 @@ public class HandlerTests
             CellphoneId = CellphoneId.New.ToString()
         };
 
-        var result = await Mediator(scope).RegisterByCellphoneAsync(command);
+        var result = await RegistrationMediator(scope).RegisterByCellphoneAsync(command);
 
         Assert.True(result.IsSuccess, $"Failed: {string.Join("; ", result.Errors.Select(e => e.Code))}");
         Assert.NotEmpty(result.Value.AxisIdentityId);
@@ -57,7 +62,7 @@ public class HandlerTests
             CellphoneId = CellphoneId.New.ToString()
         };
 
-        var result = await Mediator(scope).RegisterByCellphoneAsync(command);
+        var result = await RegistrationMediator(scope).RegisterByCellphoneAsync(command);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x.Code == "DOCUMENT_ALREADY_REGISTERED");
@@ -80,7 +85,7 @@ public class HandlerTests
             CellphoneId = CellphoneId.New.ToString()
         };
 
-        var result = await Mediator(scope).AddCellphoneAsync(command);
+        var result = await AxisIdentitiesMediator(scope).AddCellphoneAsync(command);
 
         Assert.True(result.IsSuccess, $"Failed: {string.Join("; ", result.Errors.Select(e => e.Code))}");
         mocks.AxisIdentityCellphonesWriter.Verify(
@@ -103,7 +108,7 @@ public class HandlerTests
             CellphoneId = CellphoneId.New.ToString()
         };
 
-        var result = await Mediator(scope).AddCellphoneAsync(command);
+        var result = await AxisIdentitiesMediator(scope).AddCellphoneAsync(command);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x.Code == "AXIS_IDENTITY_NOT_FOUND");
@@ -119,7 +124,7 @@ public class HandlerTests
             .ReturnsAsync(AxisResult.Ok<IAxisIdentityEntityProperties>(identity));
         using var scope = services.GetServiceProvider().CreateScope();
 
-        var result = await Mediator(scope).GetByIdAsync(new GetAxisIdentityByIdQuery
+        var result = await AxisIdentitiesMediator(scope).GetByIdAsync(new GetAxisIdentityByIdQuery
         {
             AxisIdentityId = identity.AxisIdentityId.ToString()
         });

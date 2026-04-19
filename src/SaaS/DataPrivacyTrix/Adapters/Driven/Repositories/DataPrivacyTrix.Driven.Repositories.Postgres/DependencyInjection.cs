@@ -1,8 +1,8 @@
 using AxisRepository.Postgres;
 using AxisTrix.DependencyInjection;
+using DataPrivacyTrix.Driven.Repositories.Postgres.AxisIdentities;
 using DataPrivacyTrix.Driven.Repositories.Postgres.Cellphones;
 using DataPrivacyTrix.Driven.Repositories.Postgres.Emails;
-using DataPrivacyTrix.Driven.Repositories.Postgres.Registration;
 using DataPrivacyTrix.Driven.Repositories.Postgres.UnitOfWork;
 using DataPrivacyTrix.Ports;
 using DataPrivacyTrix.SharedKernel;

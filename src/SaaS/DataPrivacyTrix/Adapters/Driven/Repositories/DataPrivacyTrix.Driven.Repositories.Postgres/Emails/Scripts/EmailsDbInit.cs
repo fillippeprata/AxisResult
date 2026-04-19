@@ -2,7 +2,7 @@ namespace DataPrivacyTrix.Driven.Repositories.Postgres.Emails.Scripts;
 
 public static class EmailsDbInit
 {
-    public const string Schema = "DATA_PRIVACY_TRIX_EMAILS";
+    public const string Schema = "EMAILS";
 
     internal static readonly (string Version, string Script)[] Migrations =
     [

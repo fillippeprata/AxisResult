@@ -1,10 +1,11 @@
 using Axis;
 using AxisMediator.Contracts.CQRS.Commands;
+using DataPrivacyTrix.Application.AxisIdentities;
 using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByEmail;
 using DataPrivacyTrix.Ports;
 using CountryId = Axis.Localization.CountryId;
 using EmailId = DataPrivacyTrix.SharedKernel.Emails.EmailId;
-using SharedKernelSecurityLevel = DataPrivacyTrix.SharedKernel.Registration.SecurityLevel;
+using SharedKernelSecurityLevel = DataPrivacyTrix.SharedKernel.AxisIdentities.SecurityLevel;
 
 namespace DataPrivacyTrix.Application.Registration.UseCases.RegisterAxisIdentityByEmail.v1;
 

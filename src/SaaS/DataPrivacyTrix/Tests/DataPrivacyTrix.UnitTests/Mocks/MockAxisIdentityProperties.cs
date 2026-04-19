@@ -1,4 +1,5 @@
-using DataPrivacyTrix.SharedKernel.Registration;
+using DataPrivacyTrix.SharedKernel.AxisIdentities;
+using AxisIdentityId = DataPrivacyTrix.SharedKernel.AxisIdentities.AxisIdentityId;
 using CountryId = Axis.Localization.CountryId;
 
 namespace DataPrivacyTrix.UnitTests.Mocks;

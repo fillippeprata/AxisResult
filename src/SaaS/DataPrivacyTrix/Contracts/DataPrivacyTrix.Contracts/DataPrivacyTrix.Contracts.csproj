@@ -10,4 +10,8 @@
       <ProjectReference Include="..\..\..\..\Foundation\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="AxisIdentities\v1\" />
+    </ItemGroup>
+
 </Project>

@@ -1,23 +1,26 @@
 using Axis;
+using DataPrivacyTrix.Contracts.AxisIdentities;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.AddCellphoneToAxisIdentity;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByCellphone;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByEmail;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityById;
 using DataPrivacyTrix.Contracts.Registration.v1;
-using DataPrivacyTrix.Contracts.Registration.v1.AddCellphoneToAxisIdentity;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityByCellphone;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityByEmail;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityById;
 using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByCellphone;
 using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByEmail;
 using DataPrivacyTrix.Contracts.Registration.v1.SharedData;
 using DataPrivacyTrix.SharedKernel.Cellphones;
 using DataPrivacyTrix.UnitTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
-using EmailId = DataPrivacyTrix.SharedKernel.Emails.EmailId;
 
 namespace DataPrivacyTrix.UnitTests.Application.Registration.v1;
 
 public class ValidationTests
 {
-    private static IRegistrationMediator Mediator(IServiceScope scope)
+    private static IRegistrationMediator RegistrationMediator(IServiceScope scope)
         => scope.ServiceProvider.GetRequiredService<IRegistrationMediator>();
+
+    private static IAxisIdentitiesMediator AxisIdentitiesMediator(IServiceScope scope)
+        => scope.ServiceProvider.GetRequiredService<IAxisIdentitiesMediator>();
 
     [Fact]
     public async Task RegisterByCellphoneShouldFailWhenDataIsNullAsync()
@@ -29,7 +32,7 @@ public class ValidationTests
             CellphoneId = CellphoneId.New.ToString()
         };
 
-        var result = await Mediator(scope).RegisterByCellphoneAsync(command);
+        var result = await RegistrationMediator(scope).RegisterByCellphoneAsync(command);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x.Code == "DATA_REQUIRED");
@@ -45,7 +48,7 @@ public class ValidationTests
             CellphoneId = "not-a-guid"
         };
 
-        var result = await Mediator(scope).RegisterByCellphoneAsync(command);
+        var result = await RegistrationMediator(scope).RegisterByCellphoneAsync(command);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x.Code == "CELLPHONE_ID_INVALID");
@@ -62,7 +65,7 @@ public class ValidationTests
             CellphoneId = CellphoneId.New.ToString()
         };
 
-        var result = await Mediator(scope).RegisterByCellphoneAsync(command);
+        var result = await RegistrationMediator(scope).RegisterByCellphoneAsync(command);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x.Code == "DOCUMENT_INVALID");
@@ -78,7 +81,7 @@ public class ValidationTests
             EmailId = "not-a-guid"
         };
 
-        var result = await Mediator(scope).RegisterByEmailAsync(command);
+        var result = await RegistrationMediator(scope).RegisterByEmailAsync(command);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x.Code == "EMAIL_ID_INVALID");
@@ -94,7 +97,7 @@ public class ValidationTests
             CellphoneId = CellphoneId.New.ToString()
         };
 
-        var result = await Mediator(scope).AddCellphoneAsync(command);
+        var result = await AxisIdentitiesMediator(scope).AddCellphoneAsync(command);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x.Code == "AXIS_IDENTITY_ID_INVALID");
@@ -106,7 +109,7 @@ public class ValidationTests
         using var scope = DataPrivacyTrixMocks.GetServiceProvider().CreateScope();
         var query = new GetAxisIdentityByIdQuery { AxisIdentityId = "not-a-guid" };
 
-        var result = await Mediator(scope).GetByIdAsync(query);
+        var result = await AxisIdentitiesMediator(scope).GetByIdAsync(query);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x.Code == "AXIS_IDENTITY_ID_INVALID");
@@ -118,7 +121,7 @@ public class ValidationTests
         using var scope = DataPrivacyTrixMocks.GetServiceProvider().CreateScope();
         var query = new GetAxisIdentityByCellphoneQuery { CountryId = null, CellphoneNumber = "11987654321" };
 
-        var result = await Mediator(scope).GetByCellphoneAsync(query);
+        var result = await AxisIdentitiesMediator(scope).GetByCellphoneAsync(query);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x is { Type: AxisErrorType.ValidationRule });
@@ -130,7 +133,7 @@ public class ValidationTests
         using var scope = DataPrivacyTrixMocks.GetServiceProvider().CreateScope();
         var query = new GetAxisIdentityByEmailQuery { EmailAddress = "not-an-email" };
 
-        var result = await Mediator(scope).GetByEmailAsync(query);
+        var result = await AxisIdentitiesMediator(scope).GetByEmailAsync(query);
 
         Assert.True(result.IsFailure);
         Assert.Contains(result.Errors, x => x.Code == "EMAIL_ADDRESS_INVALID");

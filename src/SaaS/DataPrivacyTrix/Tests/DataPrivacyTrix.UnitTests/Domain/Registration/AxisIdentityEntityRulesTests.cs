@@ -1,8 +1,9 @@
-using DataPrivacyTrix.Application.Registration;
-using DataPrivacyTrix.Ports.Registration;
-using DataPrivacyTrix.SharedKernel.Registration;
+using DataPrivacyTrix.Application.AxisIdentities;
+using DataPrivacyTrix.Ports.AxisIdentities;
+using DataPrivacyTrix.SharedKernel.AxisIdentities;
 using DataPrivacyTrix.UnitTests.Mocks;
 using Moq;
+using AxisIdentityId = DataPrivacyTrix.SharedKernel.AxisIdentities.AxisIdentityId;
 using CountryIds = Axis.Localization.CountryIds;
 
 namespace DataPrivacyTrix.UnitTests.Domain.Registration;

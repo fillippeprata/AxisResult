@@ -2,7 +2,7 @@ namespace TenantTrix.Driven.Repositories.Postgres.Tenants.Scripts;
 
 public static class TenantsDbInit
 {
-    public const string Schema = "TENANT_TRIX_TENANTS";
+    public const string Schema = "TENANTS";
 
     public const string SeedAdminTenantId = "00000000-0000-7000-8000-000000000001";
     public const string SeedAdminTenantName = "admin-tenant";

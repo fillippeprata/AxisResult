@@ -1,10 +1,11 @@
 using Axis;
 using AxisMediator.Contracts.CQRS.Commands;
+using DataPrivacyTrix.Application.AxisIdentities;
 using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByCellphone;
 using DataPrivacyTrix.Ports;
 using DataPrivacyTrix.SharedKernel.Cellphones;
 using CountryId = Axis.Localization.CountryId;
-using SharedKernelSecurityLevel = DataPrivacyTrix.SharedKernel.Registration.SecurityLevel;
+using SharedKernelSecurityLevel = DataPrivacyTrix.SharedKernel.AxisIdentities.SecurityLevel;
 
 namespace DataPrivacyTrix.Application.Registration.UseCases.RegisterAxisIdentityByCellphone.v1;
 

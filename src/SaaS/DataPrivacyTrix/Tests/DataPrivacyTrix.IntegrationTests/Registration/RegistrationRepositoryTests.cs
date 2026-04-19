@@ -1,12 +1,13 @@
+using DataPrivacyTrix.Contracts.AxisIdentities;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.AddCellphoneToAxisIdentity;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByCellphone;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByEmail;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityById;
 using DataPrivacyTrix.Contracts.Cellphones.v1;
 using DataPrivacyTrix.Contracts.Cellphones.v1.AddCellphone;
 using DataPrivacyTrix.Contracts.Emails.v1;
 using DataPrivacyTrix.Contracts.Emails.v1.AddEmail;
 using DataPrivacyTrix.Contracts.Registration.v1;
-using DataPrivacyTrix.Contracts.Registration.v1.AddCellphoneToAxisIdentity;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityByCellphone;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityByEmail;
-using DataPrivacyTrix.Contracts.Registration.v1.GetAxisIdentityById;
 using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByCellphone;
 using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByEmail;
 using DataPrivacyTrix.Contracts.Registration.v1.SharedData;
@@ -23,6 +24,9 @@ public class RegistrationRepositoryTests(PostgresFixture fixture) : DatabaseTest
     private const string ValidCpfC = "52998224725";
     private const string ValidCpfD = "71428793860";
     private const string ValidCpfE = "15350946056";
+
+    private static IAxisIdentitiesMediator AxisIdentitiesMediator(IServiceScope scope)
+        => scope.ServiceProvider.GetRequiredService<IAxisIdentitiesMediator>();
 
     private static IRegistrationMediator Registration(IServiceScope scope)
         => scope.ServiceProvider.GetRequiredService<IRegistrationMediator>();
@@ -65,7 +69,7 @@ public class RegistrationRepositoryTests(PostgresFixture fixture) : DatabaseTest
 
         using (var scope = serviceProvider.CreateScope())
         {
-            var response = await Registration(scope).GetByCellphoneAsync(new GetAxisIdentityByCellphoneQuery
+            var response = await AxisIdentitiesMediator(scope).GetByCellphoneAsync(new GetAxisIdentityByCellphoneQuery
             {
                 CountryId = BrCountryId,
                 CellphoneNumber = cellphoneNumber
@@ -104,7 +108,7 @@ public class RegistrationRepositoryTests(PostgresFixture fixture) : DatabaseTest
 
         using (var scope = serviceProvider.CreateScope())
         {
-            var response = await Registration(scope).GetByEmailAsync(new GetAxisIdentityByEmailQuery { EmailAddress = emailAddress });
+            var response = await AxisIdentitiesMediator(scope).GetByEmailAsync(new GetAxisIdentityByEmailQuery { EmailAddress = emailAddress });
             Assert.True(response.IsSuccess, $"Failed: {string.Join("; ", response.Errors.Select(e => e.Code))}");
             Assert.Equal(axisIdentityId, response.Value.AxisIdentityId);
             Assert.Equal("User B", response.Value.DisplayName);
@@ -112,7 +116,7 @@ public class RegistrationRepositoryTests(PostgresFixture fixture) : DatabaseTest
 
         using (var scope = serviceProvider.CreateScope())
         {
-            var response = await Registration(scope).GetByIdAsync(new GetAxisIdentityByIdQuery { AxisIdentityId = axisIdentityId });
+            var response = await AxisIdentitiesMediator(scope).GetByIdAsync(new GetAxisIdentityByIdQuery { AxisIdentityId = axisIdentityId });
             Assert.True(response.IsSuccess);
             Assert.Equal("User B", response.Value.DisplayName);
             Assert.Equal(ValidCpfB, response.Value.Document);
@@ -151,7 +155,7 @@ public class RegistrationRepositoryTests(PostgresFixture fixture) : DatabaseTest
             });
             Assert.True(phoneResp.IsSuccess);
 
-            var addResp = await Registration(scope).AddCellphoneAsync(new AddCellphoneToAxisIdentityCommand
+            var addResp = await AxisIdentitiesMediator(scope).AddCellphoneAsync(new AddCellphoneToAxisIdentityCommand
             {
                 AxisIdentityId = axisIdentityId,
                 CellphoneId = phoneResp.Value.CellphoneId
@@ -172,7 +176,7 @@ public class RegistrationRepositoryTests(PostgresFixture fixture) : DatabaseTest
 
         using (var scope = serviceProvider.CreateScope())
         {
-            var addResp = await Registration(scope).AddCellphoneAsync(new AddCellphoneToAxisIdentityCommand
+            var addResp = await AxisIdentitiesMediator(scope).AddCellphoneAsync(new AddCellphoneToAxisIdentityCommand
             {
                 AxisIdentityId = axisIdentityId,
                 CellphoneId = secondCellphoneId
@@ -212,7 +216,7 @@ public class RegistrationRepositoryTests(PostgresFixture fixture) : DatabaseTest
                 EmailId = emailResp.Value.EmailId
             });
             Assert.True(regResp.IsSuccess);
-            var addResp = await Registration(scope).AddCellphoneAsync(new AddCellphoneToAxisIdentityCommand
+            var addResp = await AxisIdentitiesMediator(scope).AddCellphoneAsync(new AddCellphoneToAxisIdentityCommand
             {
                 AxisIdentityId = regResp.Value.AxisIdentityId,
                 CellphoneId = sharedCellphoneId
@@ -235,7 +239,7 @@ public class RegistrationRepositoryTests(PostgresFixture fixture) : DatabaseTest
 
         using (var scope = serviceProvider.CreateScope())
         {
-            var addResp = await Registration(scope).AddCellphoneAsync(new AddCellphoneToAxisIdentityCommand
+            var addResp = await AxisIdentitiesMediator(scope).AddCellphoneAsync(new AddCellphoneToAxisIdentityCommand
             {
                 AxisIdentityId = identityB,
                 CellphoneId = sharedCellphoneId

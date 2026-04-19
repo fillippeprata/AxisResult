@@ -3,7 +3,7 @@ using AxisValidator;
 using AxisValidator.Brazil;
 using DataPrivacyTrix.Contracts.Registration.v1.SharedData;
 using FluentValidation;
-using DataPrivacySecurityLevel = DataPrivacyTrix.SharedKernel.Registration.SecurityLevel;
+using DataPrivacySecurityLevel = DataPrivacyTrix.SharedKernel.AxisIdentities.SecurityLevel;
 using CountryId = Axis.Localization.CountryId;
 
 namespace DataPrivacyTrix.Application.Registration.UseCases.SharedData;

@@ -18,4 +18,8 @@
       <ProjectReference Include="..\DataPrivacyTrix.Domain\DataPrivacyTrix.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="AxisIdentities\UseCases\" />
+    </ItemGroup>
+
 </Project>
