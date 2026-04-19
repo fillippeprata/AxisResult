@@ -19,7 +19,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="AxisIdentities\UseCases\" />
+      <Folder Include="AxisIdentities\UseCases\Cellphones\" />
+      <Folder Include="AxisIdentities\UseCases\Emails\" />
+      <Folder Include="AxisIdentities\UseCases\Identities\" />
+      <Folder Include="AxisIdentities\UseCases\Registration\" />
     </ItemGroup>
 
 </Project>

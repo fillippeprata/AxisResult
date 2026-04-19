@@ -10,4 +10,11 @@
       <ProjectReference Include="..\..\..\..\Foundation\AxisTrix.Bootstrap\AxisTrix.Bootstrap.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="AxisIdentities\v1\Cellphones\" />
+      <Folder Include="AxisIdentities\v1\Emails\" />
+      <Folder Include="AxisIdentities\v1\Identities\" />
+      <Folder Include="AxisIdentities\v1\Registration\" />
+    </ItemGroup>
+
 </Project>

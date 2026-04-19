@@ -3,11 +3,9 @@ using DataPrivacyTrix.Application;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1;
 using DataPrivacyTrix.Contracts.Cellphones.v1;
 using DataPrivacyTrix.Contracts.Emails.v1;
-using DataPrivacyTrix.Contracts.Registration.v1;
 using DataPrivacyTrix.Sdk.Application.AxisIdentities.v1;
 using DataPrivacyTrix.Sdk.Application.Cellphones.v1;
 using DataPrivacyTrix.Sdk.Application.Emails.v1;
-using DataPrivacyTrix.Sdk.Application.Registration.v1;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DataPrivacyTrix.Sdk.Application;
@@ -18,7 +16,6 @@ public static class DependencyInjection
     {
         builder.Services.AddScoped<ICellphonesMediator, CellphonesMediator>();
         builder.Services.AddScoped<IEmailsMediator, EmailsMediator>();
-        builder.Services.AddScoped<IRegistrationMediator, RegistrationMediator>();
         builder.Services.AddScoped<IAxisIdentitiesMediator, AxisIdentitiesMediator>();
         return builder.AddDataPrivacyTrixApplication();
     }

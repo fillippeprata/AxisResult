@@ -1,16 +1,15 @@
 using DataPrivacyTrix.Contracts.AxisIdentities.v1;
-using DataPrivacyTrix.Contracts.AxisIdentities.v1.AddCellphoneToAxisIdentity;
-using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByCellphone;
-using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByEmail;
-using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityById;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.Cellphones.AddCellphoneToAxisIdentity;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.Identities.GetAxisIdentityByCellphone;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.Identities.GetAxisIdentityByEmail;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.Identities.GetAxisIdentityById;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.Registration.RegisterAxisIdentityByCellphone;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.Registration.RegisterAxisIdentityByEmail;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1.Registration.SharedData;
 using DataPrivacyTrix.Contracts.Cellphones.v1;
 using DataPrivacyTrix.Contracts.Cellphones.v1.AddCellphone;
 using DataPrivacyTrix.Contracts.Emails.v1;
 using DataPrivacyTrix.Contracts.Emails.v1.AddEmail;
-using DataPrivacyTrix.Contracts.Registration.v1;
-using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByCellphone;
-using DataPrivacyTrix.Contracts.Registration.v1.RegisterAxisIdentityByEmail;
-using DataPrivacyTrix.Contracts.Registration.v1.SharedData;
 using DataPrivacyTrix.IntegrationTests.Postgres;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,8 +27,8 @@ public class RegistrationRepositoryTests(PostgresFixture fixture) : DatabaseTest
     private static IAxisIdentitiesMediator AxisIdentitiesMediator(IServiceScope scope)
         => scope.ServiceProvider.GetRequiredService<IAxisIdentitiesMediator>();
 
-    private static IRegistrationMediator Registration(IServiceScope scope)
-        => scope.ServiceProvider.GetRequiredService<IRegistrationMediator>();
+    private static IAxisIdentitiesMediator Registration(IServiceScope scope)
+        => scope.ServiceProvider.GetRequiredService<IAxisIdentitiesMediator>();
 
     private static ICellphonesMediator Cellphones(IServiceScope scope)
         => scope.ServiceProvider.GetRequiredService<ICellphonesMediator>();
