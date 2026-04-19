@@ -84,6 +84,7 @@ If the architecture is not microservices-based, there will be no integration wit
 | Entity Interface | `I{Name}EntityProperties` | `IPersonEntityProperties` |
 | Port Reader | `I{Entities}ReaderPort` or `I{Entities}Reader` — **{Entities} is the entity name in plural** | `IPersonsReaderPort`, `IExternalApisReaderPort` (never `IPersonReaderPort`) |
 | Port Writer | `I{Entities}WritePort` or `I{Entities}Writer` — **{Entities} is the entity name in plural** | `IPersonsWritePort`, `IExternalApisWritePort` (never `IPersonWritePort`) |
+| Child Entity Port | `I{AggregateRootSingular}{ChildrenPlural}(Reader\|Write)Port` — relates an aggregate root to its child entities (scope: operations within one root instance) | `IAxisIdentityCellphonesWritePort`, `IAxisIdentityEmailsWritePort` |
 | Repository | `{Entities}Repository` | `PersonsRepository` |
 | DbEntity | `{Entity}DbEntity` | `PersonDbEntity` |
 | Table Constants | `{Entities}Table` | `PersonsTable` |
@@ -217,7 +218,7 @@ Rule of thumb: `.ThenAsync()` discards the previous value, `.ZipAsync()` keeps i
 
 Each entity has a Properties file; a Rules file is only needed when the entity has domain rules:
 
-**`{Entity}EntityProperties.cs`** — `internal partial class` with primary constructor, implements `I{Entity}EntityProperties`, immutable `{ get; }` properties. Secondary constructor accepts the interface for rehydration. If the entity has no domain rules, this is the only file and the class does NOT need to be `partial`.
+**`{Entity}EntityProperties.cs`** — `internal partial class` with primary constructor, implements `I{Entity}EntityProperties`, immutable `{ get; }` properties. Secondary constructor accepts the interface for rehydration. The class is ALWAYS `partial`, even when the entity has no Rules file today — this keeps the door open for adding a Rules file later without a breaking rename.
 
 **`{Entity}EntityRules.cs`** — `internal partial class`, business methods returning `AxisResult` or `Task<AxisResult>`. Private methods for internal rules; public/protected methods compose private ones. Static methods for value generation. Rules that delegate to domain-specific validation (e.g., phone formatting) should use `protected` access so the AggregateApplication can expose them via the `new` keyword.
 
@@ -275,6 +276,33 @@ Rules for any such helper:
 - Writer: `I{Entities}WritePort` — return `Task<AxisResult>`, accept `I{Entity}EntityProperties`
 - `IUnitOfWorkProvider` — `IUnitOfWork UnitOfWork { get; }`
 - Parameters use SharedKernel types; NEVER throw exceptions in port implementations
+
+### Child entity ports (aggregate root ↔ child association)
+
+When a port represents the relationship between an aggregate root and one of its child-entity collections (typically backed by a junction/association table), name it **`I{AggregateRootSingular}{ChildrenPlural}(Reader|Write)Port`**. The root is singular because the scope is operations *within one root instance*; the child is plural because the operation acts on the collection of children belonging to that root.
+
+**Example** — `AxisIdentity` aggregate with `Cellphone` and `Email` children:
+```csharp
+public interface IAxisIdentityCellphonesWritePort
+{
+    Task<AxisResult> AddCellphoneAsync(AxisIdentityId axisIdentityId, CellphoneId cellphoneId);
+}
+
+public interface IAxisIdentityEmailsWritePort
+{
+    Task<AxisResult> AddEmailAsync(AxisIdentityId axisIdentityId, EmailId emailId);
+}
+```
+
+**Distinguish three port families for the same aggregate**:
+- `IAxisIdentitiesReaderPort` / `IAxisIdentitiesWritePort` — the **root** itself (plural of the root entity name).
+- `IAxisIdentityCellphonesWritePort` — the **root ↔ child association** (singular root + plural child).
+- `ICellphonesWritePort` — the **child as a standalone aggregate** (plural of the child entity name), when the child is also modeled as its own aggregate in another BC / folder.
+
+**Rules**:
+- Method signatures take both IDs: `(AxisIdentityId root, CellphoneId child)`.
+- The root's repository typically implements both its own ports AND the child-association ports (same schema, same transaction). Register each port in DI pointing to the shared repository instance.
+- The AggregateApplication of the root injects the child-association ports (never the child's standalone ports) to enforce the root's invariants when mutating the association.
 
 ---
 
