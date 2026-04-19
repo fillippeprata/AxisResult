@@ -6,7 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\..\..\..\Axis\AxisRepository\Postgres\AxisRepository.Postgres\AxisRepository.Postgres.csproj" />
-      <ProjectReference Include="..\..\..\..\..\..\Foundation\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
+      <ProjectReference Include="..\..\..\..\..\..\Foundation\AxisTrix.Bootstrap\AxisTrix.Bootstrap.csproj" />
       <ProjectReference Include="..\..\..\..\Ports\DataPrivacyTrix.Ports\DataPrivacyTrix.Ports.csproj" />
     </ItemGroup>
 

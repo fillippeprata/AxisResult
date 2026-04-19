@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\..\Foundation\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
+      <ProjectReference Include="..\..\..\..\Foundation\AxisTrix.Bootstrap\AxisTrix.Bootstrap.csproj" />
     </ItemGroup>
 
     <ItemGroup>
