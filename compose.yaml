@@ -1,7 +1,65 @@
 ﻿services:
   axistrix.bff.all:
     image: axistrix.bff.all
+    restart: unless-stopped
     build:
       context: .
       dockerfile: src/Server/BFFs/AxisTrix.BFF.All/Dockerfile
+    environment:
+      - OpenTelemetry__Endpoint=http://otel-collector:4317
+    networks:
+      - proxy-net
+    ports:
+      - "80:8080"
+    depends_on:
+      otel-collector:
+        condition: service_started
+      postgres:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
+  postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: axis_trix
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    networks:
+      - proxy-net
+    volumes:
+      - ./data/postgres:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d axis_trix"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    restart: unless-stopped
+    networks:
+      - proxy-net
+    volumes:
+      - ./observability/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
+
+  tempo:
+    image: grafana/tempo:2.7.2
+    restart: unless-stopped
+    networks:
+      - proxy-net
+    volumes:
+      - ./observability/tempo-config.yaml:/etc/tempo/config.yaml:ro
+      - ./data/tempo:/var/tempo
+    command: ["-config.file=/etc/tempo/config.yaml"]
+
+networks:
+  proxy-net:
+    driver: bridge

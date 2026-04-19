@@ -109,10 +109,14 @@ If the architecture is not microservices-based, there will be no integration wit
 | Entities                                                   | `internal partial class` |
 | DbEntities                                                 | `internal record` |
 | Repositories, Factories, Application, SDK Mediators (impl) | `internal class` |
-| Ports, BC Mediators (interfaces), SharedKernel interfaces  | `public interface` |
+| Factory / AggregateApplication interfaces (same-file pair) | `internal interface` |
+| Ports, BC Mediators (SDK) interfaces, SharedKernel interfaces | `public interface` |
+| SharedKernel `ApplicationConfig`                           | `public static class` |
 | DI extensions (public modules)                             | `public static class` |
 | DI extensions (internal modules)                           | `internal static class` |
 | Value Objects                                              | `readonly partial record struct` |
+
+> **Interface scope rule**: an interface is `public` only when it crosses a project boundary (ports implemented by adapters, SDK mediators consumed by other BCs, SharedKernel contracts read by the Domain layer). Interfaces that live in the same file as their sole implementation (Factory, AggregateApplication, in-module services) stay `internal` — they are implementation details of the Application project.
 
 ---
 
@@ -152,6 +156,38 @@ If the architecture is not microservices-based, there will be no integration wit
 - Use `.ThenAsync()` (not `.TapAsync()`) for failable operations whose errors must propagate (UoW, write ports, cache invalidation). Use `.TapAsync()` only for fire-and-forget side effects (logging, metrics)
 
 > **AxisResult API Reference**: For the full composition methods API (`Then`, `Map`, `Tap`, `Zip`, `Recover`, `RequireNotFound`, `Combine`, `Match`, error types, etc.), see [`AxisResult.md`](AxisResult.md) at the repo root or the [NuGet package](https://www.nuget.org/packages/AxisResult).
+
+#### Monadic composition — chaining dependent calls
+
+When a step depends on the result of a previous step, NEVER unwrap with `if (result.IsFailure)`. Compose with the monadic operators so failure short-circuits automatically.
+
+**`.ThenAsync()`** — chain a failable call that replaces the value:
+```csharp
+// ❌ WRONG — if/else flow control
+var cellphoneResult = await cellphonesMediator.GetByCellphoneNumberAsync(q);
+if (cellphoneResult.IsFailure)
+    return AxisResult.Error<TResponse>(cellphoneResult.Errors);
+var entity = await readerPort.GetByCellphoneIdAsync(cellphoneResult.Value.CellphoneId);
+return new TResponse { ... };
+
+// ✅ RIGHT — monadic composition
+return await cellphonesMediator.GetByCellphoneNumberAsync(q)
+    .ThenAsync(cellphone => readerPort.GetByCellphoneIdAsync(cellphone.CellphoneId))
+    .MapAsync(entity => new TResponse { Id = entity.Id, Name = entity.Name });
+```
+
+**`.ZipAsync()`** — when the final mapping needs BOTH the previous value and the new one, use `.ZipAsync()` so both are passed to `.MapAsync()`:
+```csharp
+return await cellphonesMediator.GetByCellphoneNumberAsync(q)
+    .ZipAsync(cellphone => readerPort.GetByCellphoneIdAsync(cellphone.CellphoneId))
+    .MapAsync((cellphone, entity) => new TResponse
+    {
+        AxisIdentityId = entity.AxisIdentityId,
+        CellphoneId = cellphone.CellphoneId
+    });
+```
+
+Rule of thumb: `.ThenAsync()` discards the previous value, `.ZipAsync()` keeps it. Use `_` in the lambda tuple when a value is intentionally unused.
 
 ---
 
@@ -215,6 +251,20 @@ Root entities: `{Aggregate}/Root/`. Non-root: `{Aggregate}/Entities/`.
 **DI**: `AddScoped<I{Name}AggregateApplicationFactory, {Name}AggregateApplicationFactory>()`
 
 Interface and implementation live in the **same `.cs` file** for both Factory and AggregateApplication files.
+
+### Architectural exceptions (Services, Specifications, etc.)
+
+Handlers, Validators, Factories, and AggregateApplications cover the vast majority of application-layer concerns. When a responsibility does NOT fit any of them — typically infrastructure-adjacent orchestration that would pollute a Factory/AggregateApplication and break SRP — create a scoped helper under a dedicated folder inside the BC:
+
+- `{Aggregate}/Services/` — stateless orchestration that the AggregateApplication or Handler depends on but that is not a domain rule (e.g., cached secret resolvers, idempotency coordinators, multi-port read compositions).
+- `{Aggregate}/Specifications/` — composable query/filter predicates when read paths become too branchy for handler-only logic.
+- Other folders may emerge for specific needs — if you introduce one, document its purpose in this section in the same PR.
+
+Rules for any such helper:
+- Interface + implementation in the **same `.cs` file** (`internal interface` + `internal class`) — same scope rule as Factory/AggregateApplication.
+- Scoped DI lifetime, registered in the BC's `DependencyInjection.cs`.
+- Primary constructor for dependencies; no `throw`; return `AxisResult` when the operation can fail.
+- Before creating one, ask: can this live inside the AggregateApplication (domain-coordinating) or a port (technology-facing) instead? Prefer those. A Service is the last resort when neither fits.
 
 ---
 
