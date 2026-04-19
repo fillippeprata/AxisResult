@@ -3,7 +3,7 @@ using EmailId = DataPrivacyTrix.SharedKernel.Emails.EmailId;
 
 namespace DataPrivacyTrix.Domain.Emails.Root;
 
-internal class EmailEntity(
+internal class EmailEntityProperties(
     EmailId emailId,
     string emailAddress)
     : IEmailEntityProperties
@@ -11,7 +11,7 @@ internal class EmailEntity(
     public EmailId EmailId { get; } = emailId;
     public string EmailAddress { get; } = emailAddress;
 
-    internal EmailEntity(IEmailEntityProperties properties) : this(
+    internal EmailEntityProperties(IEmailEntityProperties properties) : this(
         properties.EmailId,
         properties.EmailAddress
     ) { }

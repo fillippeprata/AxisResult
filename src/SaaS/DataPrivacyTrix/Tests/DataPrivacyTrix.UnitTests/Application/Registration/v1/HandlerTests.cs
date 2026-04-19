@@ -1,5 +1,5 @@
 using Axis;
-using DataPrivacyTrix.Contracts.AxisIdentities;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1.AddCellphoneToAxisIdentity;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityById;
 using DataPrivacyTrix.Contracts.Registration.v1;

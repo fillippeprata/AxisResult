@@ -5,6 +5,7 @@
     <File Path=".mcp.json" />
     <File Path="AxisResult.md" />
     <File Path="claude.md" />
+    <File Path="compose.yaml" />
     <File Path="Dependencies.drawio" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
@@ -129,4 +130,7 @@
     <Project Path="src/SaaS/TenantTrix/Tests/TenantTrix.UnitTests/TenantTrix.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/Server/" />
+  <Folder Name="/src/Server/BFFs/">
+    <Project Path="src/Server/BFFs/AxisTrix.BFF.All/AxisTrix.BFF.All.csproj" />
+  </Folder>
 </Solution>

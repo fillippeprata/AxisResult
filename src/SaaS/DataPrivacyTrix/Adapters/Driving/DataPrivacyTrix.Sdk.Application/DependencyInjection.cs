@@ -1,10 +1,10 @@
 using AxisTrix.DependencyInjection;
 using DataPrivacyTrix.Application;
-using DataPrivacyTrix.Contracts.AxisIdentities;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1;
 using DataPrivacyTrix.Contracts.Cellphones.v1;
 using DataPrivacyTrix.Contracts.Emails.v1;
 using DataPrivacyTrix.Contracts.Registration.v1;
-using DataPrivacyTrix.Sdk.Application.AxisIdentities;
+using DataPrivacyTrix.Sdk.Application.AxisIdentities.v1;
 using DataPrivacyTrix.Sdk.Application.Cellphones.v1;
 using DataPrivacyTrix.Sdk.Application.Emails.v1;
 using DataPrivacyTrix.Sdk.Application.Registration.v1;

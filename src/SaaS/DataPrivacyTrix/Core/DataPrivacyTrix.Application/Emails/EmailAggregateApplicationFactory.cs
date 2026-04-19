@@ -37,7 +37,7 @@ internal class EmailAggregateApplicationFactory(
     public Task<AxisResult<IEmailAggregateApplication>> CreateAsync(IEmailAggregateApplicationFactory.NewArgs args)
         => GetByEmailAddressAsync(args.EmailAddress)
             .RequireNotFoundAsync(AxisError.ValidationRule("EMAIL_ALREADY_EXISTS"))
-            .WithValueAsync(new EmailEntity(EmailId.New, args.EmailAddress))
+            .WithValueAsync(new EmailEntityProperties(EmailId.New, args.EmailAddress))
             .MapAsync(NewInstance)
             .ThenAsync(writePort.CreateAsync);
 }

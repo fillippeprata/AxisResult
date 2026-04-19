@@ -1,13 +1,13 @@
 using Axis;
 using AxisMediator.Contracts;
-using DataPrivacyTrix.Contracts.AxisIdentities;
+using DataPrivacyTrix.Contracts.AxisIdentities.v1;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1.AddCellphoneToAxisIdentity;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1.AddEmailToAxisIdentity;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByCellphone;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByEmail;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityById;
 
-namespace DataPrivacyTrix.Sdk.Application.AxisIdentities;
+namespace DataPrivacyTrix.Sdk.Application.AxisIdentities.v1;
 
 internal class AxisIdentitiesMediator(IAxisMediator mediator) : IAxisIdentitiesMediator
 {

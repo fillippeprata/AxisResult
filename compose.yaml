@@ -1,0 +1,7 @@
+﻿services:
+  axistrix.bff.all:
+    image: axistrix.bff.all
+    build:
+      context: .
+      dockerfile: src/Server/BFFs/AxisTrix.BFF.All/Dockerfile
+

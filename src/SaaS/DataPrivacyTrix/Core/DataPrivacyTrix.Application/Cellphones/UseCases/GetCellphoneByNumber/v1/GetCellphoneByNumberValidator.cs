@@ -1,13 +1,13 @@
 using AxisValidator;
 using AxisValidator.Brazil;
-using DataPrivacyTrix.Contracts.Cellphones.v1.GetByCellphoneNumber;
+using DataPrivacyTrix.Contracts.Cellphones.v1.GetCellphoneByNumber;
 using CountryId = Axis.Localization.CountryId;
 
-namespace DataPrivacyTrix.Application.Cellphones.UseCases.GetByCellphoneNumber.v1;
+namespace DataPrivacyTrix.Application.Cellphones.UseCases.GetCellphoneByNumber.v1;
 
-internal class GetByCellphoneNumberValidator : AxisValidatorBase<GetByCellphoneNumberQuery>
+internal class GetCellphoneByNumberValidator : AxisValidatorBase<GetCellphoneByNumberQuery>
 {
-    public GetByCellphoneNumberValidator()
+    public GetCellphoneByNumberValidator()
     {
         DependentRules<CountryId, string>(
             x => (CountryId)x.CountryId,

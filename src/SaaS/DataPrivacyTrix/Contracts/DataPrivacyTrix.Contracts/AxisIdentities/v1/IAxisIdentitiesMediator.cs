@@ -5,7 +5,7 @@ using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByCellphone;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityByEmail;
 using DataPrivacyTrix.Contracts.AxisIdentities.v1.GetAxisIdentityById;
 
-namespace DataPrivacyTrix.Contracts.AxisIdentities;
+namespace DataPrivacyTrix.Contracts.AxisIdentities.v1;
 
 public interface IAxisIdentitiesMediator
 {

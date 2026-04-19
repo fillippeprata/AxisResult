@@ -1,6 +1,6 @@
 ﻿namespace TenantTrix.SharedKernel;
 
-public class ApplicationConfig
+public static class ApplicationConfig
 {
     public const string AppKey = "TenantTrix";
 }
