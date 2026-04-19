@@ -19,4 +19,15 @@ public static class CountryIdExtensions
 
     }
 
+    public static AxisResult<string> ValidateDocument(this CountryId countryId, bool isIndividual, string? document)
+    {
+        if (countryId != CountryIds.Br || !isIndividual)
+            return AxisError.BusinessRule("COUNTRY_ID_DOCUMENT_NOT_IMPLEMENTED");
+
+        if (!CpfValidator.Validate(document))
+            return AxisError.ValidationRule("DOCUMENT_INVALID");
+
+        return AxisResult.Ok(document!);
+    }
+
 }

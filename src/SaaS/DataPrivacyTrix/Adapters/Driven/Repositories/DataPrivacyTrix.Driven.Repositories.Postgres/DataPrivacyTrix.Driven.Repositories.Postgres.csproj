@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+      <RootNamespace>DataPrivacyTrix.Driven.Repositories.Postgres</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\..\..\Axis\AxisRepository\Postgres\AxisRepository.Postgres\AxisRepository.Postgres.csproj" />
+      <ProjectReference Include="..\..\..\..\..\..\Foundation\AxisTrix.Foundation\AxisTrix.Foundation.csproj" />
+      <ProjectReference Include="..\..\..\..\Ports\DataPrivacyTrix.Ports\DataPrivacyTrix.Ports.csproj" />
+    </ItemGroup>
+
+</Project>

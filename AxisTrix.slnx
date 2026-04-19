@@ -81,6 +81,14 @@
   </Folder>
   <Folder Name="/src/SaaS/" />
   <Folder Name="/src/SaaS/DataPrivacyTrix/" />
+  <Folder Name="/src/SaaS/DataPrivacyTrix/Adapters/" />
+  <Folder Name="/src/SaaS/DataPrivacyTrix/Adapters/Driven/" />
+  <Folder Name="/src/SaaS/DataPrivacyTrix/Adapters/Driven/Repositories/">
+    <Project Path="src/SaaS/DataPrivacyTrix/Adapters/Driven/Repositories/DataPrivacyTrix.Driven.Repositories.Postgres/DataPrivacyTrix.Driven.Repositories.Postgres.csproj" />
+  </Folder>
+  <Folder Name="/src/SaaS/DataPrivacyTrix/Adapters/Driving/">
+    <Project Path="src/SaaS/DataPrivacyTrix/Adapters/Driving/DataPrivacyTrix.Sdk.Application/DataPrivacyTrix.Sdk.Application.csproj" />
+  </Folder>
   <Folder Name="/src/SaaS/DataPrivacyTrix/Contracts/">
     <Project Path="src/SaaS/DataPrivacyTrix/Contracts/DataPrivacyTrix.Contracts/DataPrivacyTrix.Contracts.csproj" />
   </Folder>
@@ -91,6 +99,10 @@
   </Folder>
   <Folder Name="/src/SaaS/DataPrivacyTrix/Ports/">
     <Project Path="src/SaaS/DataPrivacyTrix/Ports/DataPrivacyTrix.Ports/DataPrivacyTrix.Ports.csproj" />
+  </Folder>
+  <Folder Name="/src/SaaS/DataPrivacyTrix/Tests/">
+    <Project Path="src/SaaS/DataPrivacyTrix/Tests/DataPrivacyTrix.IntegrationTests/DataPrivacyTrix.IntegrationTests.csproj" />
+    <Project Path="src/SaaS/DataPrivacyTrix/Tests/DataPrivacyTrix.UnitTests/DataPrivacyTrix.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/SaaS/TenantTrix/" />
   <Folder Name="/src/SaaS/TenantTrix/Adapters/" />

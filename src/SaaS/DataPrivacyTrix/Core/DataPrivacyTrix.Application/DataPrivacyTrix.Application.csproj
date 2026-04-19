@@ -1,10 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+    <ItemGroup>
+      <InternalsVisibleTo Include="DataPrivacyTrix.Sdk.Application"/>
+      <InternalsVisibleTo Include="DataPrivacyTrix.UnitTests"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+      </AssemblyAttribute>
+    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\..\Axis\AxisValidator\Adapters\FluentValidation\AxisValidator.FluentValidation\AxisValidator.FluentValidation.csproj" />

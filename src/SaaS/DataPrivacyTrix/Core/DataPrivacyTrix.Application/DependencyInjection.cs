@@ -3,6 +3,8 @@ using AxisMediator.CQRS;
 using AxisTrix.DependencyInjection;
 using AxisValidator;
 using DataPrivacyTrix.Application.Cellphones;
+using DataPrivacyTrix.Application.Emails;
+using DataPrivacyTrix.Application.Registration;
 
 namespace DataPrivacyTrix.Application;
 
@@ -17,6 +19,8 @@ internal static class DependencyInjection
             .AddAxisValidator(assembly);
 
         return builder
-            .AddCellphonesModule();
+            .AddCellphonesModule()
+            .AddEmailsModule()
+            .AddRegistrationModule();
     }
 }

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Contracts\DataPrivacyTrix.Contracts\DataPrivacyTrix.Contracts.csproj" />
+      <ProjectReference Include="..\..\..\Core\DataPrivacyTrix.Application\DataPrivacyTrix.Application.csproj" />
+    </ItemGroup>
+
+</Project>
