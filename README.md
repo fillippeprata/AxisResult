@@ -804,6 +804,7 @@ as a second parameter. Available on both `Task<AxisResult<T>>` and
 |--------|----------------|
 | `ThenAsync` | `(T, CancellationToken) => Task<AxisResult<TNew>>` |
 | `ThenAsync` | `(T, CancellationToken) => Task<AxisResult>` (preserves value) |
+| `ToAxisResultAsync` | `(T, CancellationToken) => Task<AxisResult>` |
 | `MapAsync` | `(T, CancellationToken) => Task<TNew>` |
 | `TapAsync` | `(T, CancellationToken) => Task` |
 | `EnsureAsync` | `(T, CancellationToken) => Task<bool>` |

@@ -25,6 +25,12 @@ public static class AxisResultCancellationExtensions
         CancellationToken ct = default)
         => await (await task).ThenAsync(next, ct);
 
+    public static async Task<AxisResult> ToAxisResultAsync<TValue>(
+    this Task<AxisResult<TValue>> task,
+    Func<TValue, CancellationToken, Task<AxisResult>> next,
+    CancellationToken ct = default)
+    => await (await task).ToAxisResultAsync(next, ct);
+
     public static async Task<AxisResult<TValue>> ActionAsync<TValue>(
         this Task<AxisResult<TValue>> task,
         Func<TValue, CancellationToken, Task<AxisResult>> next,

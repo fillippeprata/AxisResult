@@ -26,6 +26,23 @@ public class AxisResultCancellationTests
     }
 
     [Fact]
+    public async Task ToAxisResultAsync_Task_Forwards_CancellationToken_To_Delegate()
+    {
+        CancellationToken observed = default;
+        using var cts = new CancellationTokenSource();
+
+        var result = await AxisResult.Ok(1).AsTaskAsync()
+            .ToAxisResultAsync((v, ct) =>
+            {
+                observed = ct;
+                return Task.FromResult(AxisResult.Ok());
+            }, cts.Token);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(cts.Token, observed);
+    }
+
+    [Fact]
     public async Task MapAsync_Task_Forwards_CancellationToken_To_Delegate()
     {
         CancellationToken observed = default;
