@@ -847,4 +847,56 @@ public class AxisResultExtensionsTaskTests
     }
 
     #endregion
+
+    #region ToAxisResultAsync
+
+    [Fact]
+    public async Task T_ToAxisResultAsync_Generic_Async_Success_ReturnsOk()
+    {
+        var r = await TOkAsync(5).ToAxisResultAsync(async x => AxisResult.Ok());
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public async Task T_ToAxisResultAsync_Generic_Async_PropagatesError()
+    {
+        var r = await TOkAsync(5).ToAxisResultAsync(async x => AxisResult.Error(E1));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E1");
+    }
+
+    [Fact]
+    public async Task T_ToAxisResultAsync_Async_OuterFailure_SkipsInner()
+    {
+        var called = false;
+        var r = await TErrAsync<int>(E1).ToAxisResultAsync(async x => { called = true; return AxisResult.Ok(); });
+        Assert.False(called);
+        Assert.True(r.IsFailure);
+    }
+
+    [Fact]
+    public async Task T_ToAxisResultAsync_Generic_Sync_Success_ReturnsOk()
+    {
+        var r = await TOkAsync(5).ToAxisResultAsync(AxisResult.Ok);
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public async Task T_ToAxisResultAsync_Generic_Sync_PropagatesError()
+    {
+        var r = await TOkAsync(5).ToAxisResultAsync(x => AxisResult.Error(E1));
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E1");
+    }
+
+    [Fact]
+    public async Task T_ToAxisResultAsync_Sync_OuterFailure_SkipsInner()
+    {
+        var called = false;
+        var r = await TErrAsync<int>(E1).ToAxisResultAsync(x => { called = true; return AxisResult.Ok(); });
+        Assert.False(called);
+        Assert.True(r.IsFailure);
+    }
+
+    #endregion
 }
