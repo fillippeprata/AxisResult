@@ -312,6 +312,7 @@ public Task<AxisResult<IPersonAggregateApplication>> CreateAsync(NewArgs args)
 ```
 
 Here's what happens:
+
 1. **Try to find** an existing person by national ID
 2. **`RequireNotFoundAsync`**: If found, fail with `DOCUMENT_ALREADY_EXISTS`. If not found, continue (success!)
 3. **`WithValueAsync`**: Create the new entity
@@ -696,6 +697,8 @@ On hot paths where the result is often cached or synchronous, `ValueTask` avoids
 | `Then` | `T -> AxisResult<TNew>` | Chain to a failable operation returning a new value |
 | `Then` | `T -> AxisResult` | Chain to a failable side effect, **preserves original value** |
 | `ThenAsync` | Async versions of both `Then` overloads | |
+| `ToAxisResult` | `T -> AxisResult` | Chain to a failable side effect, returns an AxisResult with no value |
+| `ToAxisResultAsync` | Async version of `ToAxisResult` | |
 
 ### Side Effects
 
