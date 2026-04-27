@@ -77,6 +77,9 @@ public abstract partial class AxisResult<TValue>
     }
     public async Task<AxisResult<TNew>> ThenAsync<TNew>(Func<TValue, Task<AxisResult<TNew>>> next) => IsSuccess ? await next(Value) : PropagateErrors<TNew>(this);
 
+    public AxisResult ToAxisResult(Func<TValue, AxisResult> next) => IsSuccess ? next(Value) : PropagateErrors<TValue>(this);
+    public async Task<AxisResult> ToAxisResultAsync(Func<TValue, Task<AxisResult>> next) => IsSuccess ? await next(Value) : PropagateErrors<TValue>(this);
+
     public new AxisResult<TValue> Tap(Action action) { if (IsSuccess) action(); return this; }
     public AxisResult<TValue> Tap(Action<TValue> action) { if (IsSuccess) action(Value); return this; }
     public new async Task<AxisResult<TValue>> TapAsync(Func<Task> action) { if (IsSuccess) await action(); return this; }

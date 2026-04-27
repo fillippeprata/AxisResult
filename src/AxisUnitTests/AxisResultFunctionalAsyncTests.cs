@@ -113,6 +113,24 @@ public class AxisResultFunctionalAsyncTests
 
     #endregion
 
+    #region ToAxisResultAsync
+
+    [Fact]
+    public async Task ToAxisResultAsync_Generic_Success_Chains()
+    {
+        var r = await AxisResult.Ok(55).ToAxisResultAsync(value => Task.FromResult(AxisResult.Ok()));
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public async Task ToAxisResultAsync_Generic_Failure_Propagates()
+    {
+        var r = await AxisResult.Error<int>(E1).ToAxisResultAsync(value => Task.FromResult(AxisResult.Ok()));
+        Assert.True(r.IsFailure);
+    }
+
+    #endregion
+
     #region TapAsync
 
     [Fact]

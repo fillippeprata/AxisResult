@@ -26,6 +26,11 @@ public abstract partial class AxisResult<TValue>
         CancellationToken ct = default)
         => IsSuccess ? await next(Value, ct) : PropagateErrors<TNew>(this);
 
+    public async Task<AxisResult> ToAxisResultAsync(
+        Func<TValue, CancellationToken, Task<AxisResult>> next,
+        CancellationToken ct = default)
+        => IsSuccess ? await next(Value, ct) : PropagateErrors<TValue>(this);
+
     public async Task<AxisResult<TValue>> TapAsync(
         Func<TValue, CancellationToken, Task> action,
         CancellationToken ct = default)
