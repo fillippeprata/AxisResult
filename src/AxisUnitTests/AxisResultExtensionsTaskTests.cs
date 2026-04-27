@@ -898,5 +898,20 @@ public class AxisResultExtensionsTaskTests
         Assert.True(r.IsFailure);
     }
 
+    [Fact]
+    public async Task T_ToAxisResultAsync_Parameterless_Generic_Success_ReturnsOk()
+    {
+        var r = await TOkAsync(5).ToAxisResultAsync();
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public async Task T_ToAxisResultAsync_Parameterless_Generic_Failure_PropagatesErrors()
+    {
+        var r = await TErrAsync<int>(E1).ToAxisResultAsync();
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E1");
+    }
+
     #endregion
 }
