@@ -148,6 +148,21 @@ public class AxisResultFunctionalSyncTests
         Assert.True(r.IsFailure);
     }
 
+    [Fact]
+    public void ToAxisResult_Parameterless_Generic_Success_ReturnsOk()
+    {
+        var r = AxisResult.Ok(5).ToAxisResult();
+        Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public void ToAxisResult_Parameterless_Generic_Failure_PropagatesErrors()
+    {
+        var r = AxisResult.Error<int>(E1).ToAxisResult();
+        Assert.True(r.IsFailure);
+        Assert.Contains(r.Errors, e => e.Code == "E1");
+    }
+
     #endregion
 
     #region Tap / TapError
