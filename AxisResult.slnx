@@ -1,8 +1,53 @@
 <Solution>
+  <Folder Name="/docs/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/docs/en-us/">
+    <File Path="docs/en-us/aggregate.md" />
+    <File Path="docs/en-us/api-reference.md" />
+    <File Path="docs/en-us/async-task-vs-valuetask.md" />
+    <File Path="docs/en-us/boundary-and-try.md" />
+    <File Path="docs/en-us/cancellation.md" />
+    <File Path="docs/en-us/ensure.md" />
+    <File Path="docs/en-us/ergonomics.md" />
+    <File Path="docs/en-us/errors-and-types.md" />
+    <File Path="docs/en-us/getting-started.md" />
+    <File Path="docs/en-us/linq-query-syntax.md" />
+    <File Path="docs/en-us/map-errors.md" />
+    <File Path="docs/en-us/map.md" />
+    <File Path="docs/en-us/match.md" />
+    <File Path="docs/en-us/railway-oriented-programming.md" />
+    <File Path="docs/en-us/recover.md" />
+    <File Path="docs/en-us/tap.md" />
+    <File Path="docs/en-us/then.md" />
+    <File Path="docs/en-us/why-axisresult.md" />
+    <File Path="docs/en-us/zip.md" />
+  </Folder>
+  <Folder Name="/docs/pt-br/">
+    <File Path="docs/pt-br/aggregate.md" />
+    <File Path="docs/pt-br/api-reference.md" />
+    <File Path="docs/pt-br/async-task-vs-valuetask.md" />
+    <File Path="docs/pt-br/boundary-and-try.md" />
+    <File Path="docs/pt-br/cancellation.md" />
+    <File Path="docs/pt-br/ensure.md" />
+    <File Path="docs/pt-br/ergonomics.md" />
+    <File Path="docs/pt-br/errors-and-types.md" />
+    <File Path="docs/pt-br/getting-started.md" />
+    <File Path="docs/pt-br/linq-query-syntax.md" />
+    <File Path="docs/pt-br/map-errors.md" />
+    <File Path="docs/pt-br/map.md" />
+    <File Path="docs/pt-br/match.md" />
+    <File Path="docs/pt-br/railway-oriented-programming.md" />
+    <File Path="docs/pt-br/README.md" />
+    <File Path="docs/pt-br/recover.md" />
+    <File Path="docs/pt-br/tap.md" />
+    <File Path="docs/pt-br/then.md" />
+    <File Path="docs/pt-br/why-axisresult.md" />
+    <File Path="docs/pt-br/zip.md" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path="LICENSE" />
-    <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/AxisResult/AxisResult.csproj" />

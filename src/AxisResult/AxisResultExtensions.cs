@@ -55,9 +55,6 @@ public static class AxisResultExtensions
     public static async Task<AxisResult<TNew>> MapAsync<TValue, TNew>(this Task<AxisResult<TValue>> task, Func<TValue, Task<TNew>> mapper)
         => await (await task).MapAsync(mapper);
 
-    public static async Task<AxisResult<TValue>> ActionAsync<TValue>(this Task<AxisResult<TValue>> task, Func<TValue, Task<AxisResult>> next)
-        => await (await task).ThenAsync(next);
-
     public static async Task<AxisResult<TValue>> ThenAsync<TValue>(this Task<AxisResult<TValue>> task, Func<TValue, AxisResult> next)
         => (await task).Then(next);
 

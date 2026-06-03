@@ -109,23 +109,6 @@ public class AxisResultCancellationTests
     }
 
     [Fact]
-    public async Task ActionAsync_Task_Preserves_Value_And_Forwards_Token()
-    {
-        CancellationToken observed = default;
-        using var cts = new CancellationTokenSource();
-
-        var result = await AxisResult.Ok("kept").AsTaskAsync()
-            .ActionAsync((v, ct) =>
-            {
-                observed = ct;
-                return Task.FromResult(AxisResult.Ok());
-            }, cts.Token);
-
-        Assert.Equal("kept", result.Value);
-        Assert.Equal(cts.Token, observed);
-    }
-
-    [Fact]
     public async Task ZipAsync_Task_Forwards_Token_To_Failable_Mapper()
     {
         CancellationToken observed = default;
@@ -296,15 +279,6 @@ public class AxisResultCancellationTests
             .MapAsync((v, ct) => { invoked = true; return Task.FromResult(v); }, default);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
-    }
-
-    [Fact]
-    public async Task ActionAsync_Task_Downstream_Failure_Propagates()
-    {
-        var result = await AxisResult.Ok("kept").AsTaskAsync()
-            .ActionAsync((v, ct) => Task.FromResult<AxisResult>(AxisError.Conflict("CONF")), default);
-        Assert.True(result.IsFailure);
-        Assert.Equal("CONF", result.Errors[0].Code);
     }
 
     #endregion
