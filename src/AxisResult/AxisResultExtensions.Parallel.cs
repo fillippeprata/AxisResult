@@ -20,8 +20,8 @@ public static class AxisResultParallelExtensions
     {
         var otherTask = other();
         await Task.WhenAll(task, otherTask);
-        var r1 = task.Result;
-        var r2 = otherTask.Result;
+        var r1 = await task;
+        var r2 = await otherTask;
         return Combine(r1, r2);
     }
 
@@ -32,8 +32,8 @@ public static class AxisResultParallelExtensions
     {
         var otherTask = other(ct);
         await Task.WhenAll(task, otherTask);
-        var r1 = task.Result;
-        var r2 = otherTask.Result;
+        var r1 = await task;
+        var r2 = await otherTask;
         return Combine(r1, r2);
     }
 
@@ -53,7 +53,7 @@ public static class AxisResultParallelExtensions
         var leftTask = task.AsTask();
         var rightTask = other().AsTask();
         await Task.WhenAll(leftTask, rightTask);
-        return Combine(leftTask.Result, rightTask.Result);
+        return Combine(await leftTask, await rightTask);
     }
 
     public static async ValueTask<AxisResult<(TValue Value1, TNew Value2)>> ZipParallelAsync<TValue, TNew>(
@@ -64,7 +64,7 @@ public static class AxisResultParallelExtensions
         var leftTask = task.AsTask();
         var rightTask = other(ct).AsTask();
         await Task.WhenAll(leftTask, rightTask);
-        return Combine(leftTask.Result, rightTask.Result);
+        return Combine(await leftTask, await rightTask);
     }
 
     #endregion
@@ -73,12 +73,13 @@ public static class AxisResultParallelExtensions
         AxisResult<TValue> left,
         AxisResult<TNew> right)
     {
-        if (left.IsFailure && right.IsFailure)
-            return AxisResult.Error<(TValue Value1, TNew Value2)>(left.Errors.Concat(right.Errors));
-        if (left.IsFailure)
-            return AxisResult.Error<(TValue Value1, TNew Value2)>(left.Errors);
-        if (right.IsFailure)
-            return AxisResult.Error<(TValue Value1, TNew Value2)>(right.Errors);
-        return AxisResult.Ok<(TValue Value1, TNew Value2)>((left.Value, right.Value));
+        return left.IsFailure switch
+        {
+            true when right.IsFailure => AxisResult.Error<(TValue Value1, TNew Value2)>(left.Errors.Concat(right.Errors)),
+            true => AxisResult.Error<(TValue Value1, TNew Value2)>(left.Errors),
+            _ => right.IsFailure
+                ? AxisResult.Error<(TValue Value1, TNew Value2)>(right.Errors)
+                : AxisResult.Ok<(TValue Value1, TNew Value2)>((left.Value, right.Value))
+        };
     }
 }

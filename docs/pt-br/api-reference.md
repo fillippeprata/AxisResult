@@ -68,7 +68,7 @@
 
 | Método | Descrição |
 |--------|-------------|
-| `ActionAsync(func)` | roda uma operação falível (`T -> Task<AxisResult>`) e **preserva o valor original** no sucesso. Diferente de `ThenAsync`, que substitui o valor, `ActionAsync` o mantém — ideal para validação de domínio, persistência, ou qualquer passo em que você precise do valor adiante |
+| `ActionAsync(func)` | roda uma operação falível (`T -> ValueTask<AxisResult>`) e **preserva o valor original** no sucesso. Disponível apenas em `ValueTask<AxisResult<T>>`. Diferente de `ThenAsync`, que substitui o valor, `ActionAsync` o mantém — ideal para validação de domínio, persistência, ou qualquer passo em que você precise do valor adiante |
 
 → [Encadear · `Then`](then.md)
 
@@ -192,7 +192,7 @@ Todo operador async central tem uma sobrecarga ciente de CT cujo delegate recebe
 | `EnsureAsync` | `(T, CancellationToken) => Task<AxisResult>` |
 | `ZipAsync` | `(T, CancellationToken) => Task<TNew>` |
 | `ZipAsync` | `(T, CancellationToken) => Task<AxisResult<TNew>>` |
-| `ActionAsync` | `(T, CancellationToken) => Task<AxisResult>` (preserva o valor) |
+| `ActionAsync` | `(T, CancellationToken) => ValueTask<AxisResult>` (preserva o valor, apenas `ValueTask`) |
 | `ZipParallelAsync` | `(CancellationToken) => Task<AxisResult<TNew>>` |
 
 → [Cancelamento](cancellation.md)

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Axis;
 
 namespace AxisUnitTests;
@@ -22,10 +23,10 @@ public class AxisResultZipParallelTests
     [Fact]
     public async Task ZipParallelAsync_Task_Actually_Runs_Both_Sides_Concurrently()
     {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
 
-        var leftTask = DelayThenOk(150, 1);
-        var result = await leftTask.ZipParallelAsync(() => DelayThenOk(150, "x"));
+        var leftTask = DelayThenOkAsync(150, 1);
+        var result = await leftTask.ZipParallelAsync(() => DelayThenOkAsync(150, "x"));
 
         sw.Stop();
         Assert.True(result.IsSuccess);
@@ -133,8 +134,8 @@ public class AxisResultZipParallelTests
     public async Task ZipParallelAsync_ValueTask_With_CancellationToken_Left_Failure_Propagates()
     {
         var result = await AxisResult.Error<int>(L1).AsValueTaskAsync()
-            .ZipParallelAsync(ct =>
-                new ValueTask<AxisResult<string>>(AxisResult.Ok("r")), default);
+            .ZipParallelAsync(_ =>
+                new ValueTask<AxisResult<string>>(AxisResult.Ok("r")), CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.Single(result.Errors);
         Assert.Equal(L1, result.Errors[0]);
@@ -144,8 +145,8 @@ public class AxisResultZipParallelTests
     public async Task ZipParallelAsync_ValueTask_With_CancellationToken_Right_Failure_Propagates()
     {
         var result = await AxisResult.Ok(1).AsValueTaskAsync()
-            .ZipParallelAsync(ct =>
-                new ValueTask<AxisResult<string>>(AxisResult.Error<string>(R1)), default);
+            .ZipParallelAsync(_ =>
+                new ValueTask<AxisResult<string>>(AxisResult.Error<string>(R1)), CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.Single(result.Errors);
         Assert.Equal(R1, result.Errors[0]);
@@ -155,15 +156,15 @@ public class AxisResultZipParallelTests
     public async Task ZipParallelAsync_ValueTask_With_CancellationToken_Both_Failures_Accumulate()
     {
         var result = await AxisResult.Error<int>(L1).AsValueTaskAsync()
-            .ZipParallelAsync(ct =>
-                new ValueTask<AxisResult<string>>(AxisResult.Error<string>(R1)), default);
+            .ZipParallelAsync(_ =>
+                new ValueTask<AxisResult<string>>(AxisResult.Error<string>(R1)), CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.Equal(2, result.Errors.Count);
     }
 
     #endregion
 
-    private static async Task<AxisResult<T>> DelayThenOk<T>(int ms, T value)
+    private static async Task<AxisResult<T>> DelayThenOkAsync<T>(int ms, T value)
     {
         await Task.Delay(ms);
         return AxisResult.Ok(value);

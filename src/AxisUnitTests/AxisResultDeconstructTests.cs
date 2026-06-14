@@ -1,3 +1,4 @@
+using System.Reflection;
 using Axis;
 
 namespace AxisUnitTests;
@@ -110,9 +111,9 @@ public class AxisResultDeconstructTests
     {
         var prop = typeof(AxisResult).GetProperty(
             "DebuggerDisplay",
-            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(prop);
-        return (string)prop!.GetValue(result)!;
+        return (string)prop.GetValue(result)!;
     }
 
     #endregion

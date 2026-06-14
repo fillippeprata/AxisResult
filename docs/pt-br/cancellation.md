@@ -29,7 +29,9 @@ public Task<AxisResult<CreateOrderResponse>> HandleAsync(CreateOrderCommand cmd,
 
 ## Operadores com variante CT
 
-`ThenAsync` · `MapAsync` · `TapAsync` · `EnsureAsync` · `ZipAsync` · `ToAxisResultAsync` · `ZipParallelAsync` — em `Task<AxisResult<T>>` **e** `ValueTask<AxisResult<T>>`.
+`ThenAsync` · `MapAsync` · `TapAsync` · `EnsureAsync` · `ZipAsync` · `ZipParallelAsync` — em `Task<AxisResult<T>>` **e** `ValueTask<AxisResult<T>>`.
+
+`ToAxisResultAsync` — **somente `Task<AxisResult<T>>`** (sem variante `ValueTask`).
 
 As sobrecargas **sem** CT continuam existindo: você pode fechar sobre um token via lambda, ou misturar os dois estilos na mesma cadeia.
 

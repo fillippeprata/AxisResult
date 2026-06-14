@@ -68,7 +68,7 @@
 
 | Method | Description |
 |--------|-------------|
-| `ActionAsync(func)` | run a failable operation (`T -> Task<AxisResult>`) and **preserve the original value** on success. Unlike `ThenAsync`, which replaces the value, `ActionAsync` keeps it — ideal for domain validation, persistence, or any step where you need the value downstream |
+| `ActionAsync(func)` | run a failable operation (`T -> ValueTask<AxisResult>`) and **preserve the original value** on success. Available on `ValueTask<AxisResult<T>>` only. Unlike `ThenAsync`, which replaces the value, `ActionAsync` keeps it — ideal for domain validation, persistence, or any step where you need the value downstream |
 
 → [Chain · `Then`](then.md)
 
@@ -192,7 +192,7 @@ Every core async operator has a CT-aware overload whose delegate receives the to
 | `EnsureAsync` | `(T, CancellationToken) => Task<AxisResult>` |
 | `ZipAsync` | `(T, CancellationToken) => Task<TNew>` |
 | `ZipAsync` | `(T, CancellationToken) => Task<AxisResult<TNew>>` |
-| `ActionAsync` | `(T, CancellationToken) => Task<AxisResult>` (preserves value) |
+| `ActionAsync` | `(T, CancellationToken) => ValueTask<AxisResult>` (preserves value, `ValueTask` only) |
 | `ZipParallelAsync` | `(CancellationToken) => Task<AxisResult<TNew>>` |
 
 → [Cancellation](cancellation.md)

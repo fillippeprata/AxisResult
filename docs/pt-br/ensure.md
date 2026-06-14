@@ -25,7 +25,7 @@ Garantir uma condição sobre o valor atual (estoque suficiente, status válido)
 | `Ensure` | `(Func<T,bool> predicate, AxisError error)` | falha com `error` se o predicado for falso |
 | `Ensure` | `(Func<T,AxisResult> validation)` | validação delegada que retorna `AxisResult` |
 | `RequireNotFound` | `(AxisError errorIfFound)` | achou → falha; `NotFound` → segue como sucesso |
-| `WithValue` | `(value)` | promove um `AxisResult` (sem valor) para `AxisResult<T>` |
+| `WithValueAsync` | `(value)` | promove um `AxisResult` (sem valor) para `AxisResult<T>` (somente async — `Task`/`ValueTask`) |
 
 Todos têm variantes `Async` (`Task`/`ValueTask`) e [com `CancellationToken`](cancellation.md).
 

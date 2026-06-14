@@ -29,7 +29,9 @@ public Task<AxisResult<CreateOrderResponse>> HandleAsync(CreateOrderCommand cmd,
 
 ## Operators with a CT variant
 
-`ThenAsync` · `MapAsync` · `TapAsync` · `EnsureAsync` · `ZipAsync` · `ToAxisResultAsync` · `ZipParallelAsync` — on `Task<AxisResult<T>>` **and** `ValueTask<AxisResult<T>>`.
+`ThenAsync` · `MapAsync` · `TapAsync` · `EnsureAsync` · `ZipAsync` · `ZipParallelAsync` — on `Task<AxisResult<T>>` **and** `ValueTask<AxisResult<T>>`.
+
+`ToAxisResultAsync` — **`Task<AxisResult<T>>` only** (no `ValueTask` variant).
 
 The overloads **without** CT still exist: you can close over a token via a lambda, or mix both styles in the same chain.
 

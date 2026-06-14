@@ -134,7 +134,7 @@ public class AxisResultFunctionalSyncTests
     public void ToAxisResult_Generic_Success_Invokes()
     {
         var called = false;
-        var r = AxisResult.Ok(5).ToAxisResult(value => { called = true; return AxisResult.Ok(); });
+        var r = AxisResult.Ok(5).ToAxisResult(_ => { called = true; return AxisResult.Ok(); });
         Assert.True(called);
         Assert.True(r.IsSuccess);
     }
@@ -143,7 +143,7 @@ public class AxisResultFunctionalSyncTests
     public void ToAxisResult_Generic_Failure_Skips()
     {
         var called = false;
-        var r = AxisResult.Error<int>(E1).ToAxisResult(value => { called = true; return AxisResult.Ok(); });
+        var r = AxisResult.Error<int>(E1).ToAxisResult(_ => { called = true; return AxisResult.Ok(); });
         Assert.False(called);
         Assert.True(r.IsFailure);
     }
