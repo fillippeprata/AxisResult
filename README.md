@@ -7,7 +7,7 @@
 ```csharp
 public Task<AxisResult<AddCellphoneResponse>> HandleAsync(AddCellphoneCommand cmd)
     => personFactory.GetByIdAsync(cmd.PersonId)
-        .ThenAsync(person => cellphoneMediator.AddAsync(new() { CountryId = cmd.CountryId, Number = cmd.Number }))
+        .ThenAsync(person => cellphoneMediator.AddAsync(new() { Number = cmd.Number }))
         .ThenAsync(response => response.AddCellphoneAsync(cmd.CellphoneId))
         .ThenAsync(_ => unitOfWork.SaveChangesAsync())
         .MapAsync(_ => new AddCellphoneResponse { CellphoneId = cmd.CellphoneId });
@@ -37,7 +37,7 @@ Each operation **either** succeeds and stays on the top rail, **or** fails and d
 
 - **`AxisResult`** — the outcome of an operation that **produces no value**: only whether it worked matters (save, delete, validate, verify a password).
 - **`AxisResult<T>`** — carries a **value** along the success rail (fetch an entity, compute a total). `.Value` throws on a failure → prefer the [safe deconstruction or `Match`](docs/en-us/match.md).
-- Moving between the two: [`ToAxisResult`](docs/en-us/then.md) discards the value; [`WithValue`](docs/en-us/ensure.md) promotes an `AxisResult` to `AxisResult<T>`.
+- Moving between the two: [`ToAxisResult`](docs/en-us/then.md) discards the value; [`WithValueAsync`](docs/en-us/ensure.md) promotes an `AxisResult` to `AxisResult<T>`.
 
 ### Creating results
 
@@ -47,6 +47,7 @@ AxisResult<int>    typed = AxisResult.Ok(42);
 AxisResult<int>    fail  = AxisError.BusinessRule("INSUFFICIENT_STOCK"); // AxisError → failure (implicit)
 AxisResult<string> name  = "John";                                       // value → Ok (implicit)
 AxisResult<int>    parse = AxisResult.Try(() => int.Parse(input));        // exception → AxisResult, only at the edge
+AxisResult<string> rop   = user.Email.Rop();                               // value → Ok, fluent: starts the ROP flow
 ```
 
 ### Error handling

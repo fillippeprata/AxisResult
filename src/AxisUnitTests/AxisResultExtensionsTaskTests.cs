@@ -168,7 +168,7 @@ public class AxisResultExtensionsTaskTests
     public async Task T_ThenAsync_Generic_Sync_Typed()
     {
         var r = await TOkAsync(5).ThenAsync(x => AxisResult.Ok(x.ToString()));
-        Assert.Equal(5, r.Value);
+        Assert.Equal("5", r.Value);
     }
 
     [Fact]
@@ -190,8 +190,8 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ThenAsync_Generic_Async_Typed()
     {
-        var r = await TOkAsync(5).ThenAsync(AxisResult.Ok);
-        Assert.Equal(5, r.Value);
+        var r = await TOkAsync(5).ThenAsync(x => TOkAsync(x.ToString()));
+        Assert.Equal("5", r.Value);
     }
 
     [Fact]
@@ -790,6 +790,62 @@ public class AxisResultExtensionsTaskTests
 
     #endregion
 
+    #region ThenAsync (Value-Transforming Overloads)
+
+    private static Task<AxisResult<string>> TransformAsync(int value) => TOkAsync(value.ToString());
+
+    [Fact]
+    public async Task T_ThenAsync_Generic_Async_Typed_MethodGroup()
+    {
+        var r = await TOkAsync(5).ThenAsync(TransformAsync);
+        Assert.Equal("5", r.Value);
+    }
+
+    [Fact]
+    public async Task T_ThenAsync_Generic_Sync_Typed_MethodGroup()
+    {
+        var r = await TOkAsync(5).ThenAsync(AxisResult.Ok);
+        Assert.Equal(5, r.Value);
+    }
+
+    [Fact]
+    public async Task T_ThenAsync_Generic_Sync_Typed_InnerFailure_Propagates()
+    {
+        var r = await TOkAsync(5).ThenAsync(_ => AxisResult.Error<string>(E1));
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
+    }
+
+    [Fact]
+    public async Task T_ThenAsync_Generic_Async_Typed_InnerFailure_Propagates()
+    {
+        var r = await TOkAsync(5).ThenAsync(_ => TErrAsync<string>(E1));
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
+    }
+
+    [Fact]
+    public async Task T_ThenAsync_Generic_Sync_Typed_OuterFailure_SkipsInner()
+    {
+        var called = false;
+        var r = await TErrAsync<int>(E1).ThenAsync(x => { called = true; return AxisResult.Ok(x.ToString()); });
+        Assert.False(called);
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
+    }
+
+    [Fact]
+    public async Task T_ThenAsync_Generic_Async_Typed_OuterFailure_SkipsInner()
+    {
+        var called = false;
+        var r = await TErrAsync<int>(E1).ThenAsync(x => { called = true; return TOkAsync(x.ToString()); });
+        Assert.False(called);
+        Assert.True(r.IsFailure);
+        Assert.Equal("E1", r.Errors[0].Code);
+    }
+
+    #endregion
+
     #region ThenAsync (Value-Preserving Overload)
 
     [Fact]
@@ -824,14 +880,14 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ToAxisResultAsync_Generic_Async_Success_ReturnsOk()
     {
-        var r = await TOkAsync(5).ToAxisResultAsync(async x => AxisResult.Ok());
+        var r = await TOkAsync(5).ToAxisResultAsync(async _ => AxisResult.Ok());
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
     public async Task T_ToAxisResultAsync_Generic_Async_PropagatesError()
     {
-        var r = await TOkAsync(5).ToAxisResultAsync(async x => AxisResult.Error(E1));
+        var r = await TOkAsync(5).ToAxisResultAsync(async _ => AxisResult.Error(E1));
         Assert.True(r.IsFailure);
         Assert.Contains(r.Errors, e => e.Code == "E1");
     }
@@ -840,7 +896,7 @@ public class AxisResultExtensionsTaskTests
     public async Task T_ToAxisResultAsync_Async_OuterFailure_SkipsInner()
     {
         var called = false;
-        var r = await TErrAsync<int>(E1).ToAxisResultAsync(async x => { called = true; return AxisResult.Ok(); });
+        var r = await TErrAsync<int>(E1).ToAxisResultAsync(async _ => { called = true; return AxisResult.Ok(); });
         Assert.False(called);
         Assert.True(r.IsFailure);
     }
@@ -855,7 +911,7 @@ public class AxisResultExtensionsTaskTests
     [Fact]
     public async Task T_ToAxisResultAsync_Generic_Sync_PropagatesError()
     {
-        var r = await TOkAsync(5).ToAxisResultAsync(x => AxisResult.Error(E1));
+        var r = await TOkAsync(5).ToAxisResultAsync(_ => AxisResult.Error(E1));
         Assert.True(r.IsFailure);
         Assert.Contains(r.Errors, e => e.Code == "E1");
     }
@@ -864,7 +920,7 @@ public class AxisResultExtensionsTaskTests
     public async Task T_ToAxisResultAsync_Sync_OuterFailure_SkipsInner()
     {
         var called = false;
-        var r = await TErrAsync<int>(E1).ToAxisResultAsync(x => { called = true; return AxisResult.Ok(); });
+        var r = await TErrAsync<int>(E1).ToAxisResultAsync(_ => { called = true; return AxisResult.Ok(); });
         Assert.False(called);
         Assert.True(r.IsFailure);
     }

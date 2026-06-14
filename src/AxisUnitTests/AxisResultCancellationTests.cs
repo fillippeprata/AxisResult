@@ -32,7 +32,7 @@ public class AxisResultCancellationTests
         using var cts = new CancellationTokenSource();
 
         var result = await AxisResult.Ok(1).AsTaskAsync()
-            .ToAxisResultAsync((v, ct) =>
+            .ToAxisResultAsync((_, ct) =>
             {
                 observed = ct;
                 return Task.FromResult(AxisResult.Ok());
@@ -80,7 +80,7 @@ public class AxisResultCancellationTests
     public async Task Cancelled_Token_Before_Step_Triggers_OperationCanceled_In_Delegate()
     {
         using var cts = new CancellationTokenSource();
-        cts.Cancel();
+        await cts.CancelAsync();
 
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             await AxisResult.Ok(1).AsTaskAsync()
@@ -98,7 +98,7 @@ public class AxisResultCancellationTests
         using var cts = new CancellationTokenSource();
 
         var result = await AxisResult.Error<int>(E1).AsTaskAsync()
-            .ThenAsync((v, ct) =>
+            .ThenAsync((v, _) =>
             {
                 invoked = true;
                 return Task.FromResult(AxisResult.Ok(v + 1));
@@ -133,7 +133,7 @@ public class AxisResultCancellationTests
         using var cts = new CancellationTokenSource();
 
         var result = await AxisResult.Ok("tap").AsTaskAsync()
-            .TapAsync((v, ct) =>
+            .TapAsync((_, ct) =>
             {
                 observed = ct;
                 return Task.CompletedTask;
@@ -148,7 +148,7 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsTaskAsync()
-            .TapAsync((v, ct) => { invoked = true; return Task.CompletedTask; }, default);
+            .TapAsync((_, _) => { invoked = true; return Task.CompletedTask; }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -156,11 +156,11 @@ public class AxisResultCancellationTests
     [Fact]
     public async Task EnsureAsync_Validation_Task_Success_Preserves_Value()
     {
-        CancellationToken observed = default;
+        var observed = CancellationToken.None;
         using var cts = new CancellationTokenSource();
 
         var result = await AxisResult.Ok(10).AsTaskAsync()
-            .EnsureAsync((v, ct) =>
+            .EnsureAsync((_, ct) =>
             {
                 observed = ct;
                 return Task.FromResult(AxisResult.Ok());
@@ -175,7 +175,7 @@ public class AxisResultCancellationTests
     public async Task EnsureAsync_Validation_Task_Failure_Propagates_Validation_Errors()
     {
         var result = await AxisResult.Ok(10).AsTaskAsync()
-            .EnsureAsync((v, ct) => Task.FromResult<AxisResult>(AxisError.ValidationRule("BAD")), default);
+            .EnsureAsync((_, _) => Task.FromResult<AxisResult>(AxisError.ValidationRule("BAD")), CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.Equal("BAD", result.Errors[0].Code);
     }
@@ -185,7 +185,7 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsTaskAsync()
-            .EnsureAsync((v, ct) => { invoked = true; return Task.FromResult(AxisResult.Ok()); }, default);
+            .EnsureAsync((_, _) => { invoked = true; return Task.FromResult(AxisResult.Ok()); }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -194,7 +194,7 @@ public class AxisResultCancellationTests
     public async Task EnsureAsync_Predicate_Task_Failure_Returns_Given_Error()
     {
         var result = await AxisResult.Ok(-1).AsTaskAsync()
-            .EnsureAsync((v, ct) => Task.FromResult(v > 0), E1, default);
+            .EnsureAsync((v, _) => Task.FromResult(v > 0), E1, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.Equal(E1, result.Errors[0]);
     }
@@ -204,7 +204,7 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsTaskAsync()
-            .EnsureAsync((v, ct) => { invoked = true; return Task.FromResult(true); }, E1, default);
+            .EnsureAsync((_, _) => { invoked = true; return Task.FromResult(true); }, E1, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -230,7 +230,7 @@ public class AxisResultCancellationTests
     public async Task ZipAsync_NonFailable_Task_Upstream_Failure_Propagates()
     {
         var result = await AxisResult.Error<int>(E1).AsTaskAsync()
-            .ZipAsync((v, ct) => Task.FromResult(v * 2), default);
+            .ZipAsync((v, _) => Task.FromResult(v * 2), CancellationToken.None);
         Assert.True(result.IsFailure);
     }
 
@@ -238,7 +238,7 @@ public class AxisResultCancellationTests
     public async Task ZipAsync_Failable_Task_Downstream_Failure_Propagates()
     {
         var result = await AxisResult.Ok(1).AsTaskAsync()
-            .ZipAsync((v, ct) => Task.FromResult(AxisResult.Error<int>(E1)), default);
+            .ZipAsync((_, _) => Task.FromResult(AxisResult.Error<int>(E1)), CancellationToken.None);
         Assert.True(result.IsFailure);
     }
 
@@ -247,7 +247,7 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsTaskAsync()
-            .ZipAsync((v, ct) => { invoked = true; return Task.FromResult(AxisResult.Ok(2)); }, default);
+            .ZipAsync((_, _) => { invoked = true; return Task.FromResult(AxisResult.Ok(2)); }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -256,7 +256,7 @@ public class AxisResultCancellationTests
     public async Task ThenAsync_Preserving_Task_Downstream_Failure_Propagates()
     {
         var result = await AxisResult.Ok("v").AsTaskAsync()
-            .ThenAsync((v, ct) => Task.FromResult<AxisResult>(AxisError.BusinessRule("BR")), default);
+            .ThenAsync((_, _) => Task.FromResult<AxisResult>(AxisError.BusinessRule("BR")), CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.Equal("BR", result.Errors[0].Code);
     }
@@ -266,7 +266,7 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<string>(E1).AsTaskAsync()
-            .ThenAsync((v, ct) => { invoked = true; return Task.FromResult(AxisResult.Ok()); }, default);
+            .ThenAsync((_, _) => { invoked = true; return Task.FromResult(AxisResult.Ok()); }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -276,7 +276,7 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsTaskAsync()
-            .MapAsync((v, ct) => { invoked = true; return Task.FromResult(v); }, default);
+            .MapAsync((v, _) => { invoked = true; return Task.FromResult(v); }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -324,7 +324,7 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsValueTaskAsync()
-            .MapAsync((v, ct) => { invoked = true; return new ValueTask<int>(v + 1); }, default);
+            .MapAsync((v, _) => { invoked = true; return new ValueTask<int>(v + 1); }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -334,11 +334,11 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsValueTaskAsync()
-            .ThenAsync((v, ct) =>
+            .ThenAsync((v, _) =>
             {
                 invoked = true;
                 return new ValueTask<AxisResult<int>>(AxisResult.Ok(v + 1));
-            }, default);
+            }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -350,7 +350,7 @@ public class AxisResultCancellationTests
         using var cts = new CancellationTokenSource();
 
         var result = await AxisResult.Ok("kept").AsValueTaskAsync()
-            .ThenAsync((v, ct) =>
+            .ThenAsync((_, ct) =>
             {
                 observed = ct;
                 return new ValueTask<AxisResult>(AxisResult.Ok());
@@ -365,7 +365,7 @@ public class AxisResultCancellationTests
     public async Task ThenAsync_Preserving_ValueTask_Downstream_Failure_Propagates()
     {
         var result = await AxisResult.Ok("kept").AsValueTaskAsync()
-            .ThenAsync((v, ct) => new ValueTask<AxisResult>(AxisError.BusinessRule("BR")), default);
+            .ThenAsync((_, _) => new ValueTask<AxisResult>(AxisError.BusinessRule("BR")), CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.Equal("BR", result.Errors[0].Code);
     }
@@ -375,11 +375,11 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<string>(E1).AsValueTaskAsync()
-            .ThenAsync((v, ct) =>
+            .ThenAsync((_, _) =>
             {
                 invoked = true;
                 return new ValueTask<AxisResult>(AxisResult.Ok());
-            }, default);
+            }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -391,7 +391,7 @@ public class AxisResultCancellationTests
         using var cts = new CancellationTokenSource();
 
         var result = await AxisResult.Ok(42).AsValueTaskAsync()
-            .TapAsync((v, ct) =>
+            .TapAsync((_, ct) =>
             {
                 observed = ct;
                 return ValueTask.CompletedTask;
@@ -406,7 +406,7 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsValueTaskAsync()
-            .TapAsync((v, ct) => { invoked = true; return ValueTask.CompletedTask; }, default);
+            .TapAsync((_, _) => { invoked = true; return ValueTask.CompletedTask; }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -432,7 +432,7 @@ public class AxisResultCancellationTests
     public async Task EnsureAsync_Predicate_ValueTask_Predicate_False_Returns_Error()
     {
         var result = await AxisResult.Ok(-1).AsValueTaskAsync()
-            .EnsureAsync((v, ct) => new ValueTask<bool>(v > 0), E1, default);
+            .EnsureAsync((v, _) => new ValueTask<bool>(v > 0), E1, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.Equal(E1, result.Errors[0]);
     }
@@ -442,7 +442,7 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsValueTaskAsync()
-            .EnsureAsync((v, ct) => { invoked = true; return new ValueTask<bool>(true); }, E1, default);
+            .EnsureAsync((_, _) => { invoked = true; return new ValueTask<bool>(true); }, E1, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -454,7 +454,7 @@ public class AxisResultCancellationTests
         using var cts = new CancellationTokenSource();
 
         var result = await AxisResult.Ok(10).AsValueTaskAsync()
-            .EnsureAsync((v, ct) =>
+            .EnsureAsync((_, ct) =>
             {
                 observed = ct;
                 return new ValueTask<AxisResult>(AxisResult.Ok());
@@ -469,8 +469,8 @@ public class AxisResultCancellationTests
     public async Task EnsureAsync_Validation_ValueTask_Validation_Failure_Propagates()
     {
         var result = await AxisResult.Ok(10).AsValueTaskAsync()
-            .EnsureAsync((v, ct) =>
-                new ValueTask<AxisResult>(AxisError.ValidationRule("BAD")), default);
+            .EnsureAsync((_, _) =>
+                new ValueTask<AxisResult>(AxisError.ValidationRule("BAD")), CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.Equal("BAD", result.Errors[0].Code);
     }
@@ -480,11 +480,11 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsValueTaskAsync()
-            .EnsureAsync((v, ct) =>
+            .EnsureAsync((_, _) =>
             {
                 invoked = true;
                 return new ValueTask<AxisResult>(AxisResult.Ok());
-            }, default);
+            }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -510,18 +510,18 @@ public class AxisResultCancellationTests
     public async Task ZipAsync_NonFailable_ValueTask_Upstream_Failure_Propagates()
     {
         var result = await AxisResult.Error<int>(E1).AsValueTaskAsync()
-            .ZipAsync((v, ct) => new ValueTask<int>(v * 2), default);
+            .ZipAsync((v, _) => new ValueTask<int>(v * 2), CancellationToken.None);
         Assert.True(result.IsFailure);
     }
 
     [Fact]
     public async Task ZipAsync_Failable_ValueTask_Success_Builds_Tuple()
     {
-        CancellationToken observed = default;
+        CancellationToken observed = CancellationToken.None;
         using var cts = new CancellationTokenSource();
 
         var result = await AxisResult.Ok(1).AsValueTaskAsync()
-            .ZipAsync((v, ct) =>
+            .ZipAsync((_, ct) =>
             {
                 observed = ct;
                 return new ValueTask<AxisResult<string>>(AxisResult.Ok("hi"));
@@ -536,8 +536,8 @@ public class AxisResultCancellationTests
     public async Task ZipAsync_Failable_ValueTask_Downstream_Failure_Propagates()
     {
         var result = await AxisResult.Ok(1).AsValueTaskAsync()
-            .ZipAsync((v, ct) =>
-                new ValueTask<AxisResult<int>>(AxisResult.Error<int>(E1)), default);
+            .ZipAsync((_, _) =>
+                new ValueTask<AxisResult<int>>(AxisResult.Error<int>(E1)), CancellationToken.None);
         Assert.True(result.IsFailure);
     }
 
@@ -546,11 +546,11 @@ public class AxisResultCancellationTests
     {
         var invoked = false;
         var result = await AxisResult.Error<int>(E1).AsValueTaskAsync()
-            .ZipAsync((v, ct) =>
+            .ZipAsync((_, _) =>
             {
                 invoked = true;
                 return new ValueTask<AxisResult<int>>(AxisResult.Ok(2));
-            }, default);
+            }, CancellationToken.None);
         Assert.True(result.IsFailure);
         Assert.False(invoked);
     }
@@ -562,7 +562,7 @@ public class AxisResultCancellationTests
         using var cts = new CancellationTokenSource();
 
         var result = await AxisResult.Ok("kept").AsValueTaskAsync()
-            .ActionAsync((v, ct) =>
+            .ActionAsync((_, ct) =>
             {
                 observed = ct;
                 return new ValueTask<AxisResult>(AxisResult.Ok());
@@ -576,8 +576,8 @@ public class AxisResultCancellationTests
     public async Task ActionAsync_ValueTask_Downstream_Failure_Propagates()
     {
         var result = await AxisResult.Ok("kept").AsValueTaskAsync()
-            .ActionAsync((v, ct) =>
-                new ValueTask<AxisResult>(AxisError.Conflict("C")), default);
+            .ActionAsync((_, _) =>
+                new ValueTask<AxisResult>(AxisError.Conflict("C")), CancellationToken.None);
         Assert.True(result.IsFailure);
     }
 

@@ -61,6 +61,11 @@ public static class AxisResultExtensions
     public static async Task<AxisResult<TValue>> ThenAsync<TValue>(this Task<AxisResult<TValue>> task, Func<TValue, Task<AxisResult>> next)
         => await (await task).ThenAsync(next);
 
+    public static async Task<AxisResult<TNew>> ThenAsync<TValue, TNew>(this Task<AxisResult<TValue>> task, Func<TValue, AxisResult<TNew>> next)
+        => (await task).Then(next);
+
+    public static async Task<AxisResult<TNew>> ThenAsync<TValue, TNew>(this Task<AxisResult<TValue>> task, Func<TValue, Task<AxisResult<TNew>>> next)
+        => await (await task).ThenAsync(next);
 
     public static async Task<AxisResult> ToAxisResultAsync<TValue>(this Task<AxisResult<TValue>> task, Func<TValue, AxisResult> next)
         => (await task).ToAxisResult(next);

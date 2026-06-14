@@ -113,7 +113,7 @@ public Task<AxisResult> HandleAsync(DeleteExternalApiCommand cmd)
 ## Veja também
 
 - [`Map`](map.md) — transformar um valor que não pode falhar
-- [`Ensure`](ensure.md) — garantir um invariante inline (`RequireNotFound`, `WithValue`)
+- [`Ensure`](ensure.md) — garantir um invariante inline (`RequireNotFound`, `WithValueAsync`)
 - [`Zip`](zip.md) — manter o valor antigo *e* um novo
 - [Erros e tipos](errors-and-types.md) — o que um `AxisError` carrega e as 12 categorias
 - [`Task` vs `ValueTask`](async-task-vs-valuetask.md) — qual forma async encadear

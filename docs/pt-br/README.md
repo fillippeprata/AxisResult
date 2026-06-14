@@ -28,7 +28,7 @@ Cada operação **ou** tem sucesso e segue no trilho de cima, **ou** falha e cai
 
 - **`AxisResult`** — o desfecho de uma operação que **não produz valor**: só importa se deu certo (salvar, deletar, validar, verificar senha).
 - **`AxisResult<T>`** — carrega um **valor** pela trilha de sucesso (buscar entidade, calcular total). `.Value` lança numa falha → prefira a [desestruturação segura ou `Match`](match.md).
-- Transitar entre os dois: [`ToAxisResult`](then.md) descarta o valor; [`WithValue`](ensure.md) promove um `AxisResult` para `AxisResult<T>`.
+- Transitar entre os dois: [`ToAxisResult`](then.md) descarta o valor; [`WithValueAsync`](ensure.md) promove um `AxisResult` para `AxisResult<T>`.
 
 ### Criar resultados
 
@@ -38,6 +38,7 @@ AxisResult<int>    typed = AxisResult.Ok(42);
 AxisResult<int>    fail  = AxisError.BusinessRule("INSUFFICIENT_STOCK"); // AxisError → falha (implícito)
 AxisResult<string> name  = "John";                                       // valor → Ok (implícito)
 AxisResult<int>    parse = AxisResult.Try(() => int.Parse(input));        // exceção → AxisResult, só na borda
+AxisResult<string> rop   = usuario.Email.Rop();                            // valor → Ok, fluente: inicia o fluxo ROP
 ```
 
 ### Tratamento de erros

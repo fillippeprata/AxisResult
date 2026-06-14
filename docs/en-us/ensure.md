@@ -25,7 +25,7 @@ Guarantee a condition about the current value (enough stock, valid status) or en
 | `Ensure` | `(Func<T,bool> predicate, AxisError error)` | fails with `error` if the predicate is false |
 | `Ensure` | `(Func<T,AxisResult> validation)` | delegated validation that returns `AxisResult` |
 | `RequireNotFound` | `(AxisError errorIfFound)` | found → fail; `NotFound` → continue as success |
-| `WithValue` | `(value)` | promotes an `AxisResult` (no value) to `AxisResult<T>` |
+| `WithValueAsync` | `(value)` | promotes an `AxisResult` (no value) to `AxisResult<T>` (async only — `Task`/`ValueTask`) |
 
 All have `Async` variants (`Task`/`ValueTask`) and [with `CancellationToken`](cancellation.md).
 
